@@ -42,7 +42,7 @@ func main() {
 
 	// Pay order
 	log.Println(orderpb.NewOrderClient(c).Pay(context.Background(), &orderpb.PayRequest{
-		Id:                "71f3f40b-3873-441c-be89-32bf8837b3fc",
+		Id:                "b3310d6c-118a-45dc-8a54-752bfb0a7211",
 		PaymentProviderId: paymentpb.PaymentProviderId_Stripe,
 		Card: &paymentpb.Card{
 			Type:        paymentpb.CardType_Mastercard,

@@ -28,7 +28,7 @@ DEL "sku\skupb\sku.pb.gw.go" || pause
 -I=. ^
 -I=../../../ ^
 -I=../../gogo/protobuf/protobuf ^
---gogo_out=plugins=grpc:../../../ ^
+--gofast_out=plugins=grpc:../../../ ^
 sku/skupb/sku.proto || pause)
 
 :: order
@@ -39,7 +39,7 @@ DEL "order\orderpb\order.pb.gw.go" || pause
 -I=. ^
 -I=../../../ ^
 -I=../../gogo/protobuf/protobuf ^
---gogo_out=plugins=grpc:../../../ ^
+--gofast_out=plugins=grpc:../../../ ^
 order/orderpb/order.proto || pause)
 
 :: payment
@@ -50,7 +50,7 @@ DEL "payment\paymentpb\payment.pb.gw.go" || pause
 -I=. ^
 -I=../../../ ^
 -I=../../gogo/protobuf/protobuf ^
---gogo_out=plugins=grpc:../../../ ^
+--gofast_out=plugins=grpc:../../../ ^
 payment/paymentpb/payment.proto || pause)
 
 :: product
@@ -61,7 +61,7 @@ DEL "product\productpb\product.pb.gw.go" || pause
 -I=. ^
 -I=../../../ ^
 -I=../../gogo/protobuf/protobuf ^
---gogo_out=plugins=grpc:../../../ ^
+--gofast_out=plugins=grpc:../../../ ^
 product\productpb\product.proto || pause)
 
 :: pause

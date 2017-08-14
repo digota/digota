@@ -27,7 +27,7 @@ go:
 	-I=. \
 	-I=../../../ \
 	-I=../../gogo/protobuf/protobuf \
-	--gogo_out=plugins=grpc:../../../ \
+	 --gogofast_out=plugins=grpc:../../../ \
 	payment/paymentpb/payment.proto)
 
 # generate order pb
@@ -35,7 +35,7 @@ go:
 	-I=. \
 	-I=../../../ \
 	-I=../../gogo/protobuf/protobuf \
-	--gogo_out=plugins=grpc:../../../ \
+	 --gogofast_out=plugins=grpc:../../../ \
 	order/orderpb/order.proto)
 
 # generate sku pb
@@ -43,7 +43,7 @@ go:
 	-I=. \
 	-I=../../../ \
 	-I=../../gogo/protobuf/protobuf \
-	--gogo_out=plugins=grpc:../../../ \
+	 --gogofast_out=plugins=grpc:../../../ \
 	sku/skupb/sku.proto)
 
 # generate product pb
@@ -51,7 +51,7 @@ go:
 	-I=. \
 	-I=../../../ \
 	-I=../../gogo/protobuf/protobuf \
-	--gogo_out=plugins=grpc:../../../ \
+	 --gogofast_out=plugins=grpc:../../../ \
 	product/productpb/product.proto)
 
 php:
