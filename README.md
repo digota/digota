@@ -20,7 +20,7 @@ ___TLDR; scalable ecommerce microservice.___
 #### Installation
 
 ```bash
-$ go get -u https://github.com/digota/digota
+$ go get -u github.com/digota/digota
 ```
 
 #### Run
