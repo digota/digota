@@ -1,5 +1,5 @@
 <a href="http://digota.com/">![Logo](http://i.imgur.com/hqEKC51.png)</a>
-## Digota - ecommerce microservice
+## Digota - ecommerce microservice [![Go Report Card](https://goreportcard.com/badge/github.com/digota/digota)](https://goreportcard.com/report/github.com/digota/digota)
 
 [Digota](http://digota.com) is ecommerce microservice built to be the modern standard for ecommerce systems.It is based on grpc,protocol-buffers and http2 provides clean, powerful and secured RPC interface. 
 
@@ -20,7 +20,7 @@ ___TLDR; scalable ecommerce microservice.___
 #### Installation
 
 ```bash
-$ go get -u https://github.com/digota/digota
+$ go get -u github.com/digota/digota
 ```
 
 #### Run
