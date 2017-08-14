@@ -1,0 +1,268 @@
+//     Digota <http://digota.com> - eCommerce microservice
+//     Copyright (C) 2017  Yaron Sumel <yaron@digota.com>. All Rights Reserved.
+//
+//     This program is free software: you can redistribute it and/or modify
+//     it under the terms of the GNU Affero General Public License as published
+//     by the Free Software Foundation, either version 3 of the License, or
+//     (at your option) any later version.
+//
+//     This program is distributed in the hope that it will be useful,
+//     but WITHOUT ANY WARRANTY; without even the implied warranty of
+//     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//     GNU Affero General Public License for more details.
+//
+//     You should have received a copy of the GNU Affero General Public License
+//     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+syntax = "proto3";
+
+option go_package = "github.com/digota/digota/payment/paymentpb";
+
+package paymentpb;
+
+import "github.com/gogo/protobuf/gogoproto/gogo.proto";
+
+service Payment {
+    rpc Charge (chargeRequest) returns (charge) {
+    }
+    rpc Refund (refundRequest) returns (charge) {
+    }
+    rpc Get (getRequest) returns (charge) {
+    }
+    rpc List (listRequest) returns (chargeList) {
+    }
+}
+
+enum currency {
+    CUR_RESERVED = 0;
+    AFN = 1;
+    ALL = 2;
+    AMD = 3;
+    ANG = 4;
+    ARS = 5;
+    AUD = 6;
+    AWG = 7;
+    AZN = 8;
+    BAM = 9;
+    BBD = 10;
+    BGN = 11;
+    BHD = 12;
+    BMD = 13;
+    BND = 14;
+    BOB = 15;
+    BRL = 16;
+    BSD = 17;
+    BWP = 18;
+    BYN = 19;
+    BYR = 20;
+    BZD = 21;
+    CAD = 22;
+    CLP = 23;
+    CNY = 24;
+    COP = 25;
+    CRC = 26;
+    CUP = 27;
+    CZK = 28;
+    DKK = 29;
+    DOP = 30;
+    DZD = 31;
+    EEK = 32;
+    EGP = 33;
+    EUR = 34;
+    FJD = 35;
+    FKP = 36;
+    GBP = 37;
+    GGP = 38;
+    GHC = 39;
+    GIP = 40;
+    GTQ = 41;
+    GYD = 42;
+    HKD = 43;
+    HNL = 44;
+    HRK = 45;
+    HUF = 46;
+    IDR = 47;
+    ILS = 48;
+    IMP = 49;
+    INR = 50;
+    IQD = 51;
+    IRR = 52;
+    ISK = 53;
+    JEP = 54;
+    JMD = 55;
+    JOD = 56;
+    JPY = 57;
+    KES = 58;
+    KGS = 59;
+    KHR = 60;
+    KPW = 61;
+    KRW = 62;
+    KWD = 63;
+    KYD = 64;
+    KZT = 65;
+    LAK = 66;
+    LBP = 67;
+    LKR = 68;
+    LRD = 69;
+    LTL = 70;
+    LVL = 71;
+    LYD = 72;
+    MAD = 73;
+    MKD = 74;
+    MNT = 75;
+    MUR = 76;
+    MXN = 77;
+    MWK = 78;
+    MYR = 79;
+    MZN = 80;
+    NAD = 81;
+    NGN = 82;
+    NIO = 83;
+    NOK = 84;
+    NPR = 85;
+    NZD = 86;
+    OMR = 87;
+    PAB = 88;
+    PEN = 89;
+    PHP = 90;
+    PKR = 91;
+    PLN = 92;
+    PYG = 93;
+    QAR = 94;
+    RON = 95;
+    RSD = 96;
+    RUB = 97;
+    RUR = 98;
+    SAR = 99;
+    SBD = 100;
+    SCR = 101;
+    SEK = 102;
+    SGD = 103;
+    SHP = 104;
+    SOS = 105;
+    SRD = 106;
+    SVC = 107;
+    SYP = 108;
+    THB = 109;
+    TND = 110;
+    TRL = 111;
+    TRY = 112;
+    TTD = 113;
+    TWD = 114;
+    TZS = 115;
+    UAH = 116;
+    UGX = 117;
+    AED = 118;
+    UYU = 119;
+    UZS = 120;
+    VEF = 121;
+    VND = 122;
+    XCD = 123;
+    YER = 124;
+    ZAR = 125;
+    ZMW = 126;
+    ZWD = 127;
+    USD = 128;
+}
+
+enum chargeStatus {
+    Paid = 0;
+    Refunded = 1;
+}
+
+enum cardType {
+    CARD_Reserved = 0;
+    Mastercard = 1;
+    Visa = 2;
+    AmericanExpress = 3;
+    JCB = 4;
+    Discover = 5;
+    DinersClub = 6;
+}
+
+
+enum paymentProviderId {
+    PROVIDER_Reserved = 0;
+    Stripe = 1;
+    Paypal = 2;
+    Braintree = 3;
+}
+
+enum refundReason {
+    GeneralError = 0;
+    Fraud = 1;
+    Duplicate = 2;
+    RequestedByCustomer = 3;
+}
+
+message charge {
+    string id = 1 [(gogoproto.moretags) = "bson:\"_id\""];
+    string statement = 2;
+    uint64 chargeAmount = 3;
+    uint64 refundAmount = 4;
+    repeated refund refunds = 5;
+    currency currency = 6;
+    string email = 7;
+    bool paid = 8;
+    bool refunded = 9;
+    paymentProviderId providerId = 10;
+    string providerChargeId = 11;
+    int64 created = 998;
+    int64 updated = 999;
+}
+
+message refund {
+    uint64 refundAmount = 1;
+    string providerRefundId = 2;
+    refundReason reason = 3;
+    int64 created = 4;
+}
+
+message card {
+    string Number = 1 [(gogoproto.moretags) = "validate:\"required,len=16\""];
+    string ExpireMonth = 2 [(gogoproto.moretags) = "validate:\"required,len=2\""];
+    string ExpireYear = 3 [(gogoproto.moretags) = "validate:\"required,len=4\""];
+    string FirstName = 4 [(gogoproto.moretags) = "validate:\"omitempty,min=1\""];
+    string LastName = 5 [(gogoproto.moretags) = "validate:\"omitempty,min=1\""];
+    string CVC = 6 [(gogoproto.moretags) = "validate:\"omitempty,len=3\""];
+    cardType type = 8 [(gogoproto.moretags) = "validate:\"required,gte=1,lte=6\""];
+}
+
+message chargeRequest {
+    currency currency = 1 [(gogoproto.moretags) = "validate:\"required,gte=1,lte=128\""];
+    uint64 total = 2 [(gogoproto.moretags) = "validate:\"required,gte=0\""];
+    card Card = 3 [(gogoproto.moretags) = "validate:\"required,dive\""];
+    string email = 4 [(gogoproto.moretags) = "validate:\"email\""];
+    string statement = 5;
+    paymentProviderId paymentProviderId = 6 [(gogoproto.moretags) = "validate:\"required,gte=1,lte=3\""];
+    map<string, string> metadata = 7;
+}
+
+message getRequest {
+    string id = 1 [(gogoproto.moretags) = "validate:\"uuid4,required\""];
+}
+
+message refundRequest {
+    string id = 1 [(gogoproto.moretags) = "validate:\"uuid4,required\""];
+    uint64 amount = 2;
+    refundReason reason = 3 [(gogoproto.moretags) = "validate:\"omitempty,gte=0,lte=3\""];
+}
+
+message listRequest {
+    int64 page = 1 [(gogoproto.moretags) = "validate:\"omitempty,required,gte=0\""];
+    int64 limit = 2 [(gogoproto.moretags) = "validate:\"omitempty,required,gt=0\""];
+    Sort sort = 3 [(gogoproto.moretags) = "validate:\"omitempty,required,gte=0,lte=4\""];
+    enum Sort {
+        Natural = 0;
+        CreatedDesc = 1;
+        CreatedAsc = 2;
+        UpdatedDesc = 3;
+        UpdatedAsc = 4;
+    }
+}
+
+message chargeList {
+    repeated charge charges = 1;
+    int32 total = 2;
+}
+

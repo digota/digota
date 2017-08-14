@@ -1,0 +1,95 @@
+//     Digota <http://digota.com> - eCommerce microservice
+//     Copyright (C) 2017  Yaron Sumel <yaron@digota.com>. All Rights Reserved.
+//
+//     This program is free software: you can redistribute it and/or modify
+//     it under the terms of the GNU Affero General Public License as published
+//     by the Free Software Foundation, either version 3 of the License, or
+//     (at your option) any later version.
+//
+//     This program is distributed in the hope that it will be useful,
+//     but WITHOUT ANY WARRANTY; without even the implied warranty of
+//     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//     GNU Affero General Public License for more details.
+//
+//     You should have received a copy of the GNU Affero General Public License
+//     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+syntax = "proto3";
+
+option go_package = "github.com/digota/digota/product/productpb";
+
+package productpb;
+
+import "github.com/gogo/protobuf/gogoproto/gogo.proto";
+import "github.com/digota/digota/sku/skupb/sku.proto";
+
+service Product {
+    rpc New (newRequest) returns (product) {
+    }
+    rpc Get (getRequest) returns (product) {
+    }
+    rpc Update (updateRequest) returns (product) {
+    }
+    rpc List (listRequest) returns (productList) {
+    }
+    rpc Delete (deleteRequest) returns (empty) {
+    }
+}
+
+message empty {}
+
+message product {
+    string id = 1 [(gogoproto.moretags) = "bson:\"_id\""];
+    string name = 2;
+    bool active = 3;
+    repeated string attributes = 4 ;
+    string description = 5 ;
+    repeated string images = 6 ;
+    map<string, string> metadata = 7 ;
+    bool shippable = 8 ;
+    string url = 9 ;
+    repeated skupb.sku skus = 10;
+    int64 created = 998 ;
+    int64 updated = 999 ;
+}
+
+message productList {
+    repeated product products = 1;
+    int32 total =2;
+}
+
+message newRequest {
+    string name = 1 [(gogoproto.moretags) = "validate:\"required,gte=0\""];
+    bool active = 2 [(gogoproto.moretags) = "validate:\"required\""];
+    repeated string attributes = 3 [(gogoproto.moretags) = "validate:\"dive,required\""];
+    string description = 4 [(gogoproto.moretags) = "validate:\"gt=0,lt=2056\""];
+    repeated string images = 5 [(gogoproto.moretags) = "validate:\"dive,url\""];
+    map<string, string> metadata = 6 [(gogoproto.moretags) = "validate:\"\""];
+    bool shippable = 7 [(gogoproto.moretags) = "validate:\"\""];
+    string url = 8 [(gogoproto.moretags) = "validate:\"omitempty,url\""];
+}
+
+message getRequest {
+    string id = 1 [(gogoproto.moretags) = "validate:\"required,uuid4\""];
+}
+
+message deleteRequest {
+    string id = 1 [(gogoproto.moretags) = "validate:\"required,uuid4\""];
+}
+
+message updateRequest {
+    string id = 1 [(gogoproto.moretags) = "validate:\"required,uuid4\""];
+    string name = 2 [(gogoproto.moretags) = "validate:\"required,gte=4\""];
+    bool active = 3 [(gogoproto.moretags) = "validate:\"omitempty,required\""];
+    repeated string attributes = 4 [(gogoproto.moretags) = "validate:\"dive,required\""];
+    string description = 5 [(gogoproto.moretags) = "validate:\"gt=0,lt=2056\""];
+    repeated string images = 6 [(gogoproto.moretags) = "validate:\"dive,url\""];
+    map<string, string> metadata = 7 [(gogoproto.moretags) = "validate:\"\""];
+    bool shippable = 8 [(gogoproto.moretags) = "validate:\"\""];
+    string url = 9 [(gogoproto.moretags) = "validate:\"omitempty,url\""];
+}
+
+message listRequest {
+    int64 page = 1;
+    int64 limit = 2;
+}
