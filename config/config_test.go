@@ -17,21 +17,17 @@
 package config
 
 import (
-	"path/filepath"
 	"testing"
 )
 
 func TestNewConfig(t *testing.T) {
-	absValidPath, _ := filepath.Abs("testFiles/valid.yaml")
-	if _, err := LoadConfig(absValidPath); err != nil {
+	if _, err := LoadConfig("testFiles/valid.yaml"); err != nil {
 		t.Fatal(err)
 	}
-	absNotFoundPath, _ := filepath.Abs("testFiles/notfound.yaml")
-	if _, err := LoadConfig(absNotFoundPath); err == nil {
+	if _, err := LoadConfig("testFiles/notfound.yaml"); err == nil {
 		t.Fatal(err)
 	}
-	absNotValidPath, _ := filepath.Abs("testFiles/invalid.yaml")
-	if _, err := LoadConfig(absNotValidPath); err == nil {
+	if _, err := LoadConfig("testFiles/invalid.yaml"); err == nil {
 		t.Fatal(err)
 	}
 }
