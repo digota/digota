@@ -7,12 +7,12 @@ services: mongodb
 before_script:
   - "sudo apt-get install zookeeperd"
 before_install:
-  - go get github.com/mattn/goveralls
+  - go get github.com/go-playground/overalls
   - go get golang.org/x/tools/cmd/cover
 script:
   - go build ./...
   - go fmt ./...
   - go vet ./...
   - go test -i -race ./...
-  - go test -race -covermode atomic -coverprofile=profile.cov
-  - goveralls -coverprofile=profile.cov -service=travis-ci
+  - overalls -project=github.com/digota/digota -covermode=count -debug
+  - goveralls -coverprofile=overalls.coverprofile -service=travis-ci
