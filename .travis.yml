@@ -6,5 +6,13 @@ go:
 services: mongodb
 before_script:
   - "sudo apt-get install zookeeperd"
-ignore:
-  - "*.pb.go"
+before_install:
+  - go get github.com/mattn/goveralls
+  - go get golang.org/x/tools/cmd/cover
+script:
+  - go build ./...
+  - go fmt ./...
+  - go vet ./...
+  - go test -i -race ./...
+  - go test -race -covermode atomic -coverprofile=profile.cov ./zk
+  - goveralls -coverprofile=profile.cov -service=travis-ci
