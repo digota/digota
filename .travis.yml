@@ -6,3 +6,5 @@ go:
 services: mongodb
 before_script:
   - "sudo apt-get install zookeeperd"
+ignore:
+  - *.pb.go
