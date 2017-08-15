@@ -17,6 +17,9 @@ id_rsa
 *.crl
 *.csr
 
+!sdk/testFiles/*.crt
+!sdk/testFiles/*.key
+
 # Test binary, build with `go test -c`
 *.test
 
