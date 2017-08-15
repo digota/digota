@@ -1,18 +1,9 @@
 language: go
 os:
   - linux
-  - osx
 go:
-  - tip
+  - 1.8
 services: mongodb
-before_install:
-  - "curl -s http://archive.cloudera.com/cdh4/ubuntu/precise/amd64/cdh/archive.key | sudo apt-key add -"
-  - "wget http://archive.cloudera.com/cdh4/one-click-install/precise/amd64/cdh4-repository_1.0_all.deb"
-  - "sudo dpkg -i cdh4-repository_1.0_all.deb"
-  - "sudo apt-get update -qq"
-  - "sudo apt-get install -y zookeeper-server"
 before_script:
-  - "sudo service zookeeper-server init"
-  - "sudo service zookeeper-server start"
-after_script:
-  - "sudo service zookeeper-server stop"
+  - "sudo apt-get install zookeeperd"
+  - "sudo service zookeeper start"
