@@ -8,6 +8,7 @@
 *.json
 *.yaml
 !_example/config/digota.yaml
+!config/testFiles/*.yaml
 
 # local keys
 id_rsa

@@ -1,0 +1,26 @@
+---
+version: 1
+TLS:
+  crt: valid
+  key: valid
+  ca: valid
+storage:
+  handler: valid
+#  username:
+#  password:
+  address:
+  - valid
+locker:
+  handler: valid
+#  username:
+#  password:
+  address:
+  - valid
+payment:
+- provider: valid
+  secret: valid
+clients:
+- serial: valid
+  scopes:
+  - valid
+  - valid
