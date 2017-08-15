@@ -27,7 +27,7 @@ import (
 	"time"
 )
 
-const seperator = "/"
+const separator = "/"
 
 type lock struct {
 	*zk.Conn
@@ -46,7 +46,7 @@ func (l *lock) newLock(obj object.Interface) (*zk.Lock, error) {
 	if obj.GetNamespace() == "" || obj.GetId() == "" {
 		return nil, errors.New("Obj is missing information to make that lock")
 	}
-	return zk.NewLock(l.Conn, seperator+obj.GetNamespace()+seperator+obj.GetId(), zk.WorldACL(zk.PermAll)), nil
+	return zk.NewLock(l.Conn, separator+obj.GetNamespace()+separator+obj.GetId(), zk.WorldACL(zk.PermAll)), nil
 }
 
 func (l *lock) Close() error {
