@@ -1,5 +1,5 @@
 <a href="http://digota.com/">![Logo](http://i.imgur.com/hqEKC51.png)</a>
-## Digota - ecommerce microservice [![Go Report Card](https://goreportcard.com/badge/github.com/digota/digota)](https://goreportcard.com/report/github.com/digota/digota)[![Build Status](https://travis-ci.org/digota/digota.svg?branch=master)](https://travis-ci.org/digota/digota)
+## Digota - ecommerce microservice [![Go Report Card](https://goreportcard.com/badge/github.com/digota/digota)](https://goreportcard.com/report/github.com/digota/digota) [![Build Status](https://travis-ci.org/digota/digota.svg?branch=master)](https://travis-ci.org/digota/digota)
 
 [Digota](http://digota.com) is ecommerce microservice built to be the modern standard for ecommerce systems.It is based on grpc,protocol-buffers and http2 provides clean, powerful and secured RPC interface. 
 
