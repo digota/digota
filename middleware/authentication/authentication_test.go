@@ -43,6 +43,7 @@ type authOverrideTestService struct {
 }
 
 func TestAuthOverrideTestSuite(t *testing.T) {
+	t.Skip()
 	s := &AuthOverrideTestSuite{
 		InterceptorTestSuite: &grpc_testing.InterceptorTestSuite{
 			TestService: &authOverrideTestService{&assertingPingService{&grpc_testing.TestPingService{T: t}, t}, t},
