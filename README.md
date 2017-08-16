@@ -7,6 +7,8 @@ Our Goal is to provide the best technology that covers most of the ecommerce flo
 
 ___TLDR; scalable ecommerce microservice.___
 
+### Join our community at [gitter](https://gitter.im/digota/Lobby) ! 
+
 ## Getting started
 
 #### Prerequisites
