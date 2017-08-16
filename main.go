@@ -39,7 +39,7 @@ const (
 	name         = "digota"
 	usage        = ""
 	email        = "yaron@digota.com"
-	Description  = "eCommerce microservice"
+	description  = "eCommerce microservice"
 	port         = ":3051"
 	copyright    = `
 		Digota <http://digota.com> - eCommerce microservice
@@ -74,7 +74,7 @@ func init() {
 	app.UsageText = usage
 	app.Email = email
 	app.Copyright = copyright
-	app.Description = Description
+	app.Description = description
 }
 
 func main() {

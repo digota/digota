@@ -25,12 +25,15 @@ import (
 )
 
 const (
-	ZookeeperHandler handlerName = "zookeeper"
+	zookeeperHandler handlerName = "zookeeper"
+	// lock acquire timeout
 	DefaultTimeout               = time.Millisecond * 100
 )
 
 type (
 	handlerName string
+	// Interface is the base functionality that any locker handler
+	// should implement in order to become valid handler
 	Interface   interface {
 		Close() error
 		Lock(doc object.Interface) (func() error, error)
@@ -40,10 +43,12 @@ type (
 
 var handler Interface
 
+// New creates a locker handler from the provided
+// config.Locker and save it in handler for further use
 func New(lockerConfig config.Locker) error {
 	var err error
 	switch handlerName(lockerConfig.Handler) {
-	case ZookeeperHandler:
+	case zookeeperHandler:
 		handler, err = zookeeper.NewLocker(lockerConfig)
 		return err
 	default:
@@ -51,6 +56,7 @@ func New(lockerConfig config.Locker) error {
 	}
 }
 
+// Handler returns the registered locker handler
 func Handler() Interface {
 	return handler
 }

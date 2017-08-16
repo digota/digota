@@ -26,11 +26,13 @@ import (
 	"time"
 )
 
+// ClientOpt additional connection information
 type ClientOpt struct {
 	Crt, Key, ServerName, CaCrt   string
 	InsecureSkipVerify, WithBlock bool
 }
 
+// NewClient creates new grpc connection to the addr using the ClientOpt
 func NewClient(addr string, opt *ClientOpt) (*grpc.ClientConn, error) {
 
 	if opt == nil {

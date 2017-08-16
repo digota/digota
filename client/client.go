@@ -25,9 +25,13 @@ import (
 )
 
 const (
+	// represents access to all methods
 	WildcardScope Scope = "WILDCARD"
+	// represents access to all public methods
 	PublicScope   Scope = "PUBLIC"
+	// represents access to all write methods
 	WriteScope    Scope = "WRITE"
+	// represents access to all read methods
 	ReadScope     Scope = "READ"
 )
 

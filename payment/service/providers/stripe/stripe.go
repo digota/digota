@@ -31,6 +31,7 @@ import (
 type provider struct {
 }
 
+// NewProvider creates and prepare the stripe provider
 func NewProvider(paymentConfig *config.PaymentProvider) (*provider, error) {
 	stripe.Key = paymentConfig.Secret
 	stripe.Logger = logrus.New()

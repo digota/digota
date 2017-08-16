@@ -24,11 +24,13 @@ import (
 )
 
 const (
-	MongodbHandler handlerName = "mongodb"
+	mongodbHandler handlerName = "mongodb"
 )
 
 type (
 	handlerName string
+	// Interface defines the base functionality which any storage handler
+	// should implement to become valid storage handler
 	Interface   interface {
 		Prepare() error
 		Close() error
@@ -45,12 +47,12 @@ type (
 
 var handler Interface
 
-// New
-// create new storage handler and prepare it for use
+// New creates storage handler from config.Storage and prepare it for use
+// returns error if something went wrong during the preparations
 func New(storageConfig config.Storage) error {
 	// create handler based on the storage config
 	switch handlerName(storageConfig.Handler) {
-	case MongodbHandler:
+	case mongodbHandler:
 		handler = mongo.NewHandler(storageConfig)
 	default:
 		return errors.New("Invalid storage handler `" + storageConfig.Handler + "`")
@@ -59,6 +61,7 @@ func New(storageConfig config.Storage) error {
 	return handler.Prepare()
 }
 
+// Handler returns the registered storage handler
 func Handler() Interface {
 	return handler
 }

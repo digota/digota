@@ -24,6 +24,7 @@ import (
 
 var v = validator.New()
 
+// Validate is doing struct level validation using validator.v9
 func Validate(req interface{}) error {
 	// validate req message
 	if err := v.Struct(req); err != nil {

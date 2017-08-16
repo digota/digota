@@ -28,6 +28,7 @@ type provider struct {
 	bt *braintree.Braintree
 }
 
+// NewProvider creates and prepare the braintree provider
 func NewProvider(paymentConfig *config.PaymentProvider) (*provider, error) {
 	env := braintree.Sandbox
 	if paymentConfig.Live {

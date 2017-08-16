@@ -25,6 +25,7 @@ import (
 
 const baseMethod = "^(.skupb.Sku/)"
 
+// Interface defines the functionality of the sku service
 type Interface interface {
 	skupb.SkuServer
 	GetWithInventoryLock(ctx context.Context, req *GetWithInventoryLockRequest) (*skupb.Sku, func() error, util.Fn, error)
@@ -42,10 +43,12 @@ type ProductDataReq struct {
 
 var service Interface
 
+// RegisterSkuServer register service to the grpc server
 func RegisterSkuServer(server *grpc.Server) {
 	skupb.RegisterSkuServer(server, Service())
 }
 
+// RegisterService register service as the service provider
 func RegisterService(p Interface) {
 	if service != nil {
 		panic("SkuService is already registered")
@@ -53,6 +56,7 @@ func RegisterService(p Interface) {
 	service = p
 }
 
+// Service return the registered service
 func Service() Interface {
 	if service == nil {
 		panic("SkuService is not registered")
@@ -60,6 +64,7 @@ func Service() Interface {
 	return service
 }
 
+// WriteMethods returns regexp slice of writable methods, mostly used by the acl
 func WriteMethods() []*regexp.Regexp {
 	return []*regexp.Regexp{
 		regexp.MustCompile(baseMethod + "New"),
@@ -68,6 +73,7 @@ func WriteMethods() []*regexp.Regexp {
 	}
 }
 
+// ReadMethods returns regexp slice of readable methods, mostly used by the acl
 func ReadMethods() []*regexp.Regexp {
 	return []*regexp.Regexp{
 		regexp.MustCompile(baseMethod + "Get"),

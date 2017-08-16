@@ -21,6 +21,7 @@ import (
 	"google.golang.org/grpc/codes"
 )
 
+// CodeToLevel translate grpc response code into log level (info/debug/warning/error)
 func CodeToLevel(code codes.Code) log.Level {
 	switch code {
 	case codes.OK:

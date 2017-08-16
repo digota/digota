@@ -28,6 +28,8 @@ import (
 var mtx = sync.Mutex{}
 var providers = make(map[paymentpb.PaymentProviderId]Interface)
 
+// Interface defines the base functionality which any payment
+// provider should implement to become valid payment provider
 type Interface interface {
 	ProviderId() paymentpb.PaymentProviderId
 	Charge(req *paymentpb.ChargeRequest) (*paymentpb.Charge, error)
@@ -35,6 +37,9 @@ type Interface interface {
 	SupportedCards() []paymentpb.CardType
 }
 
+// New creates several payment providers from the provided
+// []config.PaymentProvider and saves them in provider map
+// for further use. panics on the first error.
 func New(paymentConfig []config.PaymentProvider) {
 
 	// init the payment providers
@@ -68,6 +73,8 @@ func New(paymentConfig []config.PaymentProvider) {
 	}
 }
 
+// Provider returns payment provider from the map using the provided id
+// panics if the provider could not be found
 func Provider(p paymentpb.PaymentProviderId) Interface {
 	mtx.Lock()
 	defer mtx.Unlock()
