@@ -218,7 +218,7 @@ func (h *handler) Remove(obj object.Interface) error {
 
 	defer s.Close()
 
-	if err := s.DB(h.database).C(obj.GetNamespace()).Remove(bson.D{bson.DocElem{Name:"_id", Value:obj.GetId()}}); err != nil {
+	if err := s.DB(h.database).C(obj.GetNamespace()).Remove(bson.D{bson.DocElem{Name: "_id", Value: obj.GetId()}}); err != nil {
 		return status.Error(codes.Internal, err.Error())
 	}
 

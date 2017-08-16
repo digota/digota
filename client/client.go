@@ -28,11 +28,11 @@ const (
 	// represents access to all methods
 	WildcardScope Scope = "WILDCARD"
 	// represents access to all public methods
-	PublicScope   Scope = "PUBLIC"
+	PublicScope Scope = "PUBLIC"
 	// represents access to all write methods
-	WriteScope    Scope = "WRITE"
+	WriteScope Scope = "WRITE"
 	// represents access to all read methods
-	ReadScope     Scope = "READ"
+	ReadScope Scope = "READ"
 )
 
 type (
@@ -40,7 +40,7 @@ type (
 		Serial string
 		Scopes []Scope
 	}
-	Role  string
+	Role string
 	Scope string
 )
 

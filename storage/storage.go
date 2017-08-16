@@ -31,7 +31,7 @@ type (
 	handlerName string
 	// Interface defines the base functionality which any storage handler
 	// should implement to become valid storage handler
-	Interface   interface {
+	Interface interface {
 		Prepare() error
 		Close() error
 		DropCollection(db string, doc object.Interface) error
