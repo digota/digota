@@ -26,18 +26,22 @@ const baseMethod = "^(.paymentpb.Payment/)"
 
 var s Interface
 
+// Interface defines the functionality of the payment service
 type Interface interface {
 	paymentpb.PaymentServer
 }
 
+// RegisterService register p as the service provider
 func RegisterService(p Interface) {
 	s = p
 }
 
+// RegisterPaymentServer register service to the grpc server
 func RegisterPaymentServer(server *grpc.Server) {
 	paymentpb.RegisterPaymentServer(server, Service())
 }
 
+// Service return the registered service
 func Service() Interface {
 	if s == nil {
 		panic("PaymentService is not registered")
@@ -45,6 +49,7 @@ func Service() Interface {
 	return s
 }
 
+// ReadMethods returns regexp slice of readable methods, mostly used by the acl
 func ReadMethods() []*regexp.Regexp {
 	return []*regexp.Regexp{
 		regexp.MustCompile(baseMethod + "List"),
@@ -52,6 +57,7 @@ func ReadMethods() []*regexp.Regexp {
 	}
 }
 
+// WriteMethods returns regexp slice of writable methods, mostly used by the acl
 func WriteMethods() []*regexp.Regexp {
 	return []*regexp.Regexp{
 		regexp.MustCompile(baseMethod + "Charge"),

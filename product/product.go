@@ -24,10 +24,12 @@ const baseMethod = "^(.productpb.Product/)"
 
 var service Interface
 
+// Interface defines the functionality of the product service
 type Interface interface {
 	productpb.ProductServer
 }
 
+// RegisterService register p as the service provider
 func RegisterService(p Interface) {
 	if service != nil {
 		panic("ProductService is already registered")
@@ -35,6 +37,7 @@ func RegisterService(p Interface) {
 	service = p
 }
 
+// Service return the registered service
 func Service() Interface {
 	if service == nil {
 		panic("ProductService is not registered")
@@ -42,10 +45,12 @@ func Service() Interface {
 	return service
 }
 
+// RegisterProductServer register service to the grpc server
 func RegisterProductServer(server *grpc.Server) {
 	productpb.RegisterProductServer(server, Service())
 }
 
+// ReadMethods returns regexp slice of readable methods, mostly used by the acl
 func ReadMethods() []*regexp.Regexp {
 	return []*regexp.Regexp{
 		regexp.MustCompile(baseMethod + "Get"),
@@ -53,6 +58,7 @@ func ReadMethods() []*regexp.Regexp {
 	}
 }
 
+// WriteMethods returns regexp slice of writable methods, mostly used by the acl
 func WriteMethods() []*regexp.Regexp {
 	return []*regexp.Regexp{
 		regexp.MustCompile(baseMethod + "New"),

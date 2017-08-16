@@ -23,6 +23,8 @@ import (
 	"runtime/debug"
 )
 
+// RecoveryHandlerFunc outputs the stack and the error
+// returns valid grpc error
 func RecoveryHandlerFunc(p interface{}) (err error) {
 	// print stack to stderr
 	debug.PrintStack()

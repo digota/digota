@@ -26,10 +26,12 @@ const baseMethod = "^(.orderpb.Order/)"
 
 var service Interface
 
+// Interface defines the functionality of the order service
 type Interface interface {
 	orderpb.OrderServer
 }
 
+// RegisterService register p as the service provider
 func RegisterService(p Interface) {
 	if service != nil {
 		panic("OrderService is already registered")
@@ -42,6 +44,7 @@ func RegisterOrderServer(server *grpc.Server) {
 	orderpb.RegisterOrderServer(server, Service())
 }
 
+// Service returns the registered service
 func Service() Interface {
 	if service == nil {
 		panic("OrderService is not registered")
@@ -49,6 +52,7 @@ func Service() Interface {
 	return service
 }
 
+// ReadMethods returns regexp slice of readable methods, mostly used by the acl
 func ReadMethods() []*regexp.Regexp {
 	return []*regexp.Regexp{
 		regexp.MustCompile(baseMethod + "Get"),
@@ -56,6 +60,7 @@ func ReadMethods() []*regexp.Regexp {
 	}
 }
 
+// WriteMethods returns regexp slice of writable methods, mostly used by the acl
 func WriteMethods() []*regexp.Regexp {
 	return []*regexp.Regexp{
 		regexp.MustCompile(baseMethod + "New"),
