@@ -472,6 +472,10 @@ func TestSKUService_Delete(t *testing.T) {
 		},
 	})
 
+	if err != nil{
+		t.Fatal(err)
+	}
+
 	if _, err := s.Delete(context.Background(), &skupb.DeleteRequest{Id: sku.GetId() + "notvalid"}); err == nil {
 		t.Fatal(err)
 	}

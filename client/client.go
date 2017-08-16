@@ -36,11 +36,12 @@ const (
 )
 
 type (
+	// Client serial and scopes to determine if certain client can access certain method
 	Client struct {
 		Serial string
 		Scopes []Scope
 	}
-	Role string
+	// Scope represents the level of access to various methods
 	Scope string
 )
 
@@ -48,6 +49,7 @@ type clientKey struct{}
 
 var clients []Client
 
+// New initiate client slice based on the []config.Client slice
 func New(c []config.Client) {
 	for _, v := range c {
 		var scopes []Scope
@@ -77,6 +79,7 @@ func FromContext(ctx context.Context) (*Client, bool) {
 	return u, ok
 }
 
+// GetClient return client based on provided serialId
 func GetClient(serialId string) (*Client, error) {
 	// search for user
 	for _, c := range clients {
