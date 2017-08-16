@@ -21,6 +21,7 @@ import (
 	"io/ioutil"
 )
 
+// AppConfig is the main config structure
 type AppConfig struct {
 	TLS     TLS               `yaml:"TLS"`
 	Clients []Client          `yaml:"clients"`
@@ -29,17 +30,34 @@ type AppConfig struct {
 	Locker  Locker            `yaml:"locker"`
 }
 
+// Client is the client config structure
+// accept serial and scopse
+//	clients:
+//	- serial: "A2FF9503829A3A0DDE9CB87191A472D4"
+//	scopes:
+//	- READ
+//	- WRITE
 type Client struct {
 	Serial string   `yaml:"serial"`
 	Scopes []string `yaml:"scopes"`
 }
 
+// TLS is the tls config for running the server
+//	TLS:
+//	crt: out/server.com.crt
+//	key: out/server.com.key
+//	ca: out/ca.crt
 type TLS struct {
 	Key   string `yaml:"key"`
 	Crt   string `yaml:"crt"`
 	CACrt string `yaml:"ca"`
 }
 
+// Storage is the storage handler config
+//	storage:
+//	handler: mongodb
+//	address:
+//	- localhost
 type Storage struct {
 	Handler  string   `yaml:"handler"`
 	Address  []string `yaml:"address"`
@@ -48,11 +66,20 @@ type Storage struct {
 	Database string   `yaml:"database"`
 }
 
+// Locker is the lock server handler config
+//	locker:
+//	handler: zookeeper
+//	address:
+//	- localhost
 type Locker struct {
 	Handler string   ` yaml:"handler"`
 	Address []string ` yaml:"address"`
 }
 
+// PaymentProvider is the payment provider config
+//	payment:
+//	- provider: Stripe
+//	secret: sk_test_0000000000000000000
 type PaymentProvider struct {
 	Provider   string `yaml:"provider"`
 	Secret     string `yaml:"secret"`
@@ -62,6 +89,7 @@ type PaymentProvider struct {
 	PrivateKey string `yaml:"priKey"`
 }
 
+// LoadConfig read file from provided path and returns *AppConfig or error
 func LoadConfig(configPath string) (conf *AppConfig, err error) {
 	b, err := ioutil.ReadFile(configPath)
 	if err != nil {
