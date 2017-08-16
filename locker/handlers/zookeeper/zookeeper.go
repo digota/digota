@@ -33,7 +33,7 @@ type lock struct {
 	*zk.Conn
 }
 
-// NewLock return new lock
+// NewLocker return new lock
 func NewLocker(lockerConfig config.Locker) (*lock, error) {
 	c, _, err := zk.Connect(lockerConfig.Address, time.Millisecond*100)
 	if err != nil {

@@ -16,20 +16,33 @@
 
 package errors
 
+// ErrorCode represents payment provider specific error
 type ErrorCode string
 
 var (
+	// IncorrectNum incorrect cc num
 	IncorrectNum  ErrorCode = "incorrect_number"
+	// InvalidNum invalid cc num
 	InvalidNum    ErrorCode = "invalid_number"
+	// InvalidExpM invalid exp month
 	InvalidExpM   ErrorCode = "invalid_expiry_month"
+	// InvalidExpY invalid exp year
 	InvalidExpY   ErrorCode = "invalid_expiry_year"
+	// InvalidCvc invalid cvc number
 	InvalidCvc    ErrorCode = "invalid_cvc"
+	// ExpiredCard card is expired
 	ExpiredCard   ErrorCode = "expired_card"
+	// IncorrectCvc incorrect cvc
 	IncorrectCvc  ErrorCode = "incorrect_cvc"
+	// IncorrectZip incorrect zip code
 	IncorrectZip  ErrorCode = "incorrect_zip"
+	// CardDeclined card declined
 	CardDeclined  ErrorCode = "card_declined"
+	// Missing missing information
 	Missing       ErrorCode = "missing"
+	// ProcessingErr processing error
 	ProcessingErr ErrorCode = "processing_error"
+	// RateLimit reached call rate limit
 	RateLimit     ErrorCode = "rate_limit"
 )
 

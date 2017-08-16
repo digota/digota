@@ -39,7 +39,7 @@ func RegisterService(p Interface) {
 	service = p
 }
 
-// Register register cartServer in-front of the grpc server
+// RegisterOrderServer register cartServer in-front of the grpc server
 func RegisterOrderServer(server *grpc.Server) {
 	orderpb.RegisterOrderServer(server, Service())
 }
