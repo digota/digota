@@ -32,3 +32,10 @@ id_rsa
 # IDE
 .idea/
 convey.bat
+
+# Allow glide related files
+!glide.yaml
+!glide.lock
+
+# Drop vendor files
+/vendor/
