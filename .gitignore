@@ -36,3 +36,5 @@ id_rsa
 # IDE
 .idea/
 convey.bat
+
+/vendor/
