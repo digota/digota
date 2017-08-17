@@ -29,6 +29,10 @@ id_rsa
 # Project-local glide cache, RE: https://github.com/Masterminds/glide/issues/736
 .glide/
 
+# Add glide
+!glide.lock
+!glide.yaml
+
 # IDE
 .idea/
 convey.bat

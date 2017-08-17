@@ -10,11 +10,15 @@ before_install:
   - go get github.com/go-playground/overalls
   - go get github.com/mattn/goveralls
   - go get golang.org/x/tools/cmd/cover
+install:
+  - go get github.com/Masterminds/glide
+  - cd $GOPATH/src/github.com/Masterminds/glide && git checkout 84607742b10f492430762d038e954236bbaf23f7 && go install && cd -
+  - glide install
 script:
-  - go build ./...
-  - go fmt ./...
-  - go vet ./...
-  - go test -i -race ./...
+  - go build $(glide nv)
+  - go fmt $(glide nv)
+  - go vet $(glide nv)
+  - go test -i -race $(glide nv)
   - overalls -project=github.com/digota/digota -covermode=count -debug
   - goveralls -coverprofile=overalls.coverprofile -service=travis-ci
 notifications:
