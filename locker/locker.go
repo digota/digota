@@ -17,8 +17,8 @@
 package locker
 
 import (
-	"errors"
 	"github.com/digota/digota/config"
+	"github.com/digota/digota/locker/handlers/memlock"
 	"github.com/digota/digota/locker/handlers/zookeeper"
 	"github.com/digota/digota/storage/object"
 	"time"
@@ -27,14 +27,14 @@ import (
 const (
 	zookeeperHandler handlerName = "zookeeper"
 	// lock acquire timeout
-	DefaultTimeout               = time.Millisecond * 100
+	DefaultTimeout = time.Millisecond * 100
 )
 
 type (
 	handlerName string
 	// Interface is the base functionality that any locker handler
 	// should implement in order to become valid handler
-	Interface   interface {
+	Interface interface {
 		Close() error
 		Lock(doc object.Interface) (func() error, error)
 		TryLock(doc object.Interface, t time.Duration) (func() error, error)
@@ -52,8 +52,9 @@ func New(lockerConfig config.Locker) error {
 		handler, err = zookeeper.NewLocker(lockerConfig)
 		return err
 	default:
-		return errors.New("Locker is not valid")
+		handler = memlock.NewLocker()
 	}
+	return nil
 }
 
 // Handler returns the registered locker handler
