@@ -18,23 +18,26 @@ package locker
 
 import (
 	"errors"
+	"time"
+
 	"github.com/digota/digota/config"
 	"github.com/digota/digota/locker/handlers/zookeeper"
 	"github.com/digota/digota/storage/object"
-	"time"
+	"github.com/gerifield/digota/locker/handlers/redis"
 )
 
 const (
 	zookeeperHandler handlerName = "zookeeper"
+	redisHandler     handlerName = "redis"
 	// lock acquire timeout
-	DefaultTimeout               = time.Millisecond * 100
+	DefaultTimeout = time.Millisecond * 100
 )
 
 type (
 	handlerName string
 	// Interface is the base functionality that any locker handler
 	// should implement in order to become valid handler
-	Interface   interface {
+	Interface interface {
 		Close() error
 		Lock(doc object.Interface) (func() error, error)
 		TryLock(doc object.Interface, t time.Duration) (func() error, error)
@@ -50,6 +53,9 @@ func New(lockerConfig config.Locker) error {
 	switch handlerName(lockerConfig.Handler) {
 	case zookeeperHandler:
 		handler, err = zookeeper.NewLocker(lockerConfig)
+		return err
+	case redisHandler:
+		handler, err = redis.NewLocker(lockerConfig)
 		return err
 	default:
 		return errors.New("Locker is not valid")

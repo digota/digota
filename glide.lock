@@ -1,5 +1,5 @@
-hash: 6662421be5a817ddc76f1f0773e593a61a9c688da82478f543d70cbf82f2b3b6
-updated: 2017-08-17T14:13:28.69463+03:00
+hash: 9c23c92694282db94d4951f9745d55ea3a1b5bbb285f7cf1038cf2a710e6743a
+updated: 2017-08-17T14:41:33.445636197+02:00
 imports:
 - name: github.com/davecgh/go-spew
   version: 04cdfd42973bb9c8589fd6a731800cf222fde1a9
@@ -38,6 +38,11 @@ imports:
   - storage/object
   - util
   - validation
+- name: github.com/garyburd/redigo
+  version: 433969511232c397de61b1442f9fd49ec06ae9ba
+  subpackages:
+  - internal
+  - redis
 - name: github.com/go-playground/locales
   version: 1e5f1161c6416a5ff48840eb8724a394e48cc534
   subpackages:
