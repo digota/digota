@@ -16,19 +16,26 @@
 
 package object
 
+// DefaultDatabase is used if nothing else specified
 const DefaultDatabase = "digota"
 
 const (
+	// SortNatural use natural order
 	SortNatural Sort = iota
+	// SortCreatedDesc created newest to oldest
 	SortCreatedDesc
+	// SortCreatedAsc created oldest to newset
 	SortCreatedAsc
+	// SortUpdatedDesc updated newest to oldest
 	SortUpdatedDesc
+	// SortUpdatedAsc updated oldest to newset
 	SortUpdatedAsc
 )
 
 type (
 	Sort int
 
+	// Interfaces same as Interface but for slices
 	Interfaces interface {
 		GetNamespace() string
 	}

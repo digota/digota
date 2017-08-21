@@ -23,6 +23,7 @@ import (
 	"github.com/digota/digota/storage/object"
 	"github.com/digota/digota/validation"
 	"golang.org/x/net/context"
+	"time"
 )
 
 const ns = "product"
@@ -86,11 +87,11 @@ func (s *productService) Get(ctx context.Context, req *productpb.GetRequest) (*p
 		},
 	}
 
-	if unlock, err := locker.Handler().Lock(p); err != nil {
+	unlock, err := locker.Handler().TryLock(p,time.Second)
+	if err != nil {
 		return nil, err
-	} else {
-		defer unlock()
 	}
+	defer unlock()
 
 	if err := storage.Handler().One(p); err != nil {
 		return nil, err
@@ -123,11 +124,11 @@ func (s *productService) Update(ctx context.Context, req *productpb.UpdateReques
 		},
 	}
 
-	if unlock, err := locker.Handler().Lock(p); err != nil {
+	unlock, err := locker.Handler().TryLock(p,time.Second)
+	if err != nil {
 		return nil, err
-	} else {
-		defer unlock()
 	}
+	defer unlock()
 
 	if err := storage.Handler().One(p); err != nil {
 		return nil, err
@@ -179,11 +180,11 @@ func (s *productService) Delete(ctx context.Context, req *productpb.DeleteReques
 		},
 	}
 
-	if unlock, err := locker.Handler().Lock(p); err != nil {
+	unlock, err := locker.Handler().TryLock(p,time.Second)
+	if err != nil {
 		return nil, err
-	} else {
-		defer unlock()
 	}
+	defer unlock()
 
 	// remove product skus
 	//

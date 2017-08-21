@@ -155,12 +155,14 @@ func (s *orderService) Get(ctx context.Context, req *orderpb.GetRequest) (*order
 			Id: req.GetId(),
 		},
 	}
+
 	// acquire order lock
-	if unlock, err := locker.Handler().TryLock(o, locker.DefaultTimeout); err != nil {
+	unlock, err := locker.Handler().TryLock(o,locker.DefaultTimeout)
+	if err != nil {
 		return nil, err
-	} else {
-		defer unlock()
 	}
+	defer unlock()
+
 	// get and return order
 	return &o.Order, storage.Handler().One(o)
 }
@@ -203,11 +205,13 @@ func (s *orderService) Pay(ctx context.Context, req *orderpb.PayRequest) (*order
 		},
 	}
 	// lock order for any change!
-	if unlock, err := locker.Handler().TryLock(o, time.Second*5); err != nil {
+	// acquire order lock
+	unlock, err := locker.Handler().TryLock(o,time.Second*5)
+	if err != nil {
 		return nil, err
-	} else {
-		defer unlock()
 	}
+	defer unlock()
+
 	// get the order
 	if err := storage.Handler().One(o); err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
@@ -293,11 +297,12 @@ func (s *orderService) Return(ctx context.Context, req *orderpb.ReturnRequest) (
 		},
 	}
 	// lock order
-	if unlock, err := locker.Handler().Lock(o); err != nil {
+	unlock, err := locker.Handler().TryLock(o,locker.DefaultTimeout)
+	if err != nil {
 		return nil, err
-	} else {
-		defer unlock()
 	}
+	defer unlock()
+
 	// get order
 	if err := storage.Handler().One(o); err != nil {
 		return nil, status.Error(codes.Internal, err.Error())

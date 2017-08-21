@@ -28,6 +28,7 @@ import (
 	"golang.org/x/net/context"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"time"
 )
 
 const ns = "charge"
@@ -166,11 +167,11 @@ func (p *paymentService) Refund(ctx context.Context, req *paymentpb.RefundReques
 		},
 	}
 
-	if unlock, err := locker.Handler().Lock(c); err != nil {
+	unlock, err := locker.Handler().TryLock(c,time.Second)
+	if err != nil {
 		return nil, err
-	} else {
-		defer unlock()
 	}
+	defer unlock()
 
 	if err := storage.Handler().One(c); err != nil {
 		return nil, err
