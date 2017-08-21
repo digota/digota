@@ -24,7 +24,7 @@ import (
 	"github.com/digota/digota/payment/paymentpb"
 	"github.com/digota/digota/product"
 	"github.com/digota/digota/product/productpb"
-	"github.com/digota/digota/sku"
+	iface "github.com/digota/digota/sku"
 	"github.com/digota/digota/sku/skupb"
 	"github.com/digota/digota/storage"
 	"github.com/icrowley/fake"
@@ -39,6 +39,7 @@ import (
 var db = "testing-sku-" + uuid.NewV4().String()
 
 func TestMain(m *testing.M) {
+
 	// storage
 	if err := storage.New(config.Storage{
 		Address:  []string{"localhost"},
@@ -47,13 +48,10 @@ func TestMain(m *testing.M) {
 	}); err != nil {
 		panic(err)
 	}
-	// locker
-	if err := locker.New(config.Locker{
-		Handler: "zookeeper",
-		Address: []string{"localhost"},
-	}); err != nil {
-		panic(err)
-	}
+
+	// in-memory locker
+	locker.New(config.Locker{})
+
 	retCode := m.Run()
 	storage.Handler().DropDatabase(db)
 	// teardown
@@ -61,14 +59,14 @@ func TestMain(m *testing.M) {
 }
 
 func TestSkus_GetNamespace(t *testing.T) {
-	p := Skus{}
+	p := skus{}
 	if p.GetNamespace() != "sku" {
 		t.Fatal()
 	}
 }
 
 func TestProduct_GetNamespace(t *testing.T) {
-	p := Sku{}
+	p := sku{}
 	if p.GetNamespace() != "sku" {
 		t.Fatal()
 	}
@@ -82,7 +80,7 @@ func TestProduct_GetNamespace(t *testing.T) {
 //}
 
 func TestProduct_SetCreated(t *testing.T) {
-	p := Sku{}
+	p := sku{}
 	ti := time.Now().Unix()
 	p.SetCreated(ti)
 	if p.Created != ti {
@@ -91,7 +89,7 @@ func TestProduct_SetCreated(t *testing.T) {
 }
 
 func TestProduct_SetId(t *testing.T) {
-	p := Sku{}
+	p := sku{}
 	uid := uuid.NewV4().String()
 	p.SetId(uid)
 	if p.GetId() != uid {
@@ -100,7 +98,7 @@ func TestProduct_SetId(t *testing.T) {
 }
 
 func TestProduct_SetUpdated(t *testing.T) {
-	p := Sku{}
+	p := sku{}
 	ti := time.Now().Unix()
 	p.SetUpdated(ti)
 	if p.Updated != ti {
@@ -196,7 +194,7 @@ func TestSKUService_Get(t *testing.T) {
 	}
 
 	// create sku
-	sku, err := s.New(context.Background(), &skupb.NewRequest{
+	sku0, err := s.New(context.Background(), &skupb.NewRequest{
 		Name:     "sku name 2123",
 		Active:   true,
 		Price:    10001,
@@ -226,7 +224,7 @@ func TestSKUService_Get(t *testing.T) {
 	}
 
 	// pass
-	if _, err := s.Get(context.Background(), &skupb.GetRequest{Id: sku.GetId()}); err != nil {
+	if _, err := s.Get(context.Background(), &skupb.GetRequest{Id: sku0.GetId()}); err != nil {
 		t.Fatal(err)
 	}
 
@@ -241,12 +239,12 @@ func TestSKUService_Get(t *testing.T) {
 	}
 
 	// lock fail
-	unlock, err := locker.Handler().Lock(&Sku{Sku: skupb.Sku{Id: sku.GetId()}})
+	unlock, err := locker.Handler().Lock(&sku{Sku: skupb.Sku{Id: sku0.GetId()}})
 	if err != nil {
 		t.Fatal(err)
 	}
 	defer unlock()
-	if _, err := s.Get(context.Background(), &skupb.GetRequest{Id: sku.GetId()}); err == nil {
+	if _, err := s.Get(context.Background(), &skupb.GetRequest{Id: sku0.GetId()}); err == nil {
 		t.Fatal(err)
 	}
 
@@ -316,7 +314,7 @@ func TestSKUService_Update(t *testing.T) {
 
 	func() {
 		// lock fail
-		unlock, err := locker.Handler().Lock(&Sku{Sku: skupb.Sku{Id: skuItem.GetId()}})
+		unlock, err := locker.Handler().Lock(&sku{Sku: skupb.Sku{Id: skuItem.GetId()}})
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -447,7 +445,7 @@ func TestSKUService_Delete(t *testing.T) {
 	}
 
 	// create sku
-	sku, err := s.New(context.Background(), &skupb.NewRequest{
+	sku0, err := s.New(context.Background(), &skupb.NewRequest{
 		Name:     "sku name 2123",
 		Active:   true,
 		Price:    10001,
@@ -472,15 +470,15 @@ func TestSKUService_Delete(t *testing.T) {
 		},
 	})
 
-	if err != nil{
+	if err != nil {
 		t.Fatal(err)
 	}
 
-	if _, err := s.Delete(context.Background(), &skupb.DeleteRequest{Id: sku.GetId() + "notvalid"}); err == nil {
+	if _, err := s.Delete(context.Background(), &skupb.DeleteRequest{Id: sku0.GetId() + "notvalid"}); err == nil {
 		t.Fatal(err)
 	}
 
-	if _, err := s.Delete(context.Background(), &skupb.DeleteRequest{Id: sku.GetId()}); err != nil {
+	if _, err := s.Delete(context.Background(), &skupb.DeleteRequest{Id: sku0.GetId()}); err != nil {
 		t.Fatal(err)
 	}
 
@@ -490,13 +488,13 @@ func TestSKUService_Delete(t *testing.T) {
 
 	func() {
 		// lock fail
-		unlock, err := locker.Handler().Lock(&Sku{skupb.Sku{Id: sku.GetId()}})
+		unlock, err := locker.Handler().Lock(&sku{skupb.Sku{Id: sku0.GetId()}})
 		if err != nil {
 			t.Fatal(err)
 		}
 		defer unlock()
 		// try lock fail
-		if _, err := s.Delete(context.Background(), &skupb.DeleteRequest{Id: sku.GetId()}); err == nil {
+		if _, err := s.Delete(context.Background(), &skupb.DeleteRequest{Id: sku0.GetId()}); err == nil {
 			t.Fatal(err)
 		}
 	}()
@@ -553,7 +551,7 @@ func TestSKUService_GetWithInventoryLock(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	sku2, unlock, update, err := s.GetWithInventoryLock(context.Background(), &sku.GetWithInventoryLockRequest{
+	sku2, unlock, update, err := s.GetWithInventoryLock(context.Background(), &iface.GetWithInventoryLockRequest{
 		Id:       skuItem.GetId(),
 		Duration: time.Second,
 	})
@@ -571,12 +569,12 @@ func TestSKUService_GetWithInventoryLock(t *testing.T) {
 
 	func() {
 		// lock fail
-		unlock, err := locker.Handler().Lock(&Sku{skupb.Sku{Id: skuItem.GetId()}})
+		unlock, err := locker.Handler().Lock(&sku{skupb.Sku{Id: skuItem.GetId()}})
 		if err != nil {
 			t.Fatal(err)
 		}
 		defer unlock()
-		if _, _, _, err := s.GetWithInventoryLock(context.Background(), &sku.GetWithInventoryLockRequest{
+		if _, _, _, err := s.GetWithInventoryLock(context.Background(), &iface.GetWithInventoryLockRequest{
 			Id:       skuItem.GetId(),
 			Duration: time.Second,
 		}); err == nil {
@@ -589,7 +587,7 @@ func TestSKUService_GetWithInventoryLock(t *testing.T) {
 func TestSKUService_List(t *testing.T) {
 
 	// clean collection
-	storage.Handler().DropCollection(db, &Sku{})
+	storage.Handler().DropCollection(db, &sku{})
 
 	s := skuService{}
 

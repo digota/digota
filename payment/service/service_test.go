@@ -42,18 +42,11 @@ func TestMain(m *testing.M) {
 		panic(err)
 	}
 
-	if err := locker.New(config.Locker{
-		Handler: "zookeeper",
-		Address: []string{"localhost"},
-	}); err != nil {
-		panic(err)
-	}
+	// in-memory locker
+	locker.New(config.Locker{})
 
-	providers.New([]config.PaymentProvider{
-		{
-			Provider: "DigotaInternalTestOnly",
-		},
-	})
+	providers.New([]config.PaymentProvider{{Provider: "DigotaInternalTestOnly"}})
+
 
 	retCode := m.Run()
 	// teardown
@@ -62,21 +55,21 @@ func TestMain(m *testing.M) {
 }
 
 func TestCharges_GetNamespace(t *testing.T) {
-	o := Charges{}
+	o := charges{}
 	if o.GetNamespace() != "charge" {
 		t.FailNow()
 	}
 }
 
 func TestCharge_GetNamespace(t *testing.T) {
-	o := Charge{}
+	o := charge{}
 	if o.GetNamespace() != "charge" {
 		t.FailNow()
 	}
 }
 
 func TestCharge_SetId(t *testing.T) {
-	o := Charge{}
+	o := charge{}
 	o.SetId("1234-1234-1234-1234")
 	if o.Id != "1234-1234-1234-1234" {
 		t.FailNow()
@@ -84,7 +77,7 @@ func TestCharge_SetId(t *testing.T) {
 }
 
 func TestCharge_SetCreated(t *testing.T) {
-	o := Charge{}
+	o := charge{}
 	now := time.Now().Unix()
 	o.SetCreated(now)
 	if o.Created != now {
@@ -93,7 +86,7 @@ func TestCharge_SetCreated(t *testing.T) {
 }
 
 func TestCharge_SetUpdated(t *testing.T) {
-	o := Charge{}
+	o := charge{}
 	now := time.Now().Unix()
 	o.SetUpdated(now)
 	if o.Updated != now {
@@ -107,7 +100,7 @@ func TestService_Get(t *testing.T) {
 
 func TestService_Charge(t *testing.T) {
 
-	s := &PaymentService{}
+	s := &paymentService{}
 
 	chReq := &paymentpb.ChargeRequest{
 		Total:     1000,
@@ -163,7 +156,7 @@ func TestService_Charge(t *testing.T) {
 
 func TestService_Refund(t *testing.T) {
 
-	s := &PaymentService{}
+	s := &paymentService{}
 
 	ch, err := s.Charge(context.Background(), &paymentpb.ChargeRequest{
 		Total:     1000,
@@ -212,7 +205,7 @@ func TestService_Refund(t *testing.T) {
 
 func TestPaymentService_Get(t *testing.T) {
 
-	s := &PaymentService{}
+	s := &paymentService{}
 
 	ch, err := s.Charge(context.Background(), &paymentpb.ChargeRequest{
 		Total:     1000,
@@ -259,7 +252,7 @@ func TestPaymentService_List(t *testing.T) {
 
 	storage.Handler().DropDatabase(db)
 
-	s := &PaymentService{}
+	s := &paymentService{}
 
 	for k := 0; k < 10; k++ {
 		_, err := s.Charge(context.Background(), &paymentpb.ChargeRequest{

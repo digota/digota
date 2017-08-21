@@ -18,7 +18,7 @@ package service
 
 import (
 	"github.com/digota/digota/locker"
-	"github.com/digota/digota/payment"
+	paymentInterface "github.com/digota/digota/payment"
 	"github.com/digota/digota/payment/paymentpb"
 	"github.com/digota/digota/payment/service/providers"
 	"github.com/digota/digota/storage"
@@ -33,36 +33,36 @@ import (
 const ns = "charge"
 
 func init() {
-	payment.RegisterService(&PaymentService{})
+	paymentInterface.RegisterService(&paymentService{})
 }
 
-type Charges []*paymentpb.Charge
+type charges []*paymentpb.Charge
 
-func (c *Charges) GetNamespace() string { return ns }
+func (c *charges) GetNamespace() string { return ns }
 
-type Charge struct {
+type charge struct {
 	paymentpb.Charge `bson:",inline"`
 }
 
-func (c *Charge) GetNamespace() string { return ns }
+func (c *charge) GetNamespace() string { return ns }
 
-func (c *Charge) SetId(id string) { c.Id = id }
+func (c *charge) SetId(id string) { c.Id = id }
 
-func (c *Charge) SetUpdated(t int64) { c.Updated = t }
+func (c *charge) SetUpdated(t int64) { c.Updated = t }
 
-func (c *Charge) SetCreated(t int64) { c.Created = t }
+func (c *charge) SetCreated(t int64) { c.Created = t }
 
-type PaymentService struct{}
+type paymentService struct{}
 
 // Get implements the payment.pb/Get method.
 // Get charge object by charge id or error.
-func (p *PaymentService) Get(ctx context.Context, req *paymentpb.GetRequest) (*paymentpb.Charge, error) {
+func (p *paymentService) Get(ctx context.Context, req *paymentpb.GetRequest) (*paymentpb.Charge, error) {
 
 	if err := validation.Validate(req); err != nil {
 		return nil, err
 	}
 
-	c := &Charge{
+	c := &charge{
 		Charge: paymentpb.Charge{
 			Id: req.GetId(),
 		},
@@ -80,13 +80,13 @@ func (p *PaymentService) Get(ctx context.Context, req *paymentpb.GetRequest) (*p
 
 // Get implements the payment.pb/Get method.
 // Get charge object by charge id or error.
-func (p *PaymentService) List(ctx context.Context, req *paymentpb.ListRequest) (*paymentpb.ChargeList, error) {
+func (p *paymentService) List(ctx context.Context, req *paymentpb.ListRequest) (*paymentpb.ChargeList, error) {
 
 	if err := validation.Validate(req); err != nil {
 		return nil, err
 	}
 
-	slice := &Charges{}
+	slice := &charges{}
 
 	n, err := storage.Handler().List(slice, object.ListOpt{
 		Limit: req.GetLimit(),
@@ -103,7 +103,7 @@ func (p *PaymentService) List(ctx context.Context, req *paymentpb.ListRequest) (
 }
 
 // Charge
-func (p *PaymentService) Charge(ctx context.Context, req *paymentpb.ChargeRequest) (*paymentpb.Charge, error) {
+func (p *paymentService) Charge(ctx context.Context, req *paymentpb.ChargeRequest) (*paymentpb.Charge, error) {
 
 	if err := validation.Validate(req); err != nil {
 		return nil, err
@@ -132,7 +132,7 @@ func (p *PaymentService) Charge(ctx context.Context, req *paymentpb.ChargeReques
 	//	return nil, status.Error(codes.Internal, "Something went wrong with the charge. 0")
 	//}
 
-	charge := &Charge{
+	charge := &charge{
 		Charge: *ch,
 	}
 
@@ -154,13 +154,13 @@ func (p *PaymentService) Charge(ctx context.Context, req *paymentpb.ChargeReques
 //
 //
 //
-func (p *PaymentService) Refund(ctx context.Context, req *paymentpb.RefundRequest) (*paymentpb.Charge, error) {
+func (p *paymentService) Refund(ctx context.Context, req *paymentpb.RefundRequest) (*paymentpb.Charge, error) {
 
 	if err := validation.Validate(req); err != nil {
 		return nil, err
 	}
 
-	c := &Charge{
+	c := &charge{
 		Charge: paymentpb.Charge{
 			Id: req.GetId(),
 		},

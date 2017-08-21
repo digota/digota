@@ -16,7 +16,7 @@ package service
 
 import (
 	"github.com/digota/digota/locker"
-	"github.com/digota/digota/product"
+	productInterface "github.com/digota/digota/product"
 	"github.com/digota/digota/product/productpb"
 	"github.com/digota/digota/sku"
 	"github.com/digota/digota/storage"
@@ -28,24 +28,24 @@ import (
 const ns = "product"
 
 func init() {
-	product.RegisterService(&productService{})
+	productInterface.RegisterService(&productService{})
 }
 
-type Products []*productpb.Product
+type products []*productpb.Product
 
-func (p *Products) GetNamespace() string { return ns }
+func (p *products) GetNamespace() string { return ns }
 
-type Product struct {
+type product struct {
 	productpb.Product `bson:",inline"`
 }
 
-func (p *Product) GetNamespace() string { return ns }
+func (p *product) GetNamespace() string { return ns }
 
-func (p *Product) SetId(id string) { p.Id = id }
+func (p *product) SetId(id string) { p.Id = id }
 
-func (p *Product) SetCreated(t int64) { p.Created = t }
+func (p *product) SetCreated(t int64) { p.Created = t }
 
-func (p *Product) SetUpdated(t int64) { p.Updated = t }
+func (p *product) SetUpdated(t int64) { p.Updated = t }
 
 type productService struct{}
 
@@ -56,7 +56,7 @@ func (s *productService) New(ctx context.Context, req *productpb.NewRequest) (*p
 		return nil, err
 	}
 
-	p := &Product{
+	p := &product{
 		Product: productpb.Product{
 			Name:        req.GetName(),
 			Description: req.GetDescription(),
@@ -80,7 +80,7 @@ func (s *productService) Get(ctx context.Context, req *productpb.GetRequest) (*p
 		return nil, err
 	}
 
-	p := &Product{
+	p := &product{
 		Product: productpb.Product{
 			Id: req.Id,
 		},
@@ -117,7 +117,7 @@ func (s *productService) Update(ctx context.Context, req *productpb.UpdateReques
 		return nil, err
 	}
 
-	p := &Product{
+	p := &product{
 		Product: productpb.Product{
 			Id: req.Id,
 		},
@@ -173,7 +173,7 @@ func (s *productService) Delete(ctx context.Context, req *productpb.DeleteReques
 		return nil, err
 	}
 
-	p := &Product{
+	p := &product{
 		Product: productpb.Product{
 			Id: req.Id,
 		},
@@ -211,7 +211,7 @@ func (s *productService) List(ctx context.Context, req *productpb.ListRequest) (
 		return nil, err
 	}
 
-	slice := &Products{}
+	slice := &products{}
 
 	n, err := storage.Handler().List(slice, object.ListOpt{
 		Limit: req.GetLimit(),

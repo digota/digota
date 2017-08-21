@@ -19,7 +19,7 @@ import (
 	"github.com/digota/digota/payment/paymentpb"
 	"github.com/digota/digota/product"
 	"github.com/digota/digota/product/productpb"
-	"github.com/digota/digota/sku"
+	skuInterface "github.com/digota/digota/sku"
 	"github.com/digota/digota/sku/skupb"
 	"github.com/digota/digota/storage"
 	"github.com/digota/digota/storage/object"
@@ -32,24 +32,24 @@ import (
 const ns = "sku"
 
 func init() {
-	sku.RegisterService(&skuService{})
+	skuInterface.RegisterService(&skuService{})
 }
 
-type Skus []*skupb.Sku
+type skus []*skupb.Sku
 
-func (s *Skus) GetNamespace() string { return ns }
+func (s *skus) GetNamespace() string { return ns }
 
-type Sku struct {
+type sku struct {
 	skupb.Sku `bson:",inline"`
 }
 
-func (s *Sku) GetNamespace() string { return ns }
+func (s *sku) GetNamespace() string { return ns }
 
-func (s *Sku) SetId(id string) { s.Id = id }
+func (s *sku) SetId(id string) { s.Id = id }
 
-func (s *Sku) SetCreated(t int64) { s.Created = t }
+func (s *sku) SetCreated(t int64) { s.Created = t }
 
-func (s *Sku) SetUpdated(t int64) { s.Updated = t }
+func (s *sku) SetUpdated(t int64) { s.Updated = t }
 
 // service implementations
 
@@ -75,7 +75,7 @@ func (s *skuService) New(ctx context.Context, req *skupb.NewRequest) (*skupb.Sku
 		}
 	}
 
-	item := &Sku{
+	item := &sku{
 		Sku: skupb.Sku{
 			Price:             req.GetPrice(),
 			Currency:          req.GetCurrency(),
@@ -102,7 +102,7 @@ func (s *skuService) Get(ctx context.Context, req *skupb.GetRequest) (*skupb.Sku
 	}
 
 	// item wrapper
-	item := &Sku{
+	item := &sku{
 		Sku: skupb.Sku{
 			Id: req.GetId(),
 		},
@@ -128,7 +128,7 @@ func (s *skuService) Update(ctx context.Context, req *skupb.UpdateRequest) (*sku
 	}
 
 	// item wrapper
-	item := &Sku{
+	item := &sku{
 		Sku: skupb.Sku{
 			Id: req.GetId(),
 		},
@@ -218,7 +218,7 @@ func (s *skuService) Delete(ctx context.Context, req *skupb.DeleteRequest) (*sku
 		return nil, err
 	}
 
-	item := &Sku{
+	item := &sku{
 		Sku: skupb.Sku{
 			Id: req.GetId(),
 		},
@@ -234,13 +234,13 @@ func (s *skuService) Delete(ctx context.Context, req *skupb.DeleteRequest) (*sku
 
 }
 
-func (s *skuService) GetWithInventoryLock(ctx context.Context, req *sku.GetWithInventoryLockRequest) (*skupb.Sku, func() error, util.Fn, error) {
+func (s *skuService) GetWithInventoryLock(ctx context.Context, req *iface.GetWithInventoryLockRequest) (*skupb.Sku, func() error, util.Fn, error) {
 
 	if err := validation.Validate(req); err != nil {
 		return nil, nil, nil, err
 	}
 
-	item := &Sku{
+	item := &sku{
 		Sku: skupb.Sku{
 			Id: req.Id,
 		},
@@ -279,7 +279,7 @@ func (s *skuService) List(ctx context.Context, req *skupb.ListRequest) (*skupb.S
 		return nil, err
 	}
 
-	slice := Skus{}
+	slice := skus{}
 
 	n, err := storage.Handler().List(&slice, object.ListOpt{
 		Limit: req.GetLimit(),
@@ -296,13 +296,13 @@ func (s *skuService) List(ctx context.Context, req *skupb.ListRequest) (*skupb.S
 }
 
 //
-func (s *skuService) ProductData(ctx context.Context, req *sku.ProductDataReq) ([]*skupb.Sku, error) {
+func (s *skuService) ProductData(ctx context.Context, req *iface.ProductDataReq) ([]*skupb.Sku, error) {
 
 	if err := validation.Validate(req); err != nil {
 		return nil, err
 	}
 
-	slice := Skus{}
+	slice := skus{}
 
 	return slice, storage.Handler().ListParent(req.Id, &slice)
 
