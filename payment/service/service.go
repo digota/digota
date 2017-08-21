@@ -69,11 +69,11 @@ func (p *paymentService) Get(ctx context.Context, req *paymentpb.GetRequest) (*p
 		},
 	}
 
-	if unlock, err := locker.Handler().TryLock(c, locker.DefaultTimeout); err != nil {
+	unlock, err := locker.Handler().TryLock(c, locker.DefaultTimeout)
+	if err != nil {
 		return nil, err
-	} else {
-		defer unlock()
 	}
+	defer unlock()
 
 	return &c.Charge, storage.Handler().One(c)
 
@@ -167,7 +167,7 @@ func (p *paymentService) Refund(ctx context.Context, req *paymentpb.RefundReques
 		},
 	}
 
-	unlock, err := locker.Handler().TryLock(c,time.Second)
+	unlock, err := locker.Handler().TryLock(c, time.Second)
 	if err != nil {
 		return nil, err
 	}

@@ -32,11 +32,13 @@ type Interface interface {
 	ProductData(ctx context.Context, req *ProductDataReq) ([]*skupb.Sku, error)
 }
 
+// GetWithInventoryLockRequest request for getting inventory lock
 type GetWithInventoryLockRequest struct {
 	Id       string `validate:"uuid4"`
 	Duration time.Duration
 }
 
+// ProductDataReq get product data req
 type ProductDataReq struct {
 	Id string `validate:"uuid4"`
 }

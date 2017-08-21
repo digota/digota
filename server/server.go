@@ -18,9 +18,13 @@ package server
 
 // load services first
 import (
+	// register order service
 	_ "github.com/digota/digota/order/service"
+	// register payment service
 	_ "github.com/digota/digota/payment/service"
+	// register product service
 	_ "github.com/digota/digota/product/service"
+	// register sku service
 	_ "github.com/digota/digota/sku/service"
 )
 

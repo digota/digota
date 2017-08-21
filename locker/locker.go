@@ -26,7 +26,7 @@ import (
 
 const (
 	zookeeperHandler handlerName = "zookeeper"
-	// lock acquire timeout
+	// DefaultTimeout lock acquire timeout
 	DefaultTimeout = time.Millisecond * 100
 )
 

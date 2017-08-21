@@ -33,6 +33,7 @@ const (
 )
 
 type (
+	// Sort type for storage handlers
 	Sort int
 
 	// Interfaces same as Interface but for slices
@@ -59,6 +60,7 @@ type (
 		SetId(string)
 	}
 
+	// ListOpt options for listing objects
 	ListOpt struct {
 		Page  int64
 		Limit int64
