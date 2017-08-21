@@ -17,10 +17,10 @@ ___TLDR; scalable ecommerce microservice.___
 * Database 
   * mongodb > 3.2
   * redis (TBD)
-  * postgresql (TBD - #2)
+  * postgresql (TBD - [#2](https://github.com/digota/digota/issues/2))
 * Lock server (default is in-memory locker)
   * zookeeper 
-  * etcd (TBD - #3)
+  * etcd (TBD - [#3](https://github.com/digota/digota/issues/3))
 
 #### Installation
 
