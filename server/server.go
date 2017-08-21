@@ -65,6 +65,7 @@ type server struct {
 	grpcServer *grpc.Server
 }
 
+// New create new digota server
 func New(addr string, conf *config.AppConfig) *server {
 
 	// create new storage handler
