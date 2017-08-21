@@ -157,7 +157,7 @@ func (s *orderService) Get(ctx context.Context, req *orderpb.GetRequest) (*order
 	}
 
 	// acquire order lock
-	unlock, err := locker.Handler().TryLock(o,locker.DefaultTimeout)
+	unlock, err := locker.Handler().TryLock(o, locker.DefaultTimeout)
 	if err != nil {
 		return nil, err
 	}
@@ -206,7 +206,7 @@ func (s *orderService) Pay(ctx context.Context, req *orderpb.PayRequest) (*order
 	}
 	// lock order for any change!
 	// acquire order lock
-	unlock, err := locker.Handler().TryLock(o,time.Second*5)
+	unlock, err := locker.Handler().TryLock(o, time.Second*5)
 	if err != nil {
 		return nil, err
 	}
@@ -297,7 +297,7 @@ func (s *orderService) Return(ctx context.Context, req *orderpb.ReturnRequest) (
 		},
 	}
 	// lock order
-	unlock, err := locker.Handler().TryLock(o,locker.DefaultTimeout)
+	unlock, err := locker.Handler().TryLock(o, locker.DefaultTimeout)
 	if err != nil {
 		return nil, err
 	}

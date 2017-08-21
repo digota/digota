@@ -47,7 +47,6 @@ func TestMain(m *testing.M) {
 
 	providers.New([]config.PaymentProvider{{Provider: "DigotaInternalTestOnly"}})
 
-
 	retCode := m.Run()
 	// teardown
 	storage.Handler().DropDatabase(db)

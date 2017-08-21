@@ -87,7 +87,7 @@ func (s *productService) Get(ctx context.Context, req *productpb.GetRequest) (*p
 		},
 	}
 
-	unlock, err := locker.Handler().TryLock(p,time.Second)
+	unlock, err := locker.Handler().TryLock(p, time.Second)
 	if err != nil {
 		return nil, err
 	}
@@ -124,7 +124,7 @@ func (s *productService) Update(ctx context.Context, req *productpb.UpdateReques
 		},
 	}
 
-	unlock, err := locker.Handler().TryLock(p,time.Second)
+	unlock, err := locker.Handler().TryLock(p, time.Second)
 	if err != nil {
 		return nil, err
 	}
@@ -180,7 +180,7 @@ func (s *productService) Delete(ctx context.Context, req *productpb.DeleteReques
 		},
 	}
 
-	unlock, err := locker.Handler().TryLock(p,time.Second)
+	unlock, err := locker.Handler().TryLock(p, time.Second)
 	if err != nil {
 		return nil, err
 	}

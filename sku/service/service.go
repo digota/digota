@@ -109,7 +109,7 @@ func (s *skuService) Get(ctx context.Context, req *skupb.GetRequest) (*skupb.Sku
 	}
 
 	// acquire lock
-	unlock, err := locker.Handler().TryLock(item,time.Second)
+	unlock, err := locker.Handler().TryLock(item, time.Second)
 	if err != nil {
 		return nil, err
 	}
@@ -135,7 +135,7 @@ func (s *skuService) Update(ctx context.Context, req *skupb.UpdateRequest) (*sku
 	}
 
 	// acquire lock
-	unlock, err := locker.Handler().TryLock(item,time.Second)
+	unlock, err := locker.Handler().TryLock(item, time.Second)
 	if err != nil {
 		return nil, err
 	}
@@ -224,7 +224,7 @@ func (s *skuService) Delete(ctx context.Context, req *skupb.DeleteRequest) (*sku
 		},
 	}
 
-	unlock, err := locker.Handler().TryLock(item,time.Second)
+	unlock, err := locker.Handler().TryLock(item, time.Second)
 	if err != nil {
 		return nil, err
 	}
