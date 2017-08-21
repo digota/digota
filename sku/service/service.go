@@ -234,7 +234,7 @@ func (s *skuService) Delete(ctx context.Context, req *skupb.DeleteRequest) (*sku
 
 }
 
-func (s *skuService) GetWithInventoryLock(ctx context.Context, req *iface.GetWithInventoryLockRequest) (*skupb.Sku, func() error, util.Fn, error) {
+func (s *skuService) GetWithInventoryLock(ctx context.Context, req *skuInterface.GetWithInventoryLockRequest) (*skupb.Sku, func() error, util.Fn, error) {
 
 	if err := validation.Validate(req); err != nil {
 		return nil, nil, nil, err
@@ -296,7 +296,7 @@ func (s *skuService) List(ctx context.Context, req *skupb.ListRequest) (*skupb.S
 }
 
 //
-func (s *skuService) ProductData(ctx context.Context, req *iface.ProductDataReq) ([]*skupb.Sku, error) {
+func (s *skuService) ProductData(ctx context.Context, req *skuInterface.ProductDataReq) ([]*skupb.Sku, error) {
 
 	if err := validation.Validate(req); err != nil {
 		return nil, err
