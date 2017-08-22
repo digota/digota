@@ -41,7 +41,7 @@ func main() {
 
 	// Charge amount
 	log.Println(productpb.NewProductClient(c).Delete(context.Background(), &productpb.DeleteRequest{
-		Id:          "uuid",
+		Id: "uuid",
 	}))
 
 }

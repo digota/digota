@@ -41,8 +41,8 @@ func main() {
 
 	// Charge amount
 	log.Println(paymentpb.NewPaymentClient(c).List(context.Background(), &paymentpb.ListRequest{
-		Page:0,
-		Limit:100,
+		Page:  0,
+		Limit: 100,
 	}))
 
 }

@@ -50,7 +50,7 @@ func main() {
 	}
 
 	for _, order := range l.Orders {
-		log.Println(order.GetId(),order.GetCreated())
+		log.Println(order.GetId(), order.GetCreated())
 	}
 
 }
