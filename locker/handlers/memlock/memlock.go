@@ -19,8 +19,8 @@ package memlock
 import (
 	"errors"
 	"github.com/digota/digota/storage/object"
-	"time"
 	"sync"
+	"time"
 )
 
 const separator = "-"
@@ -43,7 +43,7 @@ func (m *locker) Close() error {
 	return nil
 }
 
-func (m *locker) getSemaphore(key string) (*semaphore) {
+func (m *locker) getSemaphore(key string) *semaphore {
 	mtx.Lock()
 	defer mtx.Unlock()
 	v, ok := m.smap[key]
