@@ -104,7 +104,7 @@ func (p *paymentService) List(ctx context.Context, req *paymentpb.ListRequest) (
 }
 
 // Charge
-func (p *paymentService) Charge(ctx context.Context, req *paymentpb.ChargeRequest) (*paymentpb.Charge, error) {
+func (p *paymentService) NewCharge(ctx context.Context, req *paymentpb.ChargeRequest) (*paymentpb.Charge, error) {
 
 	if err := validation.Validate(req); err != nil {
 		return nil, err
@@ -155,7 +155,7 @@ func (p *paymentService) Charge(ctx context.Context, req *paymentpb.ChargeReques
 //
 //
 //
-func (p *paymentService) Refund(ctx context.Context, req *paymentpb.RefundRequest) (*paymentpb.Charge, error) {
+func (p *paymentService) RefundCharge(ctx context.Context, req *paymentpb.RefundRequest) (*paymentpb.Charge, error) {
 
 	if err := validation.Validate(req); err != nil {
 		return nil, err

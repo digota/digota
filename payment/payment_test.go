@@ -29,13 +29,13 @@ import (
 type dummyService struct{}
 
 // dummy implementations
-func (s *dummyService) Charge(context.Context, *paymentpb.ChargeRequest) (*paymentpb.Charge, error) {
+func (s *dummyService) NewCharge(context.Context, *paymentpb.ChargeRequest) (*paymentpb.Charge, error) {
 	return nil, nil
 }
 func (s *dummyService) Get(context.Context, *paymentpb.GetRequest) (*paymentpb.Charge, error) {
 	return nil, nil
 }
-func (s *dummyService) Refund(context.Context, *paymentpb.RefundRequest) (*paymentpb.Charge, error) {
+func (s *dummyService) RefundCharge(context.Context, *paymentpb.RefundRequest) (*paymentpb.Charge, error) {
 	return nil, nil
 }
 func (s *dummyService) List(context.Context, *paymentpb.ListRequest) (*paymentpb.ChargeList, error) {
@@ -72,8 +72,8 @@ func TestService(t *testing.T) {
 
 func TestWriteMethods(t *testing.T) {
 	methods := []*regexp.Regexp{
-		regexp.MustCompile(baseMethod + "Charge"),
-		regexp.MustCompile(baseMethod + "Refund"),
+		regexp.MustCompile(baseMethod + "NewCharge"),
+		regexp.MustCompile(baseMethod + "RefundCharge"),
 	}
 	// check methods in same order
 	for k, v := range WriteMethods() {

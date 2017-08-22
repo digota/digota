@@ -23,39 +23,39 @@ package skupb;
 import "github.com/gogo/protobuf/gogoproto/gogo.proto";
 import "github.com/digota/digota/payment/paymentpb/payment.proto";
 
-service Sku {
-    rpc New (newRequest) returns (sku) {
+service SkuService {
+    rpc New (NewRequest) returns (Sku) {
     }
-    rpc Get (getRequest) returns (sku) {
+    rpc Get (GetRequest) returns (Sku) {
     }
-    rpc Update (updateRequest) returns (sku) {
+    rpc Update (UpdateRequest) returns (Sku) {
     }
-    rpc Delete (deleteRequest) returns (empty) {
+    rpc Delete (DeleteRequest) returns (Empty) {
     }
-    rpc List (listRequest) returns (skuList) {
+    rpc List (ListRequest) returns (SkuList) {
     }
 }
 
-message empty {
+message Empty {
 }
 
-message sku {
+message Sku {
     string id = 1 [(gogoproto.moretags) = "bson:\"_id\""];
     string name = 2;
     uint64 price = 3;
-    paymentpb.currency currency = 4;
+    paymentpb.Currency currency = 4;
     bool active = 5;
     string parent = 6;
     map<string, string> metadata = 7;
     map<string, string> attributes = 8;
     string image = 9;
-    packageDimensions packageDimensions = 10;
-    inventory inventory = 11;
+    PackageDimensions packageDimensions = 10;
+    Inventory inventory = 11;
     int64 created = 998;
     int64 updated = 999;
 }
 
-message inventory {
+message Inventory {
     int64 quantity = 1 [(gogoproto.moretags) = "validate:\"omitempty,gte=0\""];
     Type type = 2 [(gogoproto.moretags) = "validate:\"omitempty,required,gte=0,lte=1\""];
     enum Type {
@@ -64,54 +64,54 @@ message inventory {
     }
 }
 
-message packageDimensions {
+message PackageDimensions {
     double height = 1 [(gogoproto.moretags) = "validate:\"required,gt=0\""];
     double length = 2 [(gogoproto.moretags) = "validate:\"required,gt=0\""];
     double weight = 3 [(gogoproto.moretags) = "validate:\"required,gt=0\""];
     double width = 4 [(gogoproto.moretags) = "validate:\"required,gt=0\""];
 }
 
-message newRequest {
+message NewRequest {
     string name = 1 [(gogoproto.moretags) = "validate:\"required,gt=0\""];
-    paymentpb.currency currency = 2 [(gogoproto.moretags) = "validate:\"omitempty,required,gte=0,lte=128\""];
+    paymentpb.Currency currency = 2 [(gogoproto.moretags) = "validate:\"omitempty,required,gte=0,lte=128\""];
     bool active = 3 [(gogoproto.moretags) = "validate:\"required\""];
     uint64 price = 4 [(gogoproto.moretags) = "validate:\"required,gte=0\""];
     string parent = 5 [(gogoproto.moretags) = "validate:\"required,uuid4\""];
     map<string, string> metadata = 6;
     string image = 7 [(gogoproto.moretags) = "validate:\"url\""];
-    packageDimensions packageDimensions = 8 [(gogoproto.moretags) = "validate:\"omitempty,dive\""];
-    inventory inventory = 9 [(gogoproto.moretags) = "validate:\"required,dive\""];
+    PackageDimensions packageDimensions = 8 [(gogoproto.moretags) = "validate:\"omitempty,dive\""];
+    Inventory inventory = 9 [(gogoproto.moretags) = "validate:\"required,dive\""];
     map<string, string> attributes = 10;
 }
 
-message getRequest {
+message GetRequest {
     string id = 1 [(gogoproto.moretags) = "validate:\"required,uuid4\""];
 }
 
-message deleteRequest {
+message DeleteRequest {
     string id = 1 [(gogoproto.moretags) = "validate:\"required,uuid4\""];
 }
 
-message updateRequest {
+message UpdateRequest {
     string id = 1 [(gogoproto.moretags) = "validate:\"required,uuid4\""];
     string name = 2 [(gogoproto.moretags) = "validate:\"omitempty,gt=0\""];
-    paymentpb.currency currency = 3 [(gogoproto.moretags) = "validate:\"omitempty,required,gte=0,lte=128\""];
+    paymentpb.Currency currency = 3 [(gogoproto.moretags) = "validate:\"omitempty,required,gte=0,lte=128\""];
     bool active = 4;
     uint64 price = 5 [(gogoproto.moretags) = "validate:\"omitempty,gte=0\""];
     string parent = 6 [(gogoproto.moretags) = "validate:\"omitempty,uuid4\""];
     map<string, string> metadata = 7;
     string image = 8 [(gogoproto.moretags) = "validate:\"omitempty,url\""];
-    packageDimensions packageDimensions = 9 [(gogoproto.moretags) = "validate:\"omitempty,dive\""];
-    inventory inventory = 10 [(gogoproto.moretags) = "validate:\"omitempty,dive\""];
+    PackageDimensions packageDimensions = 9 [(gogoproto.moretags) = "validate:\"omitempty,dive\""];
+    Inventory inventory = 10 [(gogoproto.moretags) = "validate:\"omitempty,dive\""];
     map<string, string> attributes = 11;
 }
 
-message skuList {
-    repeated sku orders = 1;
+message SkuList {
+    repeated Sku orders = 1;
     int32 total = 2;
 }
 
-message listRequest {
+message ListRequest {
     int64 page = 1 [(gogoproto.moretags) = "validate:\"omitempty,required,gte=0\""];
     int64 limit = 2 [(gogoproto.moretags) = "validate:\"omitempty,required,gt=0\""];
     Sort sort = 3 [(gogoproto.moretags) = "validate:\"omitempty,required,gte=0,lte=4\""];

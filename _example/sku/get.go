@@ -43,7 +43,7 @@ func main() {
 
 	rand.Seed(time.Now().UnixNano())
 
-	log.Println(skupb.NewSkuClient(c).Get(context.Background(), &skupb.GetRequest{
+	log.Println(skupb.NewSkuServiceClient(c).Get(context.Background(), &skupb.GetRequest{
 		Id: "uuid",
 	}))
 

@@ -22,13 +22,13 @@ import (
 	"regexp"
 )
 
-const baseMethod = "^(.orderpb.Order/)"
+const baseMethod = "^(.orderpb.OrderService/)"
 
 var service Interface
 
 // Interface defines the functionality of the order service
 type Interface interface {
-	orderpb.OrderServer
+	orderpb.OrderServiceServer
 }
 
 // RegisterService register p as the service provider
@@ -41,7 +41,7 @@ func RegisterService(p Interface) {
 
 // RegisterOrderServer register cartServer in-front of the grpc server
 func RegisterOrderServer(server *grpc.Server) {
-	orderpb.RegisterOrderServer(server, Service())
+	orderpb.RegisterOrderServiceServer(server, Service())
 }
 
 // Service returns the registered service
