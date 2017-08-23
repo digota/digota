@@ -50,9 +50,8 @@ Flags:
 Key benefit of using grpc is the native support of major languages (`C++`,`Java`,`Python`,`Go`,`Ruby`,`Node.js`,`C#`,`Objective-C`,`Android Java` and `PHP`). 
 Learn How to compile your client right [here](https://grpc.io/docs/quickstart/), You can use you `Makefile` as well.
 
-```bash
-$ make php
-```
+Complied clients:
+1. [php](https://github.com/digota/digota-php)
 
 ## Flexible payment gateways
 
