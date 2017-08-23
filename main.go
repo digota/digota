@@ -64,6 +64,7 @@ var (
 	app      = cli.NewApp()
 	addr     = port
 	confPath = configPath
+	insecure = false
 )
 
 func init() {
@@ -100,6 +101,11 @@ func main() {
 			Value:       ":3051",
 			Destination: &addr,
 		},
+		cli.BoolFlag{
+			Name:        "insecure",
+			Usage:       "--insecure",
+			Destination: &insecure,
+		},
 	}
 	// prepare things up
 	app.Action = func(c *cli.Context) error {
@@ -118,7 +124,7 @@ func main() {
 			log.Fatalf("Could not load config => %s", err.Error())
 		}
 		// create new server and run on port , Run() will block
-		server.New(addr, conf).Run()
+		server.New(addr, conf,insecure).Run()
 		return nil
 	}
 	// run with os.args

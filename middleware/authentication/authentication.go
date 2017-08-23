@@ -31,6 +31,9 @@ import (
 // UnaryServerInterceptor returns a new unary server interceptors that performs per-request auth.
 func UnaryServerInterceptor() grpc.UnaryServerInterceptor {
 	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
+		if acl.SkipAuth() {
+			return handler(ctx, req)
+		}
 		//
 		peer, ok := peer.FromContext(ctx)
 		if !ok {
@@ -56,6 +59,10 @@ func UnaryServerInterceptor() grpc.UnaryServerInterceptor {
 func StreamServerInterceptor() grpc.StreamServerInterceptor {
 	return func(srv interface{}, stream grpc.ServerStream, info *grpc.StreamServerInfo, handler grpc.StreamHandler) error {
 		ctx := stream.Context()
+		wrapped := grpc_middleware.WrapServerStream(stream)
+		if acl.SkipAuth() {
+			return handler(srv, wrapped)
+		}
 		//
 		peer, ok := peer.FromContext(ctx)
 		if !ok {
@@ -73,7 +80,6 @@ func StreamServerInterceptor() grpc.StreamServerInterceptor {
 			//log.Infof("User %+v does not have permission to execute %s ", user.FromContext(ctx),info.FullMethod)
 			return status.Errorf(codes.PermissionDenied, "User does not have permission to execute %s ", info.FullMethod)
 		}
-		wrapped := grpc_middleware.WrapServerStream(stream)
 		wrapped.WrappedContext = ctx
 		return handler(srv, wrapped)
 	}
