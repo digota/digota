@@ -31,6 +31,7 @@ import (
 import (
 	"crypto/tls"
 	"crypto/x509"
+	"github.com/digota/digota/acl"
 	"github.com/digota/digota/client"
 	"github.com/digota/digota/config"
 	"github.com/digota/digota/locker"
@@ -66,7 +67,11 @@ type server struct {
 }
 
 // New create new digota server
-func New(addr string, conf *config.AppConfig) *server {
+func New(addr string, conf *config.AppConfig, insecure bool) *server {
+
+	if insecure {
+		acl.SetSkipAuth()
+	}
 
 	// create new storage handler
 	if err := storage.New(conf.Storage); err != nil {
@@ -94,6 +99,10 @@ func New(addr string, conf *config.AppConfig) *server {
 }
 
 func getTlsOption(appConfig *config.AppConfig) grpc.ServerOption {
+
+	if acl.SkipAuth() {
+		return grpc.Creds(nil)
+	}
 
 	// Load the certificates from disk
 	certificate, err := tls.LoadX509KeyPair(appConfig.TLS.Crt, appConfig.TLS.Key)
