@@ -44,6 +44,7 @@ import (
 	"github.com/digota/digota/product"
 	"github.com/digota/digota/sku"
 	"github.com/digota/digota/storage"
+	"github.com/digota/digota/util"
 	"github.com/grpc-ecosystem/go-grpc-middleware"
 	"github.com/grpc-ecosystem/go-grpc-middleware/logging/logrus"
 	"github.com/grpc-ecosystem/go-grpc-middleware/recovery"
@@ -54,7 +55,6 @@ import (
 	"google.golang.org/grpc/reflection"
 	"google.golang.org/grpc/status"
 	"io/ioutil"
-	"math/big"
 	"net"
 	"os"
 	"os/signal"
@@ -135,10 +135,7 @@ func getTlsOption(appConfig *config.AppConfig) grpc.ServerOption {
 		ClientCAs:    certPool,
 		VerifyPeerCertificate: func(rawCerts [][]byte, verifiedChains [][]*x509.Certificate) error {
 			for _, v := range appConfig.Clients {
-				// hex from string
-				serial := new(big.Int)
-				serial.SetString(v.Serial, 16) //base 16 HEX
-				if serial.String() == verifiedChains[0][0].SerialNumber.String() {
+				if v.Serial == util.BigIntToHex(verifiedChains[0][0].SerialNumber) {
 					return nil
 				}
 			}

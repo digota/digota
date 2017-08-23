@@ -23,11 +23,11 @@ import (
 	"time"
 )
 
-const baseMethod = "^(.skupb.Sku/)"
+const baseMethod = "^(.skupb.SkuService/)"
 
 // Interface defines the functionality of the sku service
 type Interface interface {
-	skupb.SkuServer
+	skupb.SkuServiceServer
 	GetWithInventoryLock(ctx context.Context, req *GetWithInventoryLockRequest) (*skupb.Sku, func() error, util.Fn, error)
 	ProductData(ctx context.Context, req *ProductDataReq) ([]*skupb.Sku, error)
 }
@@ -47,7 +47,7 @@ var service Interface
 
 // RegisterSkuServer register service to the grpc server
 func RegisterSkuServer(server *grpc.Server) {
-	skupb.RegisterSkuServer(server, Service())
+	skupb.RegisterSkuServiceServer(server, Service())
 }
 
 // RegisterService register service as the service provider

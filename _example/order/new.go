@@ -41,7 +41,7 @@ func main() {
 	defer c.Close()
 
 	// Create new order
-	o, err := orderpb.NewOrderClient(c).New(context.Background(), &orderpb.NewRequest{
+	o, err := orderpb.NewOrderServiceClient(c).New(context.Background(), &orderpb.NewRequest{
 		Currency: paymentpb.Currency_USD,
 		Items: []*orderpb.OrderItem{
 			{

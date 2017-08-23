@@ -239,7 +239,7 @@ func (s *orderService) Pay(ctx context.Context, req *orderpb.PayRequest) (*order
 		}
 	}
 	// charge full amount for the order order
-	c, err := payment.Service().Charge(ctx, &paymentpb.ChargeRequest{
+	c, err := payment.Service().NewCharge(ctx, &paymentpb.ChargeRequest{
 		PaymentProviderId: req.GetPaymentProviderId(),
 		Card:              req.GetCard(),
 		Total:             uint64(o.GetAmount()),
@@ -262,7 +262,7 @@ func (s *orderService) Pay(ctx context.Context, req *orderpb.PayRequest) (*order
 	// update has been failed after few times.. refund it to prevent data corruption
 	// todo change to two-phase payment method ?
 	if updateErr != nil {
-		r, err := payment.Service().Refund(ctx, &paymentpb.RefundRequest{
+		r, err := payment.Service().RefundCharge(ctx, &paymentpb.RefundRequest{
 			Id:     c.Id,
 			Amount: uint64(o.GetAmount()),
 			Reason: paymentpb.RefundReason_GeneralError,
@@ -325,7 +325,7 @@ func (s *orderService) Return(ctx context.Context, req *orderpb.ReturnRequest) (
 		}
 	}()
 	// refund the order
-	if _, err := payment.Service().Refund(ctx, &paymentpb.RefundRequest{Id: o.GetChargeId(), Amount: uint64(amount)}); err != nil {
+	if _, err := payment.Service().RefundCharge(ctx, &paymentpb.RefundRequest{Id: o.GetChargeId(), Amount: uint64(amount)}); err != nil {
 		return nil, err
 	}
 	// update order status

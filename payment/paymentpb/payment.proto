@@ -22,18 +22,18 @@ package paymentpb;
 
 import "github.com/gogo/protobuf/gogoproto/gogo.proto";
 
-service Payment {
-    rpc Charge (chargeRequest) returns (charge) {
+service PaymentService {
+    rpc NewCharge (ChargeRequest) returns (Charge) {
     }
-    rpc Refund (refundRequest) returns (charge) {
+    rpc RefundCharge (RefundRequest) returns (Charge) {
     }
-    rpc Get (getRequest) returns (charge) {
+    rpc Get (GetRequest) returns (Charge) {
     }
-    rpc List (listRequest) returns (chargeList) {
+    rpc List (ListRequest) returns (ChargeList) {
     }
 }
 
-enum currency {
+enum Currency {
     CUR_RESERVED = 0;
     AFN = 1;
     ALL = 2;
@@ -165,12 +165,12 @@ enum currency {
     USD = 128;
 }
 
-enum chargeStatus {
+enum ChargeStatus {
     Paid = 0;
     Refunded = 1;
 }
 
-enum cardType {
+enum CardType {
     CARD_Reserved = 0;
     Mastercard = 1;
     Visa = 2;
@@ -181,74 +181,74 @@ enum cardType {
 }
 
 
-enum paymentProviderId {
+enum PaymentProviderId {
     PROVIDER_Reserved = 0;
     Stripe = 1;
     Paypal = 2;
     Braintree = 3;
 }
 
-enum refundReason {
+enum RefundReason {
     GeneralError = 0;
     Fraud = 1;
     Duplicate = 2;
     RequestedByCustomer = 3;
 }
 
-message charge {
+message Charge {
     string id = 1 [(gogoproto.moretags) = "bson:\"_id\""];
     string statement = 2;
     uint64 chargeAmount = 3;
     uint64 refundAmount = 4;
-    repeated refund refunds = 5;
-    currency currency = 6;
+    repeated Refund refunds = 5;
+    Currency currency = 6;
     string email = 7;
     bool paid = 8;
     bool refunded = 9;
-    paymentProviderId providerId = 10;
+    PaymentProviderId providerId = 10;
     string providerChargeId = 11;
     int64 created = 998;
     int64 updated = 999;
 }
 
-message refund {
+message Refund {
     uint64 refundAmount = 1;
     string providerRefundId = 2;
-    refundReason reason = 3;
+    RefundReason reason = 3;
     int64 created = 4;
 }
 
-message card {
+message Card {
     string Number = 1 [(gogoproto.moretags) = "validate:\"required,len=16\""];
     string ExpireMonth = 2 [(gogoproto.moretags) = "validate:\"required,len=2\""];
     string ExpireYear = 3 [(gogoproto.moretags) = "validate:\"required,len=4\""];
     string FirstName = 4 [(gogoproto.moretags) = "validate:\"omitempty,min=1\""];
     string LastName = 5 [(gogoproto.moretags) = "validate:\"omitempty,min=1\""];
     string CVC = 6 [(gogoproto.moretags) = "validate:\"omitempty,len=3\""];
-    cardType type = 8 [(gogoproto.moretags) = "validate:\"required,gte=1,lte=6\""];
+    CardType type = 8 [(gogoproto.moretags) = "validate:\"required,gte=1,lte=6\""];
 }
 
-message chargeRequest {
-    currency currency = 1 [(gogoproto.moretags) = "validate:\"required,gte=1,lte=128\""];
+message ChargeRequest {
+    Currency currency = 1 [(gogoproto.moretags) = "validate:\"required,gte=1,lte=128\""];
     uint64 total = 2 [(gogoproto.moretags) = "validate:\"required,gte=0\""];
-    card Card = 3 [(gogoproto.moretags) = "validate:\"required,dive\""];
+    Card Card = 3 [(gogoproto.moretags) = "validate:\"required,dive\""];
     string email = 4 [(gogoproto.moretags) = "validate:\"email\""];
     string statement = 5;
-    paymentProviderId paymentProviderId = 6 [(gogoproto.moretags) = "validate:\"required,gte=1,lte=3\""];
+    PaymentProviderId paymentProviderId = 6 [(gogoproto.moretags) = "validate:\"required,gte=1,lte=3\""];
     map<string, string> metadata = 7;
 }
 
-message getRequest {
+message GetRequest {
     string id = 1 [(gogoproto.moretags) = "validate:\"uuid4,required\""];
 }
 
-message refundRequest {
+message RefundRequest {
     string id = 1 [(gogoproto.moretags) = "validate:\"uuid4,required\""];
     uint64 amount = 2;
-    refundReason reason = 3 [(gogoproto.moretags) = "validate:\"omitempty,gte=0,lte=3\""];
+    RefundReason reason = 3 [(gogoproto.moretags) = "validate:\"omitempty,gte=0,lte=3\""];
 }
 
-message listRequest {
+message ListRequest {
     int64 page = 1 [(gogoproto.moretags) = "validate:\"omitempty,required,gte=0\""];
     int64 limit = 2 [(gogoproto.moretags) = "validate:\"omitempty,required,gt=0\""];
     Sort sort = 3 [(gogoproto.moretags) = "validate:\"omitempty,required,gte=0,lte=4\""];
@@ -261,8 +261,8 @@ message listRequest {
     }
 }
 
-message chargeList {
-    repeated charge charges = 1;
+message ChargeList {
+    repeated Charge charges = 1;
     int32 total = 2;
 }
 
