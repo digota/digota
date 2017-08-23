@@ -103,7 +103,7 @@ func main() {
 		},
 		cli.BoolFlag{
 			Name:        "insecure",
-			Usage:       "--insecure",
+			Usage:       "Skip auth and tls configurations",
 			Destination: &insecure,
 		},
 	}

@@ -35,6 +35,16 @@ $ digota --port=8080 --config=/etc/digota/digota.yml
 ```
 Check out this [example](https://github.com/digota/digota/blob/master/_example/config/digota.yaml) to understand how to set up your config.
 
+Flags:
+
+       --info                  Set log level to info
+       --debug                 Set log level to debug
+       --config FILE, -c FILE  Load configuration from FILE (default: "digota.yaml")
+       --addr value, -a value  Address to bind (default: ":3051")
+       --insecure              Skip auth and tls configurations
+       --help, -h              show help
+       --version, -v           print the version
+
 ## Cross languages
 
 Key benefit of using grpc is the native support of major languages (`C++`,`Java`,`Python`,`Go`,`Ruby`,`Node.js`,`C#`,`Objective-C`,`Android Java` and `PHP`). 
