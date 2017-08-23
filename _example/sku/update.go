@@ -44,7 +44,7 @@ func main() {
 	rand.Seed(time.Now().Unix())
 
 	// Charge amount
-	log.Println(skupb.NewSkuClient(c).Update(context.Background(), &skupb.UpdateRequest{
+	log.Println(skupb.NewSkuServiceClient(c).Update(context.Background(), &skupb.UpdateRequest{
 		Id: "af350ecc-56c8-485f-8858-74d4faffa9cb",
 		//Name:      fake.Brand(),
 		Active: true,

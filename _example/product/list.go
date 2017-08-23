@@ -40,7 +40,7 @@ func main() {
 	defer c.Close()
 
 	// Charge amount
-	log.Println(productpb.NewProductClient(c).List(context.Background(), &productpb.ListRequest{
+	log.Println(productpb.NewProductServiceClient(c).List(context.Background(), &productpb.ListRequest{
 		Limit: 10,
 		Page:  0,
 	}))

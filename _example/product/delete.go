@@ -40,7 +40,7 @@ func main() {
 	defer c.Close()
 
 	// Charge amount
-	log.Println(productpb.NewProductClient(c).Delete(context.Background(), &productpb.DeleteRequest{
+	log.Println(productpb.NewProductServiceClient(c).Delete(context.Background(), &productpb.DeleteRequest{
 		Id: "uuid",
 	}))
 

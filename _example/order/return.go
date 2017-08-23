@@ -40,7 +40,7 @@ func main() {
 	defer c.Close()
 
 	// Return order
-	log.Println(orderpb.NewOrderClient(c).Return(context.Background(), &orderpb.ReturnRequest{
+	log.Println(orderpb.NewOrderServiceClient(c).Return(context.Background(), &orderpb.ReturnRequest{
 		Id: "order-uuid",
 	}))
 

@@ -40,7 +40,7 @@ func main() {
 	defer c.Close()
 
 	// Charge amount
-	log.Println(paymentpb.NewPaymentClient(c).Charge(context.Background(), &paymentpb.ChargeRequest{
+	log.Println(paymentpb.NewPaymentServiceClient(c).NewCharge(context.Background(), &paymentpb.ChargeRequest{
 		Total:             10 * 1000,
 		Currency:          paymentpb.Currency_USD,
 		Email:             "yaron@digota.com",

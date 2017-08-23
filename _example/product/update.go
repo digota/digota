@@ -41,7 +41,7 @@ func main() {
 	defer c.Close()
 
 	// Charge amount
-	log.Println(productpb.NewProductClient(c).Update(context.Background(), &productpb.UpdateRequest{
+	log.Println(productpb.NewProductServiceClient(c).Update(context.Background(), &productpb.UpdateRequest{
 		Id:          "uuid",
 		Name:        fake.Brand(),
 		Active:      true,

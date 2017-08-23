@@ -41,7 +41,7 @@ func main() {
 	defer c.Close()
 
 	// Pay order
-	log.Println(orderpb.NewOrderClient(c).Pay(context.Background(), &orderpb.PayRequest{
+	log.Println(orderpb.NewOrderServiceClient(c).Pay(context.Background(), &orderpb.PayRequest{
 		Id:                "b3310d6c-118a-45dc-8a54-752bfb0a7211",
 		PaymentProviderId: paymentpb.PaymentProviderId_Stripe,
 		Card: &paymentpb.Card{

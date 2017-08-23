@@ -40,7 +40,7 @@ func main() {
 	defer c.Close()
 
 	// Charge amount
-	log.Println(productpb.NewProductClient(c).Get(context.Background(), &productpb.GetRequest{
+	log.Println(productpb.NewProductServiceClient(c).Get(context.Background(), &productpb.GetRequest{
 		Id: "cb379ae1-8729-4b32-ba7a-3119dc2bd211",
 	}))
 

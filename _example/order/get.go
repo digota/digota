@@ -40,7 +40,7 @@ func main() {
 	defer c.Close()
 
 	// Pay order
-	log.Println(orderpb.NewOrderClient(c).Get(context.Background(), &orderpb.GetRequest{
+	log.Println(orderpb.NewOrderServiceClient(c).Get(context.Background(), &orderpb.GetRequest{
 		Id: "ebf7e590-5e62-47f1-93ff-8675a6e45fa7",
 	}))
 
