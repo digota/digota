@@ -279,6 +279,8 @@ order.Pay(context.Background(), &orderpb.PayRequest{
 
 ### Donations 
 
+bitcoin:18q6XcmXa1sCYKXQU7oxSpbmigU7DSYJvy
+
 ## License
 ```
 Digota <http://digota.com> - eCommerce microservice
