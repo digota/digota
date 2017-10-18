@@ -11,7 +11,14 @@ import (
 )
 
 type locker struct {
-	rp *redis.Pool
+	rp Pool
+}
+
+// Pool is an interface over the redis.Pool struct
+// to make mockable
+type Pool interface {
+	Get() redis.Conn
+	Close() error
 }
 
 const separator = "."
