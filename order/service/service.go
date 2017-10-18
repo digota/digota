@@ -20,7 +20,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/digota/digota/locker"
-	"github.com/digota/digota/order"
+	orderInterface "github.com/digota/digota/order"
 	"github.com/digota/digota/order/orderpb"
 	"github.com/digota/digota/payment"
 	"github.com/digota/digota/payment/paymentpb"
@@ -47,10 +47,10 @@ const (
 )
 
 func init() {
-	order.RegisterService(&OrderService{})
+	orderInterface.RegisterService(&orderService{})
 }
 
-type LockedOrderItem struct {
+type lockedOrderItem struct {
 	OrderItem *orderpb.OrderItem
 	Sku       *skupb.Sku
 	Unlock    func() error
@@ -58,29 +58,29 @@ type LockedOrderItem struct {
 	Err       error
 }
 
-type Orders []*orderpb.Order
+type orders []*orderpb.Order
 
-func (o *Orders) GetNamespace() string { return ns }
+func (o *orders) GetNamespace() string { return ns }
 
 // Order wrapper
-type Order struct {
+type order struct {
 	orderpb.Order `bson:",inline"`
 }
 
 // implements object.Interface interface
-func (o *Order) GetNamespace() string { return ns }
+func (o *order) GetNamespace() string { return ns }
 
 // implements object.IdSetter interface
-func (o *Order) SetId(id string) { o.Id = id }
+func (o *order) SetId(id string) { o.Id = id }
 
 // implements object.TimeTracker interface
-func (o *Order) SetCreated(t int64) { o.Created = t }
+func (o *order) SetCreated(t int64) { o.Created = t }
 
 // implements object.TimeTracker interface
-func (o *Order) SetUpdated(t int64) { o.Updated = t }
+func (o *order) SetUpdated(t int64) { o.Updated = t }
 
 // IsReturnable checks che
-func (o *Order) IsReturnable(amount int64) error {
+func (o *order) IsReturnable(amount int64) error {
 	if o.Status != orderpb.Order_Paid && o.Status != orderpb.Order_Fulfilled && o.Status != orderpb.Order_Canceled {
 		return status.Error(codes.Internal, "Order is not paid or fulfilled.")
 	}
@@ -91,7 +91,7 @@ func (o *Order) IsReturnable(amount int64) error {
 	return nil
 }
 
-func (o *Order) IsPayable() error {
+func (o *order) IsPayable() error {
 	if o.Status != orderpb.Order_Created {
 		return status.Error(codes.Internal, "Order is not in created status.")
 	}
@@ -104,18 +104,18 @@ func (o *Order) IsPayable() error {
 	return nil
 }
 
-type OrderService struct{}
+type orderService struct{}
 
 // New implements the orderpb.New interface.
 // Creates new order from order Items and return Order or error, error will
 // returned if something went wrong .. let say something such as inactive Items.
-func (s *OrderService) New(ctx context.Context, req *orderpb.NewRequest) (*orderpb.Order, error) {
+func (s *orderService) New(ctx context.Context, req *orderpb.NewRequest) (*orderpb.Order, error) {
 	// validate input
 	if err := validation.Validate(req); err != nil {
 		return nil, err
 	}
 	// order wrapper
-	o := &Order{
+	o := &order{
 		Order: orderpb.Order{
 			Email:    req.GetEmail(),
 			Status:   orderpb.Order_Created,
@@ -144,35 +144,37 @@ func (s *OrderService) New(ctx context.Context, req *orderpb.NewRequest) (*order
 
 // Get implements the orderpb.Get interface.
 // Retrieve order or returns error.
-func (s *OrderService) Get(ctx context.Context, req *orderpb.GetRequest) (*orderpb.Order, error) {
+func (s *orderService) Get(ctx context.Context, req *orderpb.GetRequest) (*orderpb.Order, error) {
 	// validate input
 	if err := validation.Validate(req); err != nil {
 		return nil, err
 	}
 	// order wrapper
-	o := &Order{
+	o := &order{
 		Order: orderpb.Order{
 			Id: req.GetId(),
 		},
 	}
+
 	// acquire order lock
-	if unlock, err := locker.Handler().TryLock(o, locker.DefaultTimeout); err != nil {
+	unlock, err := locker.Handler().TryLock(o, locker.DefaultTimeout)
+	if err != nil {
 		return nil, err
-	} else {
-		defer unlock()
 	}
+	defer unlock()
+
 	// get and return order
 	return &o.Order, storage.Handler().One(o)
 }
 
 // List implements the orderpb.List interface.
-func (s *OrderService) List(ctx context.Context, req *orderpb.ListRequest) (*orderpb.OrderList, error) {
+func (s *orderService) List(ctx context.Context, req *orderpb.ListRequest) (*orderpb.OrderList, error) {
 
 	if err := validation.Validate(req); err != nil {
 		return nil, err
 	}
 
-	slice := Orders{}
+	slice := orders{}
 
 	n, err := storage.Handler().List(&slice, object.ListOpt{
 		Limit: req.GetLimit(),
@@ -191,23 +193,25 @@ func (s *OrderService) List(ctx context.Context, req *orderpb.ListRequest) (*ord
 // Pay implements the orderpb.Pay interface.
 // Pay will call payment service to charge the same order amount, charge id will
 // be assigned to the order. This method locks the order till defers.
-func (s *OrderService) Pay(ctx context.Context, req *orderpb.PayRequest) (*orderpb.Order, error) {
+func (s *orderService) Pay(ctx context.Context, req *orderpb.PayRequest) (*orderpb.Order, error) {
 	// validate input
 	if err := validation.Validate(req); err != nil {
 		return nil, err
 	}
 	// order wrapper
-	o := &Order{
+	o := &order{
 		Order: orderpb.Order{
 			Id: req.GetId(),
 		},
 	}
 	// lock order for any change!
-	if unlock, err := locker.Handler().TryLock(o, time.Second*5); err != nil {
+	// acquire order lock
+	unlock, err := locker.Handler().TryLock(o, time.Second*5)
+	if err != nil {
 		return nil, err
-	} else {
-		defer unlock()
 	}
+	defer unlock()
+
 	// get the order
 	if err := storage.Handler().One(o); err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
@@ -235,7 +239,7 @@ func (s *OrderService) Pay(ctx context.Context, req *orderpb.PayRequest) (*order
 		}
 	}
 	// charge full amount for the order order
-	c, err := payment.Service().Charge(ctx, &paymentpb.ChargeRequest{
+	c, err := payment.Service().NewCharge(ctx, &paymentpb.ChargeRequest{
 		PaymentProviderId: req.GetPaymentProviderId(),
 		Card:              req.GetCard(),
 		Total:             uint64(o.GetAmount()),
@@ -258,7 +262,7 @@ func (s *OrderService) Pay(ctx context.Context, req *orderpb.PayRequest) (*order
 	// update has been failed after few times.. refund it to prevent data corruption
 	// todo change to two-phase payment method ?
 	if updateErr != nil {
-		r, err := payment.Service().Refund(ctx, &paymentpb.RefundRequest{
+		r, err := payment.Service().RefundCharge(ctx, &paymentpb.RefundRequest{
 			Id:     c.Id,
 			Amount: uint64(o.GetAmount()),
 			Reason: paymentpb.RefundReason_GeneralError,
@@ -281,23 +285,24 @@ func (s *OrderService) Pay(ctx context.Context, req *orderpb.PayRequest) (*order
 }
 
 // Pay implements the orderpb.Pay interface. Pay on specific orderId with CC based on payment provider supplied.
-func (s *OrderService) Return(ctx context.Context, req *orderpb.ReturnRequest) (*orderpb.Order, error) {
+func (s *orderService) Return(ctx context.Context, req *orderpb.ReturnRequest) (*orderpb.Order, error) {
 	// validate input
 	if err := validation.Validate(req); err != nil {
 		return nil, err
 	}
 	// order wrapper
-	o := &Order{
+	o := &order{
 		Order: orderpb.Order{
 			Id: req.GetId(),
 		},
 	}
 	// lock order
-	if unlock, err := locker.Handler().Lock(o); err != nil {
+	unlock, err := locker.Handler().TryLock(o, locker.DefaultTimeout)
+	if err != nil {
 		return nil, err
-	} else {
-		defer unlock()
 	}
+	defer unlock()
+
 	// get order
 	if err := storage.Handler().One(o); err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
@@ -320,7 +325,7 @@ func (s *OrderService) Return(ctx context.Context, req *orderpb.ReturnRequest) (
 		}
 	}()
 	// refund the order
-	if _, err := payment.Service().Refund(ctx, &paymentpb.RefundRequest{Id: o.GetChargeId(), Amount: uint64(amount)}); err != nil {
+	if _, err := payment.Service().RefundCharge(ctx, &paymentpb.RefundRequest{Id: o.GetChargeId(), Amount: uint64(amount)}); err != nil {
 		return nil, err
 	}
 	// update order status
@@ -464,7 +469,7 @@ func getUpdatedOrderItems(reqItems []*orderpb.OrderItem) (orderItems []*orderpb.
 }
 
 //
-func getLockedOrderItems(ctx context.Context, order *orderpb.Order) (items []*LockedOrderItem) {
+func getLockedOrderItems(ctx context.Context, order *orderpb.Order) (items []*lockedOrderItem) {
 
 	var wg = sync.WaitGroup{}
 	var mtx = sync.Mutex{}
@@ -480,7 +485,7 @@ func getLockedOrderItems(ctx context.Context, order *orderpb.Order) (items []*Lo
 					Duration: time.Second,
 				})
 				mtx.Lock()
-				items = append(items, &LockedOrderItem{
+				items = append(items, &lockedOrderItem{
 					OrderItem: orderItem,
 					Sku:       item,
 					Err:       err,

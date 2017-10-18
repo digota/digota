@@ -40,7 +40,7 @@ func main() {
 	defer c.Close()
 
 	// Refund amount
-	log.Println(paymentpb.NewPaymentClient(c).Refund(context.Background(), &paymentpb.RefundRequest{
+	log.Println(paymentpb.NewPaymentServiceClient(c).RefundCharge(context.Background(), &paymentpb.RefundRequest{
 		Id:     "charge-uuid",
 		Amount: 1000,
 		Reason: paymentpb.RefundReason_RequestedByCustomer,

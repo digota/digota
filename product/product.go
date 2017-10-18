@@ -20,13 +20,13 @@ import (
 	"regexp"
 )
 
-const baseMethod = "^(.productpb.Product/)"
+const baseMethod = "^(.productpb.ProductService/)"
 
 var service Interface
 
 // Interface defines the functionality of the product service
 type Interface interface {
-	productpb.ProductServer
+	productpb.ProductServiceServer
 }
 
 // RegisterService register p as the service provider
@@ -47,7 +47,7 @@ func Service() Interface {
 
 // RegisterProductServer register service to the grpc server
 func RegisterProductServer(server *grpc.Server) {
-	productpb.RegisterProductServer(server, Service())
+	productpb.RegisterProductServiceServer(server, Service())
 }
 
 // ReadMethods returns regexp slice of readable methods, mostly used by the acl

@@ -43,13 +43,10 @@ func TestMain(m *testing.M) {
 	}); err != nil {
 		panic(err)
 	}
-	// locker
-	if err := locker.New(config.Locker{
-		Handler: "zookeeper",
-		Address: []string{"localhost"},
-	}); err != nil {
-		panic(err)
-	}
+
+	// in-memory locker
+	locker.New(config.Locker{})
+
 	retCode := m.Run()
 	storage.Handler().DropDatabase(db)
 	// teardown
@@ -57,21 +54,21 @@ func TestMain(m *testing.M) {
 }
 
 func TestProducts_GetNamespace(t *testing.T) {
-	p := Products{}
+	p := products{}
 	if p.GetNamespace() != "product" {
 		t.Fatal()
 	}
 }
 
 func TestProduct_GetNamespace(t *testing.T) {
-	p := Product{}
+	p := product{}
 	if p.GetNamespace() != "product" {
 		t.Fatal()
 	}
 }
 
 func TestProduct_SetCreated(t *testing.T) {
-	p := Product{}
+	p := product{}
 	ti := time.Now().Unix()
 	p.SetCreated(ti)
 	if p.Created != ti {
@@ -80,7 +77,7 @@ func TestProduct_SetCreated(t *testing.T) {
 }
 
 func TestProduct_SetId(t *testing.T) {
-	p := Product{}
+	p := product{}
 	uid := uuid.NewV4().String()
 	p.SetId(uid)
 	if p.GetId() != uid {
@@ -89,7 +86,7 @@ func TestProduct_SetId(t *testing.T) {
 }
 
 func TestProduct_SetUpdated(t *testing.T) {
-	p := Product{}
+	p := product{}
 	ti := time.Now().Unix()
 	p.SetUpdated(ti)
 	if p.Updated != ti {
@@ -214,7 +211,7 @@ func TestProductService_Get(t *testing.T) {
 
 func TestProductService_List(t *testing.T) {
 
-	storage.Handler().DropCollection(db, &Product{})
+	storage.Handler().DropCollection(db, &product{})
 
 	// create few products
 	for _, v := range []string{"one", "two", "three"} {

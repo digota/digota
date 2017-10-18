@@ -53,18 +53,10 @@ func TestMain(m *testing.M) {
 		panic(err)
 	}
 
-	if err := locker.New(config.Locker{
-		Handler: "zookeeper",
-		Address: []string{"localhost"},
-	}); err != nil {
-		panic(err)
-	}
+	// in-memory locker
+	locker.New(config.Locker{})
 
-	providers.New([]config.PaymentProvider{
-		{
-			Provider: "DigotaInternalTestOnly",
-		},
-	})
+	providers.New([]config.PaymentProvider{{Provider: "DigotaInternalTestOnly"}})
 
 	retCode := m.Run()
 	// teardown
@@ -106,7 +98,7 @@ func createSku(product *productpb.Product, currency paymentpb.Currency, active b
 }
 
 func createOrder() (*orderpb.Order, error) {
-	orderService := OrderService{}
+	orderService := orderService{}
 
 	// add product
 	demoproduct, err := createDemoProduct()
@@ -158,21 +150,21 @@ func createOrder() (*orderpb.Order, error) {
 }
 
 func TestOrders_GetNamespace(t *testing.T) {
-	o := Orders{}
+	o := orders{}
 	if o.GetNamespace() != "order" {
 		t.FailNow()
 	}
 }
 
 func TestOrder_GetNamespace(t *testing.T) {
-	o := Order{}
+	o := order{}
 	if o.GetNamespace() != "order" {
 		t.FailNow()
 	}
 }
 
 func TestOrder_SetId(t *testing.T) {
-	o := Order{}
+	o := order{}
 	o.SetId("1234-1234-1234-1234")
 	if o.Id != "1234-1234-1234-1234" {
 		t.FailNow()
@@ -180,7 +172,7 @@ func TestOrder_SetId(t *testing.T) {
 }
 
 func TestOrder_SetCreated(t *testing.T) {
-	o := Order{}
+	o := order{}
 	now := time.Now().Unix()
 	o.SetCreated(now)
 	if o.Created != now {
@@ -189,7 +181,7 @@ func TestOrder_SetCreated(t *testing.T) {
 }
 
 func TestOrder_SetUpdated(t *testing.T) {
-	o := Order{}
+	o := order{}
 	now := time.Now().Unix()
 	o.SetUpdated(now)
 	if o.Updated != now {
@@ -198,7 +190,7 @@ func TestOrder_SetUpdated(t *testing.T) {
 }
 
 func TestOrder_IsReturnable(t *testing.T) {
-	o := Order{}
+	o := order{}
 	o.Amount = 1000
 	o.Currency = paymentpb.Currency_USD
 	o.Status = orderpb.Order_Created
@@ -219,7 +211,7 @@ func TestOrder_IsReturnable(t *testing.T) {
 }
 
 func TestOrder_IsPayable(t *testing.T) {
-	o := Order{}
+	o := order{}
 	o.Amount = 0
 	o.Created = 0
 	o.Status = orderpb.Order_Paid
@@ -246,7 +238,7 @@ func TestOrder_IsPayable(t *testing.T) {
 
 func TestService_New(t *testing.T) {
 
-	orderService := OrderService{}
+	orderService := orderService{}
 
 	// add product
 	demoproduct, err := createDemoProduct()
@@ -354,7 +346,7 @@ func TestService_New(t *testing.T) {
 
 func TestService_Get(t *testing.T) {
 
-	orderService := OrderService{}
+	orderService := orderService{}
 
 	o, err := createOrder()
 
@@ -389,7 +381,7 @@ func TestService_Get(t *testing.T) {
 }
 
 func TestOrder_CalculateTotal(t *testing.T) {
-	o := Order{}
+	o := order{}
 	o.Amount = 0
 	o.Currency = paymentpb.Currency_USD
 

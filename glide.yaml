@@ -1,37 +1,5 @@
-package: .
+package: github.com/digota/digota
 import:
-- package: github.com/digota/digota
-  subpackages:
-  - acl
-  - client
-  - config
-  - locker
-  - locker/handlers/zookeeper
-  - middleware/authentication
-  - middleware/logger
-  - middleware/recovery
-  - order
-  - order/orderpb
-  - order/service
-  - payment
-  - payment/errors
-  - payment/paymentpb
-  - payment/service
-  - payment/service/providers
-  - payment/service/providers/internalTestOnly
-  - payment/service/providers/stripe
-  - product
-  - product/productpb
-  - product/service
-  - server
-  - sku
-  - sku/service
-  - sku/skupb
-  - storage
-  - storage/handlers/mongo
-  - storage/object
-  - util
-  - validation
 - package: github.com/gogo/protobuf
   subpackages:
   - gogoproto

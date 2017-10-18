@@ -26,6 +26,7 @@ import (
 type provider struct {
 }
 
+// NewProvider create new provider for testings
 func NewProvider() (*provider, error) {
 	return &provider{}, nil
 }

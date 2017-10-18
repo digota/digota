@@ -23,22 +23,22 @@ package productpb;
 import "github.com/gogo/protobuf/gogoproto/gogo.proto";
 import "github.com/digota/digota/sku/skupb/sku.proto";
 
-service Product {
-    rpc New (newRequest) returns (product) {
+service ProductService {
+    rpc New (NewRequest) returns (Product) {
     }
-    rpc Get (getRequest) returns (product) {
+    rpc Get (GetRequest) returns (Product) {
     }
-    rpc Update (updateRequest) returns (product) {
+    rpc Update (UpdateRequest) returns (Product) {
     }
-    rpc List (listRequest) returns (productList) {
+    rpc List (ListRequest) returns (ProductList) {
     }
-    rpc Delete (deleteRequest) returns (empty) {
+    rpc Delete (DeleteRequest) returns (Empty) {
     }
 }
 
-message empty {}
+message Empty {}
 
-message product {
+message Product {
     string id = 1 [(gogoproto.moretags) = "bson:\"_id\""];
     string name = 2;
     bool active = 3;
@@ -48,17 +48,17 @@ message product {
     map<string, string> metadata = 7 ;
     bool shippable = 8 ;
     string url = 9 ;
-    repeated skupb.sku skus = 10;
+    repeated skupb.Sku skus = 10;
     int64 created = 998 ;
     int64 updated = 999 ;
 }
 
-message productList {
-    repeated product products = 1;
+message ProductList {
+    repeated Product products = 1;
     int32 total =2;
 }
 
-message newRequest {
+message NewRequest {
     string name = 1 [(gogoproto.moretags) = "validate:\"required,gte=0\""];
     bool active = 2 [(gogoproto.moretags) = "validate:\"required\""];
     repeated string attributes = 3 [(gogoproto.moretags) = "validate:\"dive,required\""];
@@ -69,15 +69,15 @@ message newRequest {
     string url = 8 [(gogoproto.moretags) = "validate:\"omitempty,url\""];
 }
 
-message getRequest {
+message GetRequest {
     string id = 1 [(gogoproto.moretags) = "validate:\"required,uuid4\""];
 }
 
-message deleteRequest {
+message DeleteRequest {
     string id = 1 [(gogoproto.moretags) = "validate:\"required,uuid4\""];
 }
 
-message updateRequest {
+message UpdateRequest {
     string id = 1 [(gogoproto.moretags) = "validate:\"required,uuid4\""];
     string name = 2 [(gogoproto.moretags) = "validate:\"required,gte=4\""];
     bool active = 3 [(gogoproto.moretags) = "validate:\"omitempty,required\""];
@@ -89,7 +89,7 @@ message updateRequest {
     string url = 9 [(gogoproto.moretags) = "validate:\"omitempty,url\""];
 }
 
-message listRequest {
+message ListRequest {
     int64 page = 1;
     int64 limit = 2;
 }

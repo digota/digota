@@ -40,7 +40,7 @@ func main() {
 	defer c.Close()
 
 	// Pay order
-	l, err := orderpb.NewOrderClient(c).List(context.Background(), &orderpb.ListRequest{
+	l, err := orderpb.NewOrderServiceClient(c).List(context.Background(), &orderpb.ListRequest{
 		Limit: 4,
 		Page:  0,
 	})
@@ -50,7 +50,7 @@ func main() {
 	}
 
 	for _, order := range l.Orders {
-		log.Println(order.GetId(),order.GetCreated())
+		log.Println(order.GetId(), order.GetCreated())
 	}
 
 }

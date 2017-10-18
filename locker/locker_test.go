@@ -30,8 +30,10 @@ func TestNew(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if err := New(config.Locker{Handler: "not-valid"}); err == nil {
-		t.Fatal(err)
+	handler = nil
+	New(config.Locker{Handler: "not-valid"})
+	if reflect.TypeOf(handler).String() != "*memlock.locker" {
+		t.Fatal()
 	}
 }
 

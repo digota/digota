@@ -18,15 +18,20 @@ package server
 
 // load services first
 import (
+	// register order service
 	_ "github.com/digota/digota/order/service"
+	// register payment service
 	_ "github.com/digota/digota/payment/service"
+	// register product service
 	_ "github.com/digota/digota/product/service"
+	// register sku service
 	_ "github.com/digota/digota/sku/service"
 )
 
 import (
 	"crypto/tls"
 	"crypto/x509"
+	"github.com/digota/digota/acl"
 	"github.com/digota/digota/client"
 	"github.com/digota/digota/config"
 	"github.com/digota/digota/locker"
@@ -39,6 +44,7 @@ import (
 	"github.com/digota/digota/product"
 	"github.com/digota/digota/sku"
 	"github.com/digota/digota/storage"
+	"github.com/digota/digota/util"
 	"github.com/grpc-ecosystem/go-grpc-middleware"
 	"github.com/grpc-ecosystem/go-grpc-middleware/logging/logrus"
 	"github.com/grpc-ecosystem/go-grpc-middleware/recovery"
@@ -49,7 +55,6 @@ import (
 	"google.golang.org/grpc/reflection"
 	"google.golang.org/grpc/status"
 	"io/ioutil"
-	"math/big"
 	"net"
 	"os"
 	"os/signal"
@@ -61,7 +66,12 @@ type server struct {
 	grpcServer *grpc.Server
 }
 
-func New(addr string, conf *config.AppConfig) *server {
+// New create new digota server
+func New(addr string, conf *config.AppConfig, insecure bool) *server {
+
+	if insecure {
+		acl.SetSkipAuth()
+	}
 
 	// create new storage handler
 	if err := storage.New(conf.Storage); err != nil {
@@ -89,6 +99,10 @@ func New(addr string, conf *config.AppConfig) *server {
 }
 
 func getTlsOption(appConfig *config.AppConfig) grpc.ServerOption {
+
+	if acl.SkipAuth() {
+		return grpc.Creds(nil)
+	}
 
 	// Load the certificates from disk
 	certificate, err := tls.LoadX509KeyPair(appConfig.TLS.Crt, appConfig.TLS.Key)
@@ -121,10 +135,7 @@ func getTlsOption(appConfig *config.AppConfig) grpc.ServerOption {
 		ClientCAs:    certPool,
 		VerifyPeerCertificate: func(rawCerts [][]byte, verifiedChains [][]*x509.Certificate) error {
 			for _, v := range appConfig.Clients {
-				// hex from string
-				serial := new(big.Int)
-				serial.SetString(v.Serial, 16) //base 16 HEX
-				if serial.String() == verifiedChains[0][0].SerialNumber.String() {
+				if v.Serial == util.BigIntToHex(verifiedChains[0][0].SerialNumber) {
 					return nil
 				}
 			}

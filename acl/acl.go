@@ -26,6 +26,19 @@ import (
 	"regexp"
 )
 
+// SkipAuth is
+var skipAuth = false
+
+// SkipAuth set skipAuth flag to true
+func SetSkipAuth() {
+	skipAuth = true
+}
+
+// GetSkipAuth get flag
+func SkipAuth() bool {
+	return skipAuth
+}
+
 var accessMap = map[client.Scope][][]*regexp.Regexp{
 	// All methods
 	client.WildcardScope: {
@@ -35,7 +48,7 @@ var accessMap = map[client.Scope][][]*regexp.Regexp{
 	},
 	// Public methods
 	client.PublicScope: {
-	//auth.PublicMethods(),
+		//auth.PublicMethods(),
 	},
 	// Write only methods
 	client.WriteScope: {

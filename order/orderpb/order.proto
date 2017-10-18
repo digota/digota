@@ -23,24 +23,24 @@ package orderpb;
 import "github.com/gogo/protobuf/gogoproto/gogo.proto";
 import "github.com/digota/digota/payment/paymentpb/payment.proto";
 
-service Order {
-    rpc New (newRequest) returns (order) {
+service OrderService {
+    rpc New (NewRequest) returns (Order) {
     }
-    rpc Get (getRequest) returns (order) {
+    rpc Get (GetRequest) returns (Order) {
     }
-    rpc Pay (payRequest) returns (order) {
+    rpc Pay (PayRequest) returns (Order) {
     }
-    rpc Return (returnRequest) returns (order) {
+    rpc Return (ReturnRequest) returns (Order) {
     }
-    rpc List (listRequest) returns (orderList) {
+    rpc List (ListRequest) returns (OrderList) {
     }
 }
 
-message order {
+message Order {
     string id = 1 [(gogoproto.moretags) = "bson:\"_id\""];
     int64 amount = 2;
-    paymentpb.currency currency = 3;
-    repeated orderItem items = 4;
+    paymentpb.Currency currency = 3;
+    repeated OrderItem items = 4;
     map<string, string> metadata = 5;
     string email = 6;
     string chargeId = 7;
@@ -52,12 +52,12 @@ message order {
         Fulfilled = 3;
         Returned = 4;
     }
-    shipping shipping = 9;
+    Shipping shipping = 9;
     int64 created = 998;
     int64 updated = 999;
 }
 
-message orderItem {
+message OrderItem {
     Type type = 1 [(gogoproto.moretags) = "validate:\"required,gte=1,lte=4\""];
     enum Type {
         reserved = 0;
@@ -68,12 +68,12 @@ message orderItem {
     }
     int64 quantity = 2 [(gogoproto.moretags) = "validate:\"omitempty,gte=0\""];
     int64 amount = 3;
-    paymentpb.currency currency = 4 [(gogoproto.moretags) = "validate:\"omitempty,gte=1,lte=128\""];
+    paymentpb.Currency currency = 4 [(gogoproto.moretags) = "validate:\"omitempty,gte=1,lte=128\""];
     string parent = 5 [(gogoproto.moretags) = "validate:\"omitempty,uuid4\""];
     string description = 6;
 }
 
-message shipping {
+message Shipping {
     string name = 1;
     string phone = 2;
     Address address = 3;
@@ -89,36 +89,36 @@ message shipping {
     }
 }
 
-message orderList {
-    repeated order orders = 1;
+message OrderList {
+    repeated Order orders = 1;
     int32 total = 2;
 }
 
 // requests
 
-message newRequest {
-    paymentpb.currency currency = 1 [(gogoproto.moretags) = "validate:\"required,gte=1,lte=128\""];
-    repeated orderItem items = 2 [(gogoproto.moretags) = "bson:\"items\" validate:\"dive,required\""];
+message NewRequest {
+    paymentpb.Currency currency = 1 [(gogoproto.moretags) = "validate:\"required,gte=1,lte=128\""];
+    repeated OrderItem items = 2 [(gogoproto.moretags) = "bson:\"items\" validate:\"dive,required\""];
     map<string, string> metadata = 3;
     string email = 4 [(gogoproto.moretags) = "validate:\"omitempty,email\""];
-    shipping shipping = 5 [(gogoproto.moretags) = "validate:\"omitempty,dive\""];
+    Shipping shipping = 5 [(gogoproto.moretags) = "validate:\"omitempty,dive\""];
 }
 
-message getRequest {
+message GetRequest {
     string id = 1 [(gogoproto.moretags) = "validate:\"uuid4,required\""];
 }
 
-message payRequest {
+message PayRequest {
     string id = 1 [(gogoproto.moretags) = "validate:\"uuid4,required\""];
-    paymentpb.card card = 2 [(gogoproto.moretags) = "validate:\"dive,required\""];
-    paymentpb.paymentProviderId paymentProviderId = 3 [(gogoproto.moretags) = "validate:\"required,gte=1,lte=1\""];
+    paymentpb.Card card = 2 [(gogoproto.moretags) = "validate:\"dive,required\""];
+    paymentpb.PaymentProviderId paymentProviderId = 3 [(gogoproto.moretags) = "validate:\"required,gte=1,lte=1\""];
 }
 
-message returnRequest {
+message ReturnRequest {
     string id = 1 [(gogoproto.moretags) = "validate:\"uuid4,required\""];
 }
 
-message listRequest {
+message ListRequest {
     int64 page = 1 [(gogoproto.moretags) = "validate:\"omitempty,required,gte=0\""];
     int64 limit = 2 [(gogoproto.moretags) = "validate:\"omitempty,required,gt=0\""];
     Sort sort = 3 [(gogoproto.moretags) = "validate:\"omitempty,required,gte=0,lte=4\""];

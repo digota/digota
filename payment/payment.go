@@ -22,13 +22,13 @@ import (
 	"regexp"
 )
 
-const baseMethod = "^(.paymentpb.Payment/)"
+const baseMethod = "^(.paymentpb.PaymentService/)"
 
 var s Interface
 
 // Interface defines the functionality of the payment service
 type Interface interface {
-	paymentpb.PaymentServer
+	paymentpb.PaymentServiceServer
 }
 
 // RegisterService register p as the service provider
@@ -38,7 +38,7 @@ func RegisterService(p Interface) {
 
 // RegisterPaymentServer register service to the grpc server
 func RegisterPaymentServer(server *grpc.Server) {
-	paymentpb.RegisterPaymentServer(server, Service())
+	paymentpb.RegisterPaymentServiceServer(server, Service())
 }
 
 // Service return the registered service
@@ -60,7 +60,7 @@ func ReadMethods() []*regexp.Regexp {
 // WriteMethods returns regexp slice of writable methods, mostly used by the acl
 func WriteMethods() []*regexp.Regexp {
 	return []*regexp.Regexp{
-		regexp.MustCompile(baseMethod + "Charge"),
-		regexp.MustCompile(baseMethod + "Refund"),
+		regexp.MustCompile(baseMethod + "NewCharge"),
+		regexp.MustCompile(baseMethod + "RefundCharge"),
 	}
 }

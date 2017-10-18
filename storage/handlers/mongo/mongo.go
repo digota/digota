@@ -36,6 +36,7 @@ type handler struct {
 	database string
 }
 
+// NewHandler create new mongo handler
 func NewHandler(s config.Storage) *handler {
 	if s.Database == "" {
 		s.Database = object.DefaultDatabase

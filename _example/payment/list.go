@@ -40,9 +40,9 @@ func main() {
 	defer c.Close()
 
 	// Charge amount
-	log.Println(paymentpb.NewPaymentClient(c).List(context.Background(), &paymentpb.ListRequest{
-		Page:0,
-		Limit:100,
+	log.Println(paymentpb.NewPaymentServiceClient(c).List(context.Background(), &paymentpb.ListRequest{
+		Page:  0,
+		Limit: 100,
 	}))
 
 }

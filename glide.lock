@@ -1,10 +1,16 @@
+<<<<<<< HEAD
 hash: 9c23c92694282db94d4951f9745d55ea3a1b5bbb285f7cf1038cf2a710e6743a
 updated: 2017-08-17T14:41:33.445636197+02:00
+=======
+hash: 0776a97db60dc0975bf17ad9c90f22cc5c9ccfe29d37981df4d5bc00417787f4
+updated: 2017-08-21T11:35:18.4045443+03:00
+>>>>>>> master
 imports:
 - name: github.com/davecgh/go-spew
   version: 04cdfd42973bb9c8589fd6a731800cf222fde1a9
   subpackages:
   - spew
+<<<<<<< HEAD
 - name: github.com/digota/digota
   version: 6fdecd16e28e92b957a9687c0265ce7024b568fe
   subpackages:
@@ -43,6 +49,8 @@ imports:
   subpackages:
   - internal
   - redis
+=======
+>>>>>>> master
 - name: github.com/go-playground/locales
   version: 1e5f1161c6416a5ff48840eb8724a394e48cc534
   subpackages:

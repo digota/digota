@@ -17,10 +17,10 @@
 package locker
 
 import (
-	"errors"
 	"time"
 
 	"github.com/digota/digota/config"
+	"github.com/digota/digota/locker/handlers/memlock"
 	"github.com/digota/digota/locker/handlers/zookeeper"
 	"github.com/digota/digota/storage/object"
 	"github.com/gerifield/digota/locker/handlers/redis"
@@ -30,6 +30,7 @@ const (
 	zookeeperHandler handlerName = "zookeeper"
 	redisHandler     handlerName = "redis"
 	// lock acquire timeout
+	// DefaultTimeout lock acquire timeout
 	DefaultTimeout = time.Millisecond * 100
 )
 
@@ -58,8 +59,9 @@ func New(lockerConfig config.Locker) error {
 		handler, err = redis.NewLocker(lockerConfig)
 		return err
 	default:
-		return errors.New("Locker is not valid")
+		handler = memlock.NewLocker()
 	}
+	return nil
 }
 
 // Handler returns the registered locker handler

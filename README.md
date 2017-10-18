@@ -16,8 +16,11 @@ ___TLDR; scalable ecommerce microservice.___
 * Go > 1.8
 * Database 
   * mongodb > 3.2
-* Lock server 
+  * redis (TBD)
+  * postgresql (TBD - [#2](https://github.com/digota/digota/issues/2))
+* Lock server (default is in-memory locker)
   * zookeeper 
+  * etcd (TBD - [#3](https://github.com/digota/digota/issues/3))
 
 #### Installation
 
@@ -32,14 +35,23 @@ $ digota --port=8080 --config=/etc/digota/digota.yml
 ```
 Check out this [example](https://github.com/digota/digota/blob/master/_example/config/digota.yaml) to understand how to set up your config.
 
+Flags:
+
+       --info                  Set log level to info
+       --debug                 Set log level to debug
+       --config FILE, -c FILE  Load configuration from FILE (default: "digota.yaml")
+       --addr value, -a value  Address to bind (default: ":3051")
+       --insecure              Skip auth and tls configurations
+       --help, -h              show help
+       --version, -v           print the version
+
 ## Cross languages
 
 Key benefit of using grpc is the native support of major languages (`C++`,`Java`,`Python`,`Go`,`Ruby`,`Node.js`,`C#`,`Objective-C`,`Android Java` and `PHP`). 
 Learn How to compile your client right [here](https://grpc.io/docs/quickstart/), You can use you `Makefile` as well.
 
-```bash
-$ make php
-```
+Complied clients:
+1. [php](https://github.com/digota/digota-php)
 
 ## Flexible payment gateways
 

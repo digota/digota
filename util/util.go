@@ -28,8 +28,10 @@ const (
 	defaultRetrySleep    = time.Millisecond * 100
 )
 
+// Fn generic closure function
 type Fn func() error
 
+// Retry function for default retry attempts
 func Retry(callback func() error) (err error) {
 	for i := 0; ; i++ {
 		if err = callback(); err == nil {
@@ -44,6 +46,7 @@ func Retry(callback func() error) (err error) {
 	return fmt.Errorf("after %d attempts, last error: %s", defaultRetryAttempts, err)
 }
 
+// BigIntToHex convert big.Int to string
 func BigIntToHex(b *big.Int) string {
 	return fmt.Sprintf("%X", b)
 }
