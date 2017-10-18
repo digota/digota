@@ -21,9 +21,9 @@ import (
 
 	"github.com/digota/digota/config"
 	"github.com/digota/digota/locker/handlers/memlock"
+	"github.com/digota/digota/locker/handlers/redis"
 	"github.com/digota/digota/locker/handlers/zookeeper"
 	"github.com/digota/digota/storage/object"
-	"github.com/gerifield/digota/locker/handlers/redis"
 )
 
 const (

@@ -10,19 +10,19 @@ import (
 	"github.com/garyburd/redigo/redis"
 )
 
-type redisLock struct {
+type locker struct {
 	rp *redis.Pool
 }
 
 const separator = "."
 
 // NewLocker return new redis based lock
-func NewLocker(lockerConfig config.Locker) (*redisLock, error) {
+func NewLocker(lockerConfig config.Locker) (*locker, error) {
 	if len(lockerConfig.Address) < 1 {
 		return nil, errors.New("No redis address provided")
 	}
 	p := newPool(lockerConfig.Address[0], "")
-	return &redisLock{p}, nil
+	return &locker{p}, nil
 }
 
 func newPool(server, password string) *redis.Pool {
@@ -51,19 +51,19 @@ func newPool(server, password string) *redis.Pool {
 	}
 }
 
-func getKeyName(doc object.Interface) (string, error) {
+func getKey(doc object.Interface) (string, error) {
 	if doc.GetNamespace() == "" || doc.GetId() == "" {
 		return "", errors.New("Obj is missing information to make that lock")
 	}
 	return doc.GetNamespace() + separator + doc.GetId(), nil
 }
 
-func (l *redisLock) Close() error {
+func (l *locker) Close() error {
 	return l.rp.Close()
 }
 
-func (l *redisLock) Lock(doc object.Interface) (func() error, error) {
-	key, err := getKeyName(doc)
+func (l *locker) Lock(doc object.Interface) (func() error, error) {
+	key, err := getKey(doc)
 	if err != nil {
 		return nil, err
 	}
@@ -78,8 +78,8 @@ func (l *redisLock) Lock(doc object.Interface) (func() error, error) {
 	return func() error { return l.unlock(key) }, nil
 }
 
-func (l *redisLock) TryLock(doc object.Interface, t time.Duration) (func() error, error) {
-	key, err := getKeyName(doc)
+func (l *locker) TryLock(doc object.Interface, t time.Duration) (func() error, error) {
+	key, err := getKey(doc)
 	if err != nil {
 		return nil, err
 	}
@@ -107,7 +107,7 @@ func (l *redisLock) TryLock(doc object.Interface, t time.Duration) (func() error
 	}
 }
 
-func (l *redisLock) unlock(key string) error {
+func (l *locker) unlock(key string) error {
 	conn := l.rp.Get()
 	_, err := conn.Do("DEL", key)
 	conn.Close()
