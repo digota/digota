@@ -23,6 +23,14 @@ type Pool interface {
 
 const separator = "."
 
+var (
+	// ErrTimeout returns when you couldn't make a TryLock call
+	ErrTimeout = errors.New("Timeout reached")
+
+	// ErrMissingInfo returns when you have and empty Namespace or Object ID
+	ErrMissingInfo = errors.New("Obj is missing information to make that lock")
+)
+
 // NewLocker return new redis based lock
 func NewLocker(lockerConfig config.Locker) (*locker, error) {
 	if len(lockerConfig.Address) < 1 {
@@ -60,7 +68,7 @@ func newPool(server, password string) *redis.Pool {
 
 func getKey(doc object.Interface) (string, error) {
 	if doc.GetNamespace() == "" || doc.GetId() == "" {
-		return "", errors.New("Obj is missing information to make that lock")
+		return "", ErrMissingInfo
 	}
 	return doc.GetNamespace() + separator + doc.GetId(), nil
 }
@@ -110,7 +118,7 @@ func (l *locker) TryLock(doc object.Interface, t time.Duration) (func() error, e
 		}
 		return func() error { return l.unlock(key) }, nil
 	case <-time.After(t):
-		return nil, errors.New("Timeout reached")
+		return nil, ErrTimeout
 	}
 }
 
