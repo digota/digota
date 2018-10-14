@@ -37,9 +37,6 @@ type AppConfig struct {
 }
 
 // Client is the client config structure
-// accept serial and scopse
-// export DIGOTA_CLIENT_SERIAL=val
-// export DIGOTA_CLIENT_SCOPES=READ,WRITE
 type Client struct {
 	Serial string
 	Scopes []string
@@ -58,10 +55,6 @@ type TLS struct {
 }
 
 // Storage is the storage handler config
-//	storage:
-//	handler: mongodb
-//	address:
-//	- localhost
 type Storage struct {
 	Handler  string
 	Address  []string
@@ -71,19 +64,12 @@ type Storage struct {
 }
 
 // Locker is the lock server handler config
-//	locker:
-//	handler: zookeeper
-//	address:
-//	- localhost
 type Locker struct {
 	Handler string
 	Address []string
 }
 
 // PaymentProvider is the payment provider config
-//	payment:
-//	- provider: Stripe
-//	secret: sk_test_0000000000000000000
 type PaymentProvider struct {
 	Provider   string
 	Secret     string
@@ -95,11 +81,9 @@ type PaymentProvider struct {
 
 // LoadConfig read env vars and *AppConfig or error
 func LoadConfig(configPath string) (conf *AppConfig, err error) {
-	var x AppConfig
-	err = envconfig.Process("digota", &x)
+	err = envconfig.Process("digota", &conf)
 	if err != nil {
 		return nil, err
 	}
-	conf = &x
 	return
 }
