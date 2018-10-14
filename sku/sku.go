@@ -23,12 +23,13 @@
 package sku
 
 import (
-	"github.com/digota/digota/sku/skupb"
-	"github.com/digota/digota/util"
-	"golang.org/x/net/context"
-	"google.golang.org/grpc"
 	"regexp"
 	"time"
+
+	"github.com/b4rti/digota/sku/skupb"
+	"github.com/b4rti/digota/util"
+	"golang.org/x/net/context"
+	"google.golang.org/grpc"
 )
 
 const baseMethod = "^(.skupb.SkuService/)"

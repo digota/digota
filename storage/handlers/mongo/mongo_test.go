@@ -23,12 +23,13 @@
 package mongo
 
 import (
-	"github.com/digota/digota/config"
-	"github.com/digota/digota/storage/object"
-	"github.com/satori/go.uuid"
 	"log"
 	"reflect"
 	"testing"
+
+	"github.com/b4rti/digota/config"
+	"github.com/b4rti/digota/storage/object"
+	"github.com/satori/go.uuid"
 )
 
 type testParentObjs []*testParentObj

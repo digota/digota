@@ -23,9 +23,10 @@
 package locker
 
 import (
-	"github.com/digota/digota/config"
 	"reflect"
 	"testing"
+
+	"github.com/b4rti/digota/config"
 )
 
 func TestNew(t *testing.T) {

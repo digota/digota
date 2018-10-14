@@ -24,16 +24,17 @@ package mongo
 
 import (
 	"fmt"
-	"github.com/digota/digota/config"
-	"github.com/digota/digota/storage/object"
+	"sync"
+	"time"
+
+	"github.com/b4rti/digota/config"
+	"github.com/b4rti/digota/storage/object"
 	"github.com/satori/go.uuid"
 	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
-	"sync"
-	"time"
 )
 
 type handler struct {
@@ -185,7 +186,12 @@ func (h *handler) Insert(obj object.Interface) error {
 	defer s.Close()
 
 	if v, ok := obj.(object.IdSetter); ok {
-		v.SetId(uuid.NewV4().String())
+		u, err := uuid.NewV4()
+		if err != nil {
+			return status.Error(codes.Internal, err.Error())
+		}
+
+		v.SetId(u.String())
 	}
 
 	if v, ok := obj.(object.TimeTracker); ok {

@@ -23,16 +23,17 @@
 package service
 
 import (
-	"github.com/digota/digota/config"
-	"github.com/digota/digota/locker"
-	"github.com/digota/digota/payment/paymentpb"
-	"github.com/digota/digota/payment/service/providers"
-	"github.com/digota/digota/storage"
-	"github.com/satori/go.uuid"
-	"golang.org/x/net/context"
 	"os"
 	"testing"
 	"time"
+
+	"github.com/b4rti/digota/config"
+	"github.com/b4rti/digota/locker"
+	"github.com/b4rti/digota/payment/paymentpb"
+	"github.com/b4rti/digota/payment/service/providers"
+	"github.com/b4rti/digota/storage"
+	"github.com/satori/go.uuid"
+	"golang.org/x/net/context"
 )
 
 var db = "testing-payment-" + uuid.NewV4().String()

@@ -24,9 +24,10 @@ package internalTestOnly
 
 import (
 	"errors"
-	"github.com/digota/digota/payment/paymentpb"
-	"github.com/satori/go.uuid"
 	"time"
+
+	"github.com/b4rti/digota/payment/paymentpb"
+	"github.com/satori/go.uuid"
 )
 
 type provider struct {
@@ -53,9 +54,14 @@ func (p *provider) Charge(req *paymentpb.ChargeRequest) (*paymentpb.Charge, erro
 		return nil, errors.New("expected charge error")
 	}
 
+	u, err := uuid.NewV4()
+	if err != nil {
+		return nil, err
+	}
+
 	return &paymentpb.Charge{
 		ProviderId:       p.ProviderId(),
-		ProviderChargeId: uuid.NewV4().String(),
+		ProviderChargeId: u.String(),
 		Paid:             true,
 		Email:            req.GetEmail(),
 		Currency:         req.GetCurrency(),
@@ -71,8 +77,13 @@ func (p *provider) Refund(ch string, amount uint64, currency paymentpb.Currency,
 		return nil, errors.New("expected refund error")
 	}
 
+	u, err := uuid.NewV4()
+	if err != nil {
+		return nil, err
+	}
+
 	return &paymentpb.Refund{
-		ProviderRefundId: uuid.NewV4().String(),
+		ProviderRefundId: u.String(),
 		RefundAmount:     amount,
 		Created:          time.Now().Unix(),
 		Reason:           reason,

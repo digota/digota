@@ -26,9 +26,9 @@ import (
 	"errors"
 	"time"
 
-	"github.com/digota/digota/storage/object"
+	"github.com/b4rti/digota/storage/object"
 
-	"github.com/digota/digota/config"
+	"github.com/b4rti/digota/config"
 	"github.com/garyburd/redigo/redis"
 )
 

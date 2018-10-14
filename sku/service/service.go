@@ -23,18 +23,19 @@
 package service
 
 import (
-	"github.com/digota/digota/locker"
-	"github.com/digota/digota/payment/paymentpb"
-	"github.com/digota/digota/product"
-	"github.com/digota/digota/product/productpb"
-	skuInterface "github.com/digota/digota/sku"
-	"github.com/digota/digota/sku/skupb"
-	"github.com/digota/digota/storage"
-	"github.com/digota/digota/storage/object"
-	"github.com/digota/digota/util"
-	"github.com/digota/digota/validation"
-	"golang.org/x/net/context"
 	"time"
+
+	"github.com/b4rti/digota/locker"
+	"github.com/b4rti/digota/payment/paymentpb"
+	"github.com/b4rti/digota/product"
+	"github.com/b4rti/digota/product/productpb"
+	skuInterface "github.com/b4rti/digota/sku"
+	"github.com/b4rti/digota/sku/skupb"
+	"github.com/b4rti/digota/storage"
+	"github.com/b4rti/digota/storage/object"
+	"github.com/b4rti/digota/util"
+	"github.com/b4rti/digota/validation"
+	"golang.org/x/net/context"
 )
 
 const ns = "sku"

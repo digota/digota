@@ -23,8 +23,8 @@
 package authentication
 
 import (
-	"github.com/digota/digota/acl"
-	"github.com/digota/digota/client"
+	"github.com/b4rti/digota/acl"
+	"github.com/b4rti/digota/client"
 	"github.com/grpc-ecosystem/go-grpc-middleware"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"

@@ -23,7 +23,7 @@ import proto "github.com/golang/protobuf/proto"
 import fmt "fmt"
 import math "math"
 import _ "github.com/gogo/protobuf/gogoproto"
-import skupb "github.com/digota/digota/sku/skupb"
+import skupb "github.com/b4rti/digota/sku/skupb"
 
 import (
 	context "golang.org/x/net/context"

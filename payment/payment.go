@@ -23,9 +23,10 @@
 package payment
 
 import (
-	"github.com/digota/digota/payment/paymentpb"
-	"google.golang.org/grpc"
 	"regexp"
+
+	"github.com/b4rti/digota/payment/paymentpb"
+	"google.golang.org/grpc"
 )
 
 const baseMethod = "^(.paymentpb.PaymentService/)"

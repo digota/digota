@@ -23,9 +23,10 @@
 package order
 
 import (
-	"github.com/digota/digota/order/orderpb"
-	"google.golang.org/grpc"
 	"regexp"
+
+	"github.com/b4rti/digota/order/orderpb"
+	"google.golang.org/grpc"
 )
 
 const baseMethod = "^(.orderpb.OrderService/)"

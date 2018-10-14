@@ -23,10 +23,11 @@
 package providers
 
 import (
-	"github.com/digota/digota/config"
-	"github.com/digota/digota/payment/paymentpb"
 	"reflect"
 	"testing"
+
+	"github.com/b4rti/digota/config"
+	"github.com/b4rti/digota/payment/paymentpb"
 )
 
 func TestNew(t *testing.T) {

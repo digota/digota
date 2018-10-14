@@ -23,12 +23,13 @@
 package providers
 
 import (
-	"github.com/digota/digota/config"
-	"github.com/digota/digota/payment/paymentpb"
-	"github.com/digota/digota/payment/service/providers/internalTestOnly"
-	"github.com/digota/digota/payment/service/providers/stripe"
-	log "github.com/sirupsen/logrus"
 	"sync"
+
+	"github.com/b4rti/digota/config"
+	"github.com/b4rti/digota/payment/paymentpb"
+	"github.com/b4rti/digota/payment/service/providers/internalTestOnly"
+	"github.com/b4rti/digota/payment/service/providers/stripe"
+	log "github.com/sirupsen/logrus"
 )
 
 var mtx = sync.Mutex{}

@@ -27,7 +27,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/digota/digota/config"
+	"github.com/b4rti/digota/config"
 	"github.com/garyburd/redigo/redis"
 	uuid "github.com/satori/go.uuid"
 )

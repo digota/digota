@@ -23,12 +23,13 @@
 package product
 
 import (
-	"github.com/digota/digota/product/productpb"
-	"golang.org/x/net/context"
-	"google.golang.org/grpc"
 	"reflect"
 	"regexp"
 	"testing"
+
+	"github.com/b4rti/digota/product/productpb"
+	"golang.org/x/net/context"
+	"google.golang.org/grpc"
 )
 
 // dummy service

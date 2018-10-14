@@ -25,16 +25,17 @@ package main
 // prevents gofmt changes the imports order
 
 // first init
-import _ "github.com/digota/digota/config"
+import _ "github.com/b4rti/digota/config"
 
 // standards imports
 import (
-	"github.com/digota/digota/config"
-	"github.com/digota/digota/server"
-	"github.com/sirupsen/logrus"
-	"gopkg.in/urfave/cli.v1"
 	"log"
 	"os"
+
+	"github.com/b4rti/digota/config"
+	"github.com/b4rti/digota/server"
+	"github.com/sirupsen/logrus"
+	"gopkg.in/urfave/cli.v1"
 )
 
 const (
@@ -130,7 +131,7 @@ func main() {
 			log.Fatalf("Could not load config => %s", err.Error())
 		}
 		// create new server and run on port , Run() will block
-		server.New(addr, conf,insecure).Run()
+		server.New(addr, conf, insecure).Run()
 		return nil
 	}
 	// run with os.args

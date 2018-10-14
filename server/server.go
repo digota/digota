@@ -25,32 +25,38 @@ package server
 // load services first
 import (
 	// register order service
-	_ "github.com/digota/digota/order/service"
+	_ "github.com/b4rti/digota/order/service"
 	// register payment service
-	_ "github.com/digota/digota/payment/service"
+	_ "github.com/b4rti/digota/payment/service"
 	// register product service
-	_ "github.com/digota/digota/product/service"
+	_ "github.com/b4rti/digota/product/service"
 	// register sku service
-	_ "github.com/digota/digota/sku/service"
+	_ "github.com/b4rti/digota/sku/service"
 )
 
 import (
 	"crypto/tls"
 	"crypto/x509"
-	"github.com/digota/digota/acl"
-	"github.com/digota/digota/client"
-	"github.com/digota/digota/config"
-	"github.com/digota/digota/locker"
-	"github.com/digota/digota/middleware/authentication"
-	"github.com/digota/digota/middleware/logger"
-	"github.com/digota/digota/middleware/recovery"
-	"github.com/digota/digota/order"
-	"github.com/digota/digota/payment"
-	"github.com/digota/digota/payment/service/providers"
-	"github.com/digota/digota/product"
-	"github.com/digota/digota/sku"
-	"github.com/digota/digota/storage"
-	"github.com/digota/digota/util"
+	"io/ioutil"
+	"net"
+	"os"
+	"os/signal"
+	"syscall"
+
+	"github.com/b4rti/digota/acl"
+	"github.com/b4rti/digota/client"
+	"github.com/b4rti/digota/config"
+	"github.com/b4rti/digota/locker"
+	"github.com/b4rti/digota/middleware/authentication"
+	"github.com/b4rti/digota/middleware/logger"
+	"github.com/b4rti/digota/middleware/recovery"
+	"github.com/b4rti/digota/order"
+	"github.com/b4rti/digota/payment"
+	"github.com/b4rti/digota/payment/service/providers"
+	"github.com/b4rti/digota/product"
+	"github.com/b4rti/digota/sku"
+	"github.com/b4rti/digota/storage"
+	"github.com/b4rti/digota/util"
 	"github.com/grpc-ecosystem/go-grpc-middleware"
 	"github.com/grpc-ecosystem/go-grpc-middleware/logging/logrus"
 	"github.com/grpc-ecosystem/go-grpc-middleware/recovery"
@@ -60,11 +66,6 @@ import (
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/reflection"
 	"google.golang.org/grpc/status"
-	"io/ioutil"
-	"net"
-	"os"
-	"os/signal"
-	"syscall"
 )
 
 type server struct {

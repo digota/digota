@@ -23,25 +23,26 @@
 package service
 
 import (
-	_ "github.com/digota/digota/product/service"
+	_ "github.com/b4rti/digota/product/service"
 )
 
 import (
-	"github.com/digota/digota/config"
-	"github.com/digota/digota/locker"
-	"github.com/digota/digota/payment/paymentpb"
-	"github.com/digota/digota/product"
-	"github.com/digota/digota/product/productpb"
-	iface "github.com/digota/digota/sku"
-	"github.com/digota/digota/sku/skupb"
-	"github.com/digota/digota/storage"
-	"github.com/icrowley/fake"
-	"github.com/satori/go.uuid"
-	"golang.org/x/net/context"
 	"os"
 	"reflect"
 	"testing"
 	"time"
+
+	"github.com/b4rti/digota/config"
+	"github.com/b4rti/digota/locker"
+	"github.com/b4rti/digota/payment/paymentpb"
+	"github.com/b4rti/digota/product"
+	"github.com/b4rti/digota/product/productpb"
+	iface "github.com/b4rti/digota/sku"
+	"github.com/b4rti/digota/sku/skupb"
+	"github.com/b4rti/digota/storage"
+	"github.com/icrowley/fake"
+	"github.com/satori/go.uuid"
+	"golang.org/x/net/context"
 )
 
 var db = "testing-sku-" + uuid.NewV4().String()

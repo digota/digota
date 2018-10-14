@@ -23,15 +23,16 @@
 package service
 
 import (
-	"github.com/digota/digota/locker"
-	productInterface "github.com/digota/digota/product"
-	"github.com/digota/digota/product/productpb"
-	"github.com/digota/digota/sku"
-	"github.com/digota/digota/storage"
-	"github.com/digota/digota/storage/object"
-	"github.com/digota/digota/validation"
-	"golang.org/x/net/context"
 	"time"
+
+	"github.com/b4rti/digota/locker"
+	productInterface "github.com/b4rti/digota/product"
+	"github.com/b4rti/digota/product/productpb"
+	"github.com/b4rti/digota/sku"
+	"github.com/b4rti/digota/storage"
+	"github.com/b4rti/digota/storage/object"
+	"github.com/b4rti/digota/validation"
+	"golang.org/x/net/context"
 )
 
 const ns = "product"

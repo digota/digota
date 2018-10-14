@@ -23,20 +23,21 @@
 package service
 
 import (
-	_ "github.com/digota/digota/sku/service"
+	_ "github.com/b4rti/digota/sku/service"
 )
 
 import (
-	"github.com/digota/digota/config"
-	"github.com/digota/digota/locker"
-	"github.com/digota/digota/product/productpb"
-	"github.com/digota/digota/storage"
-	"github.com/icrowley/fake"
-	"github.com/satori/go.uuid"
-	"golang.org/x/net/context"
 	"os"
 	"testing"
 	"time"
+
+	"github.com/b4rti/digota/config"
+	"github.com/b4rti/digota/locker"
+	"github.com/b4rti/digota/product/productpb"
+	"github.com/b4rti/digota/storage"
+	"github.com/icrowley/fake"
+	"github.com/satori/go.uuid"
+	"golang.org/x/net/context"
 )
 
 var service = &productService{}

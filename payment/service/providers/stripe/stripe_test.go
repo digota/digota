@@ -23,11 +23,12 @@
 package stripe
 
 import (
-	"github.com/digota/digota/config"
-	"github.com/digota/digota/payment/paymentpb"
 	"os"
 	"reflect"
 	"testing"
+
+	"github.com/b4rti/digota/config"
+	"github.com/b4rti/digota/payment/paymentpb"
 )
 
 func GetTestKey() string {

@@ -24,9 +24,10 @@ package memlock
 
 import (
 	"errors"
-	"github.com/digota/digota/storage/object"
 	"sync"
 	"time"
+
+	"github.com/b4rti/digota/storage/object"
 )
 
 const separator = "-"

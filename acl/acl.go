@@ -23,13 +23,14 @@
 package acl
 
 import (
-	"github.com/digota/digota/client"
-	"github.com/digota/digota/order"
-	"github.com/digota/digota/payment"
-	"github.com/digota/digota/product"
-	"github.com/digota/digota/sku"
-	"golang.org/x/net/context"
 	"regexp"
+
+	"github.com/b4rti/digota/client"
+	"github.com/b4rti/digota/order"
+	"github.com/b4rti/digota/payment"
+	"github.com/b4rti/digota/product"
+	"github.com/b4rti/digota/sku"
+	"golang.org/x/net/context"
 )
 
 // SkipAuth is
@@ -54,7 +55,7 @@ var accessMap = map[client.Scope][][]*regexp.Regexp{
 	},
 	// Public methods
 	client.PublicScope: {
-		//auth.PublicMethods(),
+	//auth.PublicMethods(),
 	},
 	// Write only methods
 	client.WriteScope: {

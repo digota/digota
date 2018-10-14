@@ -23,8 +23,8 @@
 package braintree
 
 import (
-	"github.com/digota/digota/config"
-	"github.com/digota/digota/payment/paymentpb"
+	"github.com/b4rti/digota/config"
+	"github.com/b4rti/digota/payment/paymentpb"
 	"github.com/lionelbarrow/braintree-go"
 	"strings"
 	"time"

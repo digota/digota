@@ -23,12 +23,13 @@
 package order
 
 import (
-	"github.com/digota/digota/order/orderpb"
-	"golang.org/x/net/context"
-	"google.golang.org/grpc"
 	"reflect"
 	"regexp"
 	"testing"
+
+	"github.com/b4rti/digota/order/orderpb"
+	"golang.org/x/net/context"
+	"google.golang.org/grpc"
 )
 
 // dummy service

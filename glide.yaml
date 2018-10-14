@@ -1,4 +1,4 @@
-package: github.com/digota/digota
+package: github.com/b4rti/digota
 import:
 - package: github.com/gogo/protobuf
   subpackages:

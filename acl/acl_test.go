@@ -23,12 +23,13 @@
 package acl
 
 import (
-	"github.com/digota/digota/client"
-	"github.com/digota/digota/config"
-	"golang.org/x/net/context"
 	"math/big"
 	"regexp"
 	"testing"
+
+	"github.com/b4rti/digota/client"
+	"github.com/b4rti/digota/config"
+	"golang.org/x/net/context"
 )
 
 const testBase = "^(.test.Test/)"

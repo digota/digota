@@ -23,9 +23,10 @@
 package storage
 
 import (
-	"github.com/digota/digota/config"
-	"github.com/digota/digota/storage/object"
 	"testing"
+
+	"github.com/b4rti/digota/config"
+	"github.com/b4rti/digota/storage/object"
 )
 
 type dummyStorage struct{}

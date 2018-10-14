@@ -23,10 +23,11 @@
 package zookeeper
 
 import (
-	"github.com/digota/digota/config"
-	"github.com/satori/go.uuid"
 	"testing"
 	"time"
+
+	"github.com/b4rti/digota/config"
+	"github.com/satori/go.uuid"
 )
 
 type testObj struct {

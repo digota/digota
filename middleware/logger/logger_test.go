@@ -23,9 +23,10 @@
 package logger
 
 import (
+	"testing"
+
 	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc/codes"
-	"testing"
 )
 
 type testCase struct {

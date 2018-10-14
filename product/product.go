@@ -23,9 +23,10 @@
 package product
 
 import (
-	"github.com/digota/digota/product/productpb"
-	"google.golang.org/grpc"
 	"regexp"
+
+	"github.com/b4rti/digota/product/productpb"
+	"google.golang.org/grpc"
 )
 
 const baseMethod = "^(.productpb.ProductService/)"

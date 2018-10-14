@@ -22,12 +22,12 @@
 
 syntax = "proto3";
 
-option go_package = "github.com/digota/digota/sku/skupb";
+option go_package = "github.com/b4rti/digota/sku/skupb";
 
 package skupb;
 
 import "github.com/gogo/protobuf/gogoproto/gogo.proto";
-import "github.com/digota/digota/payment/paymentpb/payment.proto";
+import "github.com/b4rti/digota/payment/paymentpb/payment.proto";
 
 service SkuService {
     rpc New (NewRequest) returns (Sku) {

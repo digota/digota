@@ -23,15 +23,16 @@
 package stripe
 
 import (
-	"github.com/digota/digota/config"
-	"github.com/digota/digota/payment/errors"
-	"github.com/digota/digota/payment/paymentpb"
+	"strings"
+	"time"
+
+	"github.com/b4rti/digota/config"
+	"github.com/b4rti/digota/payment/errors"
+	"github.com/b4rti/digota/payment/paymentpb"
 	"github.com/sirupsen/logrus"
 	"github.com/stripe/stripe-go"
 	"github.com/stripe/stripe-go/charge"
 	"github.com/stripe/stripe-go/refund"
-	"strings"
-	"time"
 )
 
 type provider struct {

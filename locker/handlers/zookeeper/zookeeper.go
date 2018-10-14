@@ -27,10 +27,11 @@ package zookeeper
 
 import (
 	"errors"
-	"github.com/digota/digota/config"
-	"github.com/digota/digota/storage/object"
-	"github.com/yaronsumel/go-zookeeper/zk"
 	"time"
+
+	"github.com/b4rti/digota/config"
+	"github.com/b4rti/digota/storage/object"
+	"github.com/yaronsumel/go-zookeeper/zk"
 )
 
 const separator = "/"

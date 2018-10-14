@@ -24,7 +24,7 @@ import proto "github.com/golang/protobuf/proto"
 import fmt "fmt"
 import math "math"
 import _ "github.com/gogo/protobuf/gogoproto"
-import paymentpb "github.com/digota/digota/payment/paymentpb"
+import paymentpb "github.com/b4rti/digota/payment/paymentpb"
 
 import (
 	context "golang.org/x/net/context"

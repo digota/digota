@@ -22,12 +22,12 @@
 
 syntax = "proto3";
 
-option go_package = "github.com/digota/digota/product/productpb";
+option go_package = "github.com/b4rti/digota/product/productpb";
 
 package productpb;
 
 import "github.com/gogo/protobuf/gogoproto/gogo.proto";
-import "github.com/digota/digota/sku/skupb/sku.proto";
+import "github.com/b4rti/digota/sku/skupb/sku.proto";
 
 service ProductService {
     rpc New (NewRequest) returns (Product) {

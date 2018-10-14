@@ -23,11 +23,12 @@
 package client
 
 import (
-	"github.com/digota/digota/config"
-	"github.com/digota/digota/util"
+	"math/big"
+
+	"github.com/b4rti/digota/config"
+	"github.com/b4rti/digota/util"
 	"github.com/pkg/errors"
 	"golang.org/x/net/context"
-	"math/big"
 )
 
 const (
