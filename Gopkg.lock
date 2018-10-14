@@ -183,17 +183,18 @@
   version = "v1.2.2"
 
 [[projects]]
-  digest = "1:62f3724b4de5cd734eecb62e0f127ede5d9bac9b637534ea1d950780ec198cb5"
+  digest = "1:10693b5a2c1b34853e09c371e3bed5fcecaa213b92cf7b045bd45e43a42872a7"
   name = "github.com/stripe/stripe-go"
   packages = [
     ".",
     "charge",
     "form",
+    "orderitem",
     "refund",
   ]
   pruneopts = "UT"
-  revision = "5d00b1a66777515527a2a5eb7828ede4cf7d4ed2"
-  version = "v51.3.0"
+  revision = "c7c700f9a469299d3577b57bb9a970d005cfee6c"
+  version = "v28.12.0"
 
 [[projects]]
   branch = "master"

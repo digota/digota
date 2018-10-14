@@ -75,7 +75,7 @@
 
 [[constraint]]
   name = "github.com/stripe/stripe-go"
-  version = "51.3.0"
+  version = "28.3.1"
 
 [[constraint]]
   branch = "master"

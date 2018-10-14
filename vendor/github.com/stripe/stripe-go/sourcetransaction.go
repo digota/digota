@@ -5,13 +5,13 @@ import "encoding/json"
 // SourceTransactionListParams is the set of parameters that can be used when listing SourceTransactions.
 type SourceTransactionListParams struct {
 	ListParams `form:"*"`
-	Source     *string `form:"-"` // Sent in with the URL
+	Source     string `form:"-"` // Sent in with the URL
 }
 
 // SourceTransactionList is a list object for SourceTransactions.
 type SourceTransactionList struct {
 	ListMeta
-	Data []*SourceTransaction `json:"data"`
+	Values []*SourceTransaction `json:"data"`
 }
 
 // SourceTransaction is the resource representing a Stripe source transaction.
@@ -21,7 +21,7 @@ type SourceTransaction struct {
 	Currency     Currency `json:"currency"`
 	CustomerData string   `json:"customer_data"`
 	ID           string   `json:"id"`
-	Livemode     bool     `json:"livemode"`
+	Live         bool     `json:"livemode"`
 	Source       string   `json:"source"`
 	Type         string   `json:"type"`
 	TypeData     map[string]interface{}
@@ -33,12 +33,12 @@ type SourceTransaction struct {
 // source transaction.
 func (t *SourceTransaction) UnmarshalJSON(data []byte) error {
 	type sourceTransaction SourceTransaction
-	var v sourceTransaction
-	err := json.Unmarshal(data, &v)
+	var st sourceTransaction
+	err := json.Unmarshal(data, &st)
 	if err != nil {
 		return err
 	}
-	*t = SourceTransaction(v)
+	*t = SourceTransaction(st)
 
 	var raw map[string]interface{}
 	err = json.Unmarshal(data, &raw)

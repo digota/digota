@@ -7,63 +7,26 @@ import (
 	"github.com/stripe/stripe-go/form"
 )
 
-// CardAvailablePayoutMethod is a set of available payout methods for the card.
-type CardAvailablePayoutMethod string
-
-// List of values that CardAvailablePayoutMethod can take.
-const (
-	CardAvailablePayoutMethodInstant  CardAvailablePayoutMethod = "Instant"
-	CardAvailablePayoutMethodStandard CardAvailablePayoutMethod = "Standard"
-)
-
-// CardBrand is the list of allowed values for the card's brand.
-type CardBrand string
-
-// List of values that CardBrand can take.
-const (
-	CardBrandAmex       CardBrand = "American Express"
-	CardBrandDiscover   CardBrand = "Discover"
-	CardBrandDinersClub CardBrand = "Diners Club"
-	CardBrandJCB        CardBrand = "JCB"
-	CardBrandMasterCard CardBrand = "MasterCard"
-	CardBrandUnknown    CardBrand = "Unknown"
-	CardBrandUnionPay   CardBrand = "UnionPay"
-	CardBrandVisa       CardBrand = "Visa"
-)
-
-// CardFunding is the list of allowed values for the card's funding.
-type CardFunding string
-
-// List of values that CardFunding can take.
-const (
-	CardFundingCredit  CardFunding = "credit"
-	CardFundingDebit   CardFunding = "debit"
-	CardFundingPrepaid CardFunding = "prepaid"
-	CardFundingUnknown CardFunding = "unknown"
-)
-
-// CardTokenizationMethod is the list of allowed values for the card's tokenization method.
-type CardTokenizationMethod string
-
-// List of values that CardTokenizationMethod can take.
-const (
-	TokenizationMethodAndroidPay CardTokenizationMethod = "android_pay"
-	TokenizationMethodApplePay   CardTokenizationMethod = "apple_pay"
-)
-
-// CardVerification is the list of allowed verification responses.
-type CardVerification string
-
-// List of values that CardVerification can take.
-const (
-	CardVerificationFail      CardVerification = "fail"
-	CardVerificationPass      CardVerification = "pass"
-	CardVerificationUnchecked CardVerification = "unchecked"
-)
-
 // cardSource is a string that's used to build card form parameters. It's a
 // constant just to make mistakes less likely.
 const cardSource = "source"
+
+// CardBrand is the list of allowed values for the card's brand.
+// Allowed values are "Unknown", "Visa", "American Express", "MasterCard", "Discover"
+// "JCB", "Diners Club".
+type CardBrand string
+
+// CardFunding is the list of allowed values for the card's funding.
+// Allowed values are "credit", "debit", "prepaid", "unknown".
+type CardFunding string
+
+// TokenizationMethod is the list of allowed values for the card's tokenization method.
+// Allowed values are "apple_pay", "android_pay".
+type TokenizationMethod string
+
+// Verification is the list of allowed verification responses.
+// Allowed values are "pass", "fail", "unchecked", "unavailable".
+type Verification string
 
 // CardParams is the set of parameters that can be used when creating or updating a card.
 // For more details see https://stripe.com/docs/api#create_card and https://stripe.com/docs/api#update_card.
@@ -72,24 +35,24 @@ const cardSource = "source"
 // cards have some unusual logic on creates that necessitates manual handling
 // of all parameters. See AppendToAsCardSourceOrExternalAccount.
 type CardParams struct {
-	Params             `form:"*"`
-	Account            *string `form:"-"`
-	AddressCity        *string `form:"address_city"`
-	AddressCountry     *string `form:"address_country"`
-	AddressLine1       *string `form:"address_line1"`
-	AddressLine2       *string `form:"address_line2"`
-	AddressState       *string `form:"address_state"`
-	AddressZip         *string `form:"address_zip"`
-	CVC                *string `form:"cvc"`
-	Currency           *string `form:"currency"`
-	Customer           *string `form:"-"`
-	DefaultForCurrency *bool   `form:"default_for_currency"`
-	ExpMonth           *string `form:"exp_month"`
-	ExpYear            *string `form:"exp_year"`
-	Name               *string `form:"name"`
-	Number             *string `form:"number"`
-	Recipient          *string `form:"-"`
-	Token              *string `form:"-"`
+	Params    `form:"*"`
+	Account   string `form:"-"`
+	Address1  string `form:"address_line1"`
+	Address2  string `form:"address_line2"`
+	CVC       string `form:"cvc"`
+	City      string `form:"address_city"`
+	Country   string `form:"address_country"`
+	Currency  string `form:"currency"`
+	Customer  string `form:"-"`
+	Default   bool   `form:"default_for_currency"`
+	Month     string `form:"exp_month"`
+	Name      string `form:"name"`
+	Number    string `form:"number"`
+	Recipient string `form:"-"`
+	State     string `form:"address_state"`
+	Token     string `form:"-"`
+	Year      string `form:"exp_year"`
+	Zip       string `form:"address_zip"`
 
 	// ID is used when tokenizing a card for shared customers
 	ID string `form:"*"`
@@ -108,70 +71,69 @@ type CardParams struct {
 // because the cards endpoint is a little unusual. There is one other resource
 // like it, which is bank account.
 func (c *CardParams) AppendToAsCardSourceOrExternalAccount(body *form.Values, keyParts []string) {
-	// Rather than being called in addition to `AppendTo`, this function
-	// *replaces* `AppendTo`, so we must also make sure to handle the encoding
-	// of `Params` so metadata and the like is included in the encoded payload.
-	form.AppendToPrefixed(body, c.Params, keyParts)
-
-	if c.DefaultForCurrency != nil {
-		body.Add(form.FormatKey(append(keyParts, "default_for_currency")), strconv.FormatBool(BoolValue(c.DefaultForCurrency)))
+	if c.Default {
+		body.Add(form.FormatKey(append(keyParts, "default_for_currency")), strconv.FormatBool(c.Default))
 	}
 
-	if c.Token != nil {
-		if c.Account != nil {
-			body.Add(form.FormatKey(append(keyParts, "external_account")), StringValue(c.Token))
+	if len(c.Token) > 0 {
+		if len(c.Account) > 0 {
+			body.Add(form.FormatKey(append(keyParts, "external_account")), c.Token)
 		} else {
-			body.Add(form.FormatKey(append(keyParts, cardSource)), StringValue(c.Token))
+			body.Add(form.FormatKey(append(keyParts, cardSource)), c.Token)
 		}
 	}
 
-	if c.Number != nil {
+	if len(c.Number) > 0 {
 		body.Add(form.FormatKey(append(keyParts, cardSource, "object")), "card")
-		body.Add(form.FormatKey(append(keyParts, cardSource, "number")), StringValue(c.Number))
+		body.Add(form.FormatKey(append(keyParts, cardSource, "number")), c.Number)
 	}
 
-	if c.CVC != nil {
-		body.Add(form.FormatKey(append(keyParts, cardSource, "cvc")), StringValue(c.CVC))
+	if len(c.CVC) > 0 {
+		body.Add(form.FormatKey(append(keyParts, cardSource, "cvc")), c.CVC)
 	}
 
-	if c.Currency != nil {
-		body.Add(form.FormatKey(append(keyParts, cardSource, "currency")), StringValue(c.Currency))
+	if len(c.Currency) > 0 {
+		body.Add(form.FormatKey(append(keyParts, cardSource, "currency")), c.Currency)
 	}
 
-	if c.ExpMonth != nil {
-		body.Add(form.FormatKey(append(keyParts, cardSource, "exp_month")), StringValue(c.ExpMonth))
+	if c.Default {
+		body.Add(form.FormatKey(append(keyParts, cardSource, "default_for_currency")), strconv.FormatBool(c.Default))
 	}
 
-	if c.ExpYear != nil {
-		body.Add(form.FormatKey(append(keyParts, cardSource, "exp_year")), StringValue(c.ExpYear))
+	if len(c.Month) > 0 {
+		body.Add(form.FormatKey(append(keyParts, cardSource, "exp_month")), c.Month)
 	}
 
-	if c.Name != nil {
-		body.Add(form.FormatKey(append(keyParts, cardSource, "name")), StringValue(c.Name))
+	if len(c.Year) > 0 {
+		body.Add(form.FormatKey(append(keyParts, cardSource, "exp_year")), c.Year)
 	}
 
-	if c.AddressCity != nil {
-		body.Add(form.FormatKey(append(keyParts, cardSource, "address_city")), StringValue(c.AddressCity))
+	if len(c.Name) > 0 {
+		body.Add(form.FormatKey(append(keyParts, cardSource, "name")), c.Name)
 	}
 
-	if c.AddressCountry != nil {
-		body.Add(form.FormatKey(append(keyParts, cardSource, "address_country")), StringValue(c.AddressCountry))
+	if len(c.Address1) > 0 {
+		body.Add(form.FormatKey(append(keyParts, cardSource, "address_line1")), c.Address1)
 	}
 
-	if c.AddressLine1 != nil {
-		body.Add(form.FormatKey(append(keyParts, cardSource, "address_line1")), StringValue(c.AddressLine1))
+	if len(c.Address2) > 0 {
+		body.Add(form.FormatKey(append(keyParts, cardSource, "address_line2")), c.Address2)
 	}
 
-	if c.AddressLine2 != nil {
-		body.Add(form.FormatKey(append(keyParts, cardSource, "address_line2")), StringValue(c.AddressLine2))
+	if len(c.City) > 0 {
+		body.Add(form.FormatKey(append(keyParts, cardSource, "address_city")), c.City)
 	}
 
-	if c.AddressState != nil {
-		body.Add(form.FormatKey(append(keyParts, cardSource, "address_state")), StringValue(c.AddressState))
+	if len(c.State) > 0 {
+		body.Add(form.FormatKey(append(keyParts, cardSource, "address_state")), c.State)
 	}
 
-	if c.AddressZip != nil {
-		body.Add(form.FormatKey(append(keyParts, cardSource, "address_zip")), StringValue(c.AddressZip))
+	if len(c.Zip) > 0 {
+		body.Add(form.FormatKey(append(keyParts, cardSource, "address_zip")), c.Zip)
+	}
+
+	if len(c.Country) > 0 {
+		body.Add(form.FormatKey(append(keyParts, cardSource, "address_country")), c.Country)
 	}
 }
 
@@ -179,39 +141,26 @@ func (c *CardParams) AppendToAsCardSourceOrExternalAccount(body *form.Values, ke
 // For more details see https://stripe.com/docs/api#list_cards.
 type CardListParams struct {
 	ListParams `form:"*"`
-	Account    *string `form:"-"`
-	Customer   *string `form:"-"`
-	Recipient  *string `form:"-"`
-}
-
-// AppendTo implements custom encoding logic for CardListParams
-// so that we can send the special required `object` field up along with the
-// other specified parameters.
-func (p *CardListParams) AppendTo(body *form.Values, keyParts []string) {
-	if p.Account != nil || p.Customer != nil {
-		body.Add(form.FormatKey(append(keyParts, "object")), "card")
-	}
+	Account    string `form:"-"`
+	Customer   string `form:"-"`
+	Recipient  string `form:"-"`
 }
 
 // Card is the resource representing a Stripe credit/debit card.
 // For more details see https://stripe.com/docs/api#cards.
 type Card struct {
-	AddressCity            string                      `json:"address_city"`
-	AddressCountry         string                      `json:"address_country"`
-	AddressLine1           string                      `json:"address_line1"`
-	AddressLine1Check      CardVerification            `json:"address_line1_check"`
-	AddressLine2           string                      `json:"address_line2"`
-	AddressState           string                      `json:"address_state"`
-	AddressZip             string                      `json:"address_zip"`
-	AddressZipCheck        CardVerification            `json:"address_zip_check"`
-	AvailablePayoutMethods []CardAvailablePayoutMethod `json:"available_payout_methods"`
-	Brand                  CardBrand                   `json:"brand"`
-	CVCCheck               CardVerification            `json:"cvc_check"`
-	Country                string                      `json:"country"`
-	Currency               Currency                    `json:"currency"`
-	Customer               *Customer                   `json:"customer"`
-	DefaultForCurrency     bool                        `json:"default_for_currency"`
-	Deleted                bool                        `json:"deleted"`
+	Address1      string       `json:"address_line1"`
+	Address1Check Verification `json:"address_line1_check"`
+	Address2      string       `json:"address_line2"`
+	Brand         CardBrand    `json:"brand"`
+	CVCCheck      Verification `json:"cvc_check"`
+	CardCountry   string       `json:"country"`
+	City          string       `json:"address_city"`
+	Country       string       `json:"address_country"`
+	Currency      Currency     `json:"currency"`
+	Customer      *Customer    `json:"customer"`
+	Default       bool         `json:"default_for_currency"`
+	Deleted       bool         `json:"deleted"`
 
 	// Description is a succinct summary of the card's information.
 	//
@@ -219,12 +168,10 @@ type Card struct {
 	// as part of standard API requests.
 	Description string `json:"description"`
 
-	DynamicLast4 string      `json:"dynamic_last4"`
-	ExpMonth     uint8       `json:"exp_month"`
-	ExpYear      uint16      `json:"exp_year"`
-	Fingerprint  string      `json:"fingerprint"`
-	Funding      CardFunding `json:"funding"`
-	ID           string      `json:"id"`
+	DynLastFour string      `json:"dynamic_last4"`
+	Fingerprint string      `json:"fingerprint"`
+	Funding     CardFunding `json:"funding"`
+	ID          string      `json:"id"`
 
 	// IIN is the card's "Issuer Identification Number".
 	//
@@ -238,35 +185,38 @@ type Card struct {
 	// as part of standard API requests.
 	Issuer string `json:"issuer"`
 
-	Last4              string                 `json:"last4"`
-	Metadata           map[string]string      `json:"metadata"`
-	Name               string                 `json:"name"`
-	Recipient          *Recipient             `json:"recipient"`
-	ThreeDSecure       *ThreeDSecure          `json:"three_d_secure"`
-	TokenizationMethod CardTokenizationMethod `json:"tokenization_method"`
+	LastFour           string             `json:"last4"`
+	Meta               map[string]string  `json:"metadata"`
+	Month              uint8              `json:"exp_month"`
+	Name               string             `json:"name"`
+	Recipient          *Recipient         `json:"recipient"`
+	State              string             `json:"address_state"`
+	ThreeDSecure       *ThreeDSecure      `json:"three_d_secure"`
+	TokenizationMethod TokenizationMethod `json:"tokenization_method"`
+	Year               uint16             `json:"exp_year"`
+	Zip                string             `json:"address_zip"`
+	ZipCheck           Verification       `json:"address_zip_check"`
 }
 
 // CardList is a list object for cards.
 type CardList struct {
 	ListMeta
-	Data []*Card `json:"data"`
+	Values []*Card `json:"data"`
 }
 
 // UnmarshalJSON handles deserialization of a Card.
 // This custom unmarshaling is needed because the resulting
 // property may be an id or the full struct if it was expanded.
 func (c *Card) UnmarshalJSON(data []byte) error {
-	if id, ok := ParseID(data); ok {
-		c.ID = id
-		return nil
-	}
-
 	type card Card
-	var v card
-	if err := json.Unmarshal(data, &v); err != nil {
-		return err
+	var cc card
+	err := json.Unmarshal(data, &cc)
+	if err == nil {
+		*c = Card(cc)
+	} else {
+		// the id is surrounded by "\" characters, so strip them
+		c.ID = string(data[1 : len(data)-1])
 	}
 
-	*c = Card(v)
 	return nil
 }
