@@ -94,6 +94,38 @@
   version = "v1.0.0"
 
 [[projects]]
+  digest = "1:662f988f80b8e4208a0004d1e9d67543602fdd00b7106a857b8339e3d276ae1e"
+  name = "github.com/hashicorp/consul"
+  packages = ["api"]
+  pruneopts = "UT"
+  revision = "e8757838a49feeb682c7e6ad6b78694a78b2096b"
+  version = "v1.3.0"
+
+[[projects]]
+  digest = "1:f47d6109c2034cb16bd62b220e18afd5aa9d5a1630fe5d937ad96a4fb7cbb277"
+  name = "github.com/hashicorp/go-cleanhttp"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "e8ab9daed8d1ddd2d3c4efba338fe2eeae2e4f18"
+  version = "v0.5.0"
+
+[[projects]]
+  branch = "master"
+  digest = "1:45aad874d3c7d5e8610427c81870fb54970b981692930ec2a319ce4cb89d7a00"
+  name = "github.com/hashicorp/go-rootcerts"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "6bb64b370b90e7ef1fa532be9e591a81c3493e00"
+
+[[projects]]
+  digest = "1:0dd7b7b01769f9df356dc99f9e4144bdbabf6c79041ea7c0892379c5737f3c44"
+  name = "github.com/hashicorp/serf"
+  packages = ["coordinate"]
+  pruneopts = "UT"
+  revision = "d6574a5bb1226678d7010325fb6c985db20ee458"
+  version = "v0.8.1"
+
+[[projects]]
   branch = "master"
   digest = "1:22725c01ecd8ed0c0f0078944305a57053340d92878b02db925c660cc4accf64"
   name = "github.com/icrowley/fake"
@@ -118,17 +150,20 @@
   version = "v1.0.1"
 
 [[projects]]
-  digest = "1:fe6789a90268be152e8f91580d7e8a21dd5df7ddd2e3aad67ec4cad8b1fb3874"
-  name = "github.com/lionelbarrow/braintree-go"
-  packages = [
-    ".",
-    "customfields",
-    "date",
-    "xmlnil",
-  ]
+  digest = "1:78bbb1ba5b7c3f2ed0ea1eab57bdd3859aec7e177811563edc41198a760b06af"
+  name = "github.com/mitchellh/go-homedir"
+  packages = ["."]
   pruneopts = "UT"
-  revision = "d30fd978bc4ba4910b438891b0a22b5ae496cdce"
-  version = "v0.20.0"
+  revision = "ae18d6b8b3205b561c79e8e5f69bff09736185f4"
+  version = "v1.0.0"
+
+[[projects]]
+  digest = "1:53bc4cd4914cd7cd52139990d5170d6dc99067ae31c56530621b18b35fc30318"
+  name = "github.com/mitchellh/mapstructure"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "3536a929edddb9a5b34bd6861dc4a9647cb459fe"
+  version = "v1.1.2"
 
 [[projects]]
   digest = "1:40e195917a951a8bf867cd05de2a46aaf1806c50cf92eebf4c16f78cd196f747"
@@ -349,9 +384,9 @@
     "github.com/grpc-ecosystem/go-grpc-middleware/recovery",
     "github.com/grpc-ecosystem/go-grpc-middleware/testing",
     "github.com/grpc-ecosystem/go-grpc-middleware/testing/testproto",
+    "github.com/hashicorp/consul/api",
     "github.com/icrowley/fake",
     "github.com/kelseyhightower/envconfig",
-    "github.com/lionelbarrow/braintree-go",
     "github.com/pkg/errors",
     "github.com/rhymond/go-money",
     "github.com/satori/go.uuid",
