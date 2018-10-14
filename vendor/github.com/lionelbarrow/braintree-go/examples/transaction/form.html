@@ -1,0 +1,30 @@
+<html>
+  <head>
+    <title>Sample Payment Form</title>
+  </head>
+  <body>
+    <h1>Sample Braintree Go Payment Form</h1>
+    <div>
+      <form action="/create_transaction" method="POST" id="braintree-payment-form">
+        <p>
+          <label>Card Number</label>
+          <input type="text" size="20" autocomplete="off" data-encrypted-name="number" />
+        </p>
+        <p>
+          <label>CVV</label>
+          <input type="text" size="4" autocomplete="off" data-encrypted-name="cvv" />
+        </p>
+        <p>
+          <label>Expiration (MM/YYYY)</label>
+          <input type="text" size="2" data-encrypted-name="month" /> / <input type="text" size="4" data-encrypted-name="year" />
+        </p>
+        <input type="submit" id="submit" />
+      </form>
+    </div>
+    <script type="text/javascript" src="https://js.braintreegateway.com/v1/braintree.js"></script>
+    <script type="text/javascript">
+      var braintree = Braintree.create({{ .Key }})
+      braintree.onSubmitEncryptForm("braintree-payment-form");
+    </script>
+  </body>
+</html>

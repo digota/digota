@@ -1,0 +1,21 @@
+<html>
+  <head>
+    <title>Sample Subscription Payment Form</title>
+  </head>
+  <body>
+    <form id="checkout" method="post" action="/checkout">
+      <div id="payment-form"></div>
+      <!-- The actual amount and currency is arriving from the plan's data -->
+      <input type="submit" value="Pay">
+    </form>
+
+    <script src="https://js.braintreegateway.com/js/braintree-2.24.0.min.js"></script>
+    <script>
+      // This will be filled in the server side by the templating engine
+      var clientToken = "{{.}}";
+
+      // And we use the payment-form div for our Braintree's stuff
+      braintree.setup(clientToken, "dropin", {container: "payment-form" });
+    </script>
+  </body>
+</html>
