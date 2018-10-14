@@ -2,26 +2,30 @@ package braintree
 
 import (
 	"github.com/lionelbarrow/braintree-go/customfields"
+	"time"
 )
 
 type Customer struct {
 	XMLName            string                    `xml:"customer"`
-	Id                 string                    `xml:"id,omitempty"`
-	FirstName          string                    `xml:"first-name,omitempty"`
-	LastName           string                    `xml:"last-name,omitempty"`
-	Company            string                    `xml:"company,omitempty"`
-	Email              string                    `xml:"email,omitempty"`
-	Phone              string                    `xml:"phone,omitempty"`
-	Fax                string                    `xml:"fax,omitempty"`
-	Website            string                    `xml:"website,omitempty"`
-	CustomFields       customfields.CustomFields `xml:"custom-fields,omitempty"`
-	CreditCard         *CreditCard               `xml:"credit-card,omitempty"`
-	CreditCards        *CreditCards              `xml:"credit-cards,omitempty"`
-	PayPalAccounts     *PayPalAccounts           `xml:"paypal-accounts,omitempty"`
-	VenmoAccounts      *VenmoAccounts            `xml:"venmo-accounts,omitempty"`
-	AndroidPayCards    *AndroidPayCards          `xml:"android-pay-cards,omitempty"`
-	ApplePayCards      *ApplePayCards            `xml:"apple-pay-cards,omitempty"`
-	PaymentMethodNonce string                    `xml:"payment-method-nonce,omitempty"`
+	Id                 string                    `xml:"id"`
+	FirstName          string                    `xml:"first-name"`
+	LastName           string                    `xml:"last-name"`
+	Company            string                    `xml:"company"`
+	Email              string                    `xml:"email"`
+	Phone              string                    `xml:"phone"`
+	Fax                string                    `xml:"fax"`
+	Website            string                    `xml:"website"`
+	CustomFields       customfields.CustomFields `xml:"custom-fields"`
+	CreditCard         *CreditCard               `xml:"credit-card"`
+	CreditCards        *CreditCards              `xml:"credit-cards"`
+	PayPalAccounts     *PayPalAccounts           `xml:"paypal-accounts"`
+	VenmoAccounts      *VenmoAccounts            `xml:"venmo-accounts"`
+	AndroidPayCards    *AndroidPayCards          `xml:"android-pay-cards"`
+	ApplePayCards      *ApplePayCards            `xml:"apple-pay-cards"`
+	PaymentMethodNonce string                    `xml:"payment-method-nonce"`
+	Addresses          *Addresses                `xml:"addresses"`
+	CreatedAt          *time.Time                `xml:"created-at"`
+	UpdatedAt          *time.Time                `xml:"updated-at"`
 }
 
 // PaymentMethods returns a slice of all PaymentMethods this customer has
@@ -55,10 +59,26 @@ func (c *Customer) DefaultPaymentMethod() PaymentMethod {
 	return nil
 }
 
+type CustomerRequest struct {
+	XMLName            string                    `xml:"customer"`
+	ID                 string                    `xml:"id,omitempty"`
+	FirstName          string                    `xml:"first-name,omitempty"`
+	LastName           string                    `xml:"last-name,omitempty"`
+	Company            string                    `xml:"company,omitempty"`
+	Email              string                    `xml:"email,omitempty"`
+	Phone              string                    `xml:"phone,omitempty"`
+	Fax                string                    `xml:"fax,omitempty"`
+	Website            string                    `xml:"website,omitempty"`
+	CustomFields       customfields.CustomFields `xml:"custom-fields,omitempty"`
+	CreditCard         *CreditCard               `xml:"credit-card,omitempty"`
+	PaymentMethodNonce string                    `xml:"payment-method-nonce,omitempty"`
+}
+
 type CustomerSearchResult struct {
-	XMLName           string      `xml:"customers"`
-	CurrentPageNumber int         `xml:"current-page-number"`
-	PageSize          int         `xml:"page-size"`
-	TotalItems        int         `xml:"total-items"`
-	Customers         []*Customer `xml:"customer"`
+	TotalItems int
+	TotalIDs   []string
+
+	CurrentPageNumber int
+	PageSize          int
+	Customers         []*Customer
 }

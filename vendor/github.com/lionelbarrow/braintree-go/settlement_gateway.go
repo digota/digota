@@ -1,11 +1,13 @@
 package braintree
 
+import "context"
+
 type SettlementGateway struct {
 	*Braintree
 }
 
-func (sg *SettlementGateway) Generate(s *Settlement) (*SettlementBatchSummary, error) {
-	resp, err := sg.execute("POST", "settlement_batch_summary", s)
+func (sg *SettlementGateway) Generate(ctx context.Context, s *Settlement) (*SettlementBatchSummary, error) {
+	resp, err := sg.execute(ctx, "POST", "settlement_batch_summary", s)
 	if err != nil {
 		return nil, err
 	}

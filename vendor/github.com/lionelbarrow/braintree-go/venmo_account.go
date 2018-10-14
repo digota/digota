@@ -7,16 +7,16 @@ import (
 
 type VenmoAccount struct {
 	XMLName           xml.Name       `xml:"venmo-account"`
-	CustomerId        string         `xml:"customer-id,omitempty"`
-	Token             string         `xml:"token,omitempty"`
-	Username          string         `xml:"username,omitempty"`
-	VenmoUserID       string         `xml:"venmo-user-id,omitempty"`
-	SourceDescription string         `xml:"source-description,omitempty"`
-	ImageURL          string         `xml:"image-url,omitempty"`
-	CreatedAt         *time.Time     `xml:"created-at,omitempty"`
-	UpdatedAt         *time.Time     `xml:"updated-at,omitempty"`
-	Subscriptions     *Subscriptions `xml:"subscriptions,omitempty"`
-	Default           bool           `xml:"default,omitempty"`
+	CustomerId        string         `xml:"customer-id"`
+	Token             string         `xml:"token"`
+	Username          string         `xml:"username"`
+	VenmoUserID       string         `xml:"venmo-user-id"`
+	SourceDescription string         `xml:"source-description"`
+	ImageURL          string         `xml:"image-url"`
+	CreatedAt         *time.Time     `xml:"created-at"`
+	UpdatedAt         *time.Time     `xml:"updated-at"`
+	Subscriptions     *Subscriptions `xml:"subscriptions"`
+	Default           bool           `xml:"default"`
 }
 
 type VenmoAccounts struct {

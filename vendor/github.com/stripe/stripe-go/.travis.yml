@@ -1,5 +1,16 @@
 before_install:
-  - go get -u github.com/stretchr/testify/require
+  # Install various build dependencies. We use `travis_retry` because `go get`
+  # will occasionally fail intermittently.
+
+  # The testify require framework is used for assertions in the test suite
+  - travis_retry go get -u github.com/stretchr/testify/require
+
+  # Install lint / code coverage / coveralls tooling
+  - travis_retry go get -u golang.org/x/lint/golint
+  - travis_retry go get -u golang.org/x/net/http2
+  - travis_retry go get -u golang.org/x/tools/cmd/cover
+  - travis_retry go get -u github.com/modocache/gover
+  - travis_retry go get -u github.com/mattn/goveralls
 
   # Unpack and start the Stripe API stub so that the test suite can talk to it
   - |
@@ -9,7 +20,7 @@ before_install:
       tar -zxf "stripe-mock/stripe-mock_${STRIPE_MOCK_VERSION}_linux_amd64.tar.gz" -C "stripe-mock/stripe-mock_${STRIPE_MOCK_VERSION}/"
     fi
   - |
-    stripe-mock/stripe-mock_${STRIPE_MOCK_VERSION}/stripe-mock > /dev/null &
+    stripe-mock/stripe-mock_${STRIPE_MOCK_VERSION}/stripe-mock -https-port 12112 > /dev/null &
     STRIPE_MOCK_PID=$!
 
 cache:
@@ -18,12 +29,14 @@ cache:
 
 env:
   global:
-    - STRIPE_MOCK_VERSION=0.3.0
+    # If changing this number, please also change it in `testing/testing.go`.
+    - STRIPE_MOCK_VERSION=0.33.0
 
 go:
-  - 1.7
-  - 1.8
-  - 1.9
+  - "1.7"
+  - "1.8"
+  - "1.9"
+  - "1.10"
   - tip
 
 language: go
@@ -35,5 +48,12 @@ matrix:
 
 script:
   - make
+  - make coverage
+
+after_script:
+  # Merge all coverage reports located in subdirectories and put them under: gover.coverprofile
+  - gover
+  # Send code coverage report to coveralls.io
+  - goveralls -service=travis-ci -coverprofile=gover.coverprofile
 
 sudo: false

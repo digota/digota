@@ -6,16 +6,24 @@ import (
 )
 
 type SearchQuery struct {
-	XMLName string `xml:"search"`
-	Fields  []interface{}
+	fields     []interface{}
+	fieldIndex map[string]int
 }
 
-type SearchResults struct {
-	XMLName  string `xml:"search-results"`
-	PageSize string `xml:"page-size"`
-	Ids      struct {
-		Item []string `xml:"item"`
-	} `xml:"ids"`
+func (s *SearchQuery) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	start.Name.Local = "search"
+	x := struct {
+		Fields []interface{}
+	}{
+		Fields: s.fields,
+	}
+	return e.EncodeElement(&x, start)
+}
+
+type SearchResult struct {
+	PageSize  int
+	PageCount int
+	IDs       []string
 }
 
 type TextField struct {
@@ -86,21 +94,33 @@ type MultiField struct {
 	Items   []string `xml:"item"`
 }
 
+func (s *SearchQuery) addField(fieldName string, field interface{}) {
+	if i, ok := s.fieldIndex[fieldName]; !ok {
+		s.fields = append(s.fields, field)
+		if s.fieldIndex == nil {
+			s.fieldIndex = map[string]int{}
+		}
+		s.fieldIndex[fieldName] = len(s.fields) - 1
+	} else {
+		s.fields[i] = field
+	}
+}
+
 func (s *SearchQuery) AddTextField(field string) *TextField {
 	f := &TextField{XMLName: xml.Name{Local: field}}
-	s.Fields = append(s.Fields, f)
+	s.addField(field, f)
 	return f
 }
 
 func (s *SearchQuery) AddRangeField(field string) *RangeField {
 	f := &RangeField{XMLName: xml.Name{Local: field}}
-	s.Fields = append(s.Fields, f)
+	s.addField(field, f)
 	return f
 }
 
 func (s *SearchQuery) AddTimeField(field string) *TimeField {
 	f := &TimeField{XMLName: xml.Name{Local: field}}
-	s.Fields = append(s.Fields, f)
+	s.addField(field, f)
 	return f
 }
 
@@ -109,6 +129,23 @@ func (s *SearchQuery) AddMultiField(field string) *MultiField {
 		XMLName: xml.Name{Local: field},
 		Type:    "array",
 	}
-	s.Fields = append(s.Fields, f)
+	s.addField(field, f)
 	return f
+}
+
+func (s *SearchQuery) shallowCopy() *SearchQuery {
+	return &SearchQuery{
+		fields: func() []interface{} {
+			a := make([]interface{}, len(s.fields))
+			copy(a, s.fields)
+			return a
+		}(),
+		fieldIndex: func() map[string]int {
+			m := map[string]int{}
+			for f, i := range s.fieldIndex {
+				m[f] = i
+			}
+			return m
+		}(),
+	}
 }

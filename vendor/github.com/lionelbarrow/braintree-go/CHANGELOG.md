@@ -1,3 +1,99 @@
+## 0.20.0 (August 8th, 2018)
+
+BACKWARDS INCOMPATIBILITES:
+
+* Add subscription ID parameter to SubscriptionGateway Update. See #243.
+
+DEPRECATED:
+* TransactionGateway Search and SearchNext functions are deprecated, use SearchIDs and SearchPage instead.
+* SubscriptionGateway Search and SearchNext functions are deprecated, use SearchIDs and SearchPage instead.
+* CustomerGateway Search function is deprecated, use SearchIDs and SearchPage instead.
+
+IMPROVEMENTS:
+
+* Add CreatedAt, UpdatedAt to Subscription.
+* Add StoreInVaultOnSuccess to TransactionOptions.
+* Add PaymentInstrumentType constants to Transaction.
+* Add SearchPage to TransactionGateway, deprecating Search and SearchNext.
+* Add SearchPage to SubscriptionGateway, deprecating Search and SearchNext.
+* Add ExpiringBetweenIDs, ExpiringBetweenPage to CreditCardGateway.
+* Add SearchIDs, SearchPage to CustomerGateway.
+* Add PaymentMethodNonce, PaymentMethodNonceDetails, PaymentMethodNonceGateway.
+* Add 3DS support:
+  * Add ThreeDSecure to TransactionOptions.
+  * Add ThreeDSecureInfo to Transaction.
+
+## 0.19.0 (June 8th, 2018)
+
+BACKWARDS INCOMPATIBILITES:
+
+* Rewrite error handling and interfaces. See #222 for details.
+
+IMPROVEMENTS:
+
+* Add TransactionLineItemGateway, TransactionLineItem, TransactionLineItemRequest, and add LineItems to TransactionRequest.
+* Add DisputeGateway, Dispute, DisputeEvidence, DisputeTextEvidenceRequest, related types, and add Disputes to Transaction.
+* Add support for validation errors on all fields. See #222 for details.
+* Add RetryCharge to SubscriptionGateway.
+* Add TransactionSource to TransactionRequest.
+* Add CurrentBillingCycle to Modification.
+* Add SubscriptionDetails to Transaction.
+* Add StatusEvents to Subscription.
+* Add SearchIDs, Search, and SearchNext to SubscriptionGateway.
+* Add CreatedAt and UpdatedAt to Customer.
+* Add comments to some exported functions, constants, and types.
+
+INTERNAL:
+
+* Fix VenmoSDK tests.
+* Fix errcheck checks.
+* Other minor test fixes.
+
+## 0.18.0 (March 2nd, 2018)
+
+BACKWARDS INCOMPATIBILITES:
+
+* Require TLS 1.2 on outgoing connections.
+* Replace Address with AddressRequest for creating Addresses.
+* Replace Customer with CustomerRequest for creating and updating Customers.
+
+IMPROVEMENTS:
+
+* Add SearchIDs to TransactionGateway.
+* Add SearchNext to TransactionGateway.
+* Add SkipAdvancedFraudChecking to TransactionOptions.
+* Add Update to AddressGateway.
+* Add Addresses to Customer.
+
+## 0.17.0 (January 5th, 2018)
+
+IMPROVEMENTS:
+
+* Add NumerOfBillingCycles to Modifications.
+* Add PurchaseOrderNumber to Transaction and TransactionRequest.
+
+INTERNAL:
+
+* Remove omitempty from structs only used for deserialization.
+* Add build tags for unit and integration tests.
+* Add analysis detailed warning messages.
+* Remove slow unit tests.
+
+## 0.16.0 (November 11th, 2017)
+
+BACKWARDS INCOMPATIBILITES:
+
+* Support for Go1.6 has been dropped. Support from this version onwards is Go1.7+.
+* Add `context.Context` as the first parameter to call functions that make an outgoing remote call.
+
+IMPROVEMENTS:
+
+* Add `go test` `-log` flag that logs requests and responses to stderr.
+
+BUG FIXES:
+
+* Responses not GZIP encoded were still attempted to be GZIP decoded.
+
 ## 0.15.0 (October 3rd, 2017)
 
 BACKWARDS INCOMPATIBILITES:

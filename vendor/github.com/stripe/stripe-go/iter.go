@@ -6,8 +6,9 @@ import (
 	"github.com/stripe/stripe-go/form"
 )
 
-// Query is the function used to get a page listing.
-type Query func(*form.Values) ([]interface{}, ListMeta, error)
+//
+// Public types
+//
 
 // Iter provides a convenient interface
 // for iterating over the elements
@@ -18,68 +19,13 @@ type Query func(*form.Values) ([]interface{}, ListMeta, error)
 // Iterators are not thread-safe, so they should not be consumed
 // across multiple goroutines.
 type Iter struct {
-	cur    interface{}
-	err    error
-	meta   ListMeta
-	params ListParams
-	qs     *form.Values
-	query  Query
-	values []interface{}
-}
-
-// GetIter returns a new Iter for a given query and its options.
-func GetIter(params *ListParams, qs *form.Values, query Query) *Iter {
-	iter := &Iter{}
-	iter.query = query
-
-	p := params
-	if p == nil {
-		p = &ListParams{}
-	}
-	iter.params = *p
-
-	q := qs
-	if q == nil {
-		q = &form.Values{}
-	}
-	iter.qs = q
-
-	iter.getPage()
-	return iter
-}
-
-func (it *Iter) getPage() {
-	it.values, it.meta, it.err = it.query(it.qs)
-	if it.params.End != "" {
-		// We are moving backward,
-		// but items arrive in forward order.
-		reverse(it.values)
-	}
-}
-
-// Next advances the Iter to the next item in the list,
-// which will then be available
-// through the Current method.
-// It returns false when the iterator stops
-// at the end of the list.
-func (it *Iter) Next() bool {
-	if len(it.values) == 0 && it.meta.More && !it.params.Single {
-		// determine if we're moving forward or backwards in paging
-		if it.params.End != "" {
-			it.params.End = listItemID(it.cur)
-			it.qs.Set(endbefore, it.params.End)
-		} else {
-			it.params.Start = listItemID(it.cur)
-			it.qs.Set(startafter, it.params.Start)
-		}
-		it.getPage()
-	}
-	if len(it.values) == 0 {
-		return false
-	}
-	it.cur = it.values[0]
-	it.values = it.values[1:]
-	return true
+	cur        interface{}
+	err        error
+	formValues *form.Values
+	listParams ListParams
+	meta       ListMeta
+	query      Query
+	values     []interface{}
 }
 
 // Current returns the most recent item
@@ -100,6 +46,81 @@ func (it *Iter) Err() error {
 func (it *Iter) Meta() *ListMeta {
 	return &it.meta
 }
+
+// Next advances the Iter to the next item in the list,
+// which will then be available
+// through the Current method.
+// It returns false when the iterator stops
+// at the end of the list.
+func (it *Iter) Next() bool {
+	if len(it.values) == 0 && it.meta.HasMore && !it.listParams.Single {
+		// determine if we're moving forward or backwards in paging
+		if it.listParams.EndingBefore != nil {
+			it.listParams.EndingBefore = String(listItemID(it.cur))
+			it.formValues.Set(EndingBefore, *it.listParams.EndingBefore)
+		} else {
+			it.listParams.StartingAfter = String(listItemID(it.cur))
+			it.formValues.Set(StartingAfter, *it.listParams.StartingAfter)
+		}
+		it.getPage()
+	}
+	if len(it.values) == 0 {
+		return false
+	}
+	it.cur = it.values[0]
+	it.values = it.values[1:]
+	return true
+}
+
+func (it *Iter) getPage() {
+	it.values, it.meta, it.err = it.query(it.listParams.GetParams(), it.formValues)
+
+	if it.listParams.EndingBefore != nil {
+		// We are moving backward,
+		// but items arrive in forward order.
+		reverse(it.values)
+	}
+}
+
+// Query is the function used to get a page listing.
+type Query func(*Params, *form.Values) ([]interface{}, ListMeta, error)
+
+//
+// Public functions
+//
+
+// GetIter returns a new Iter for a given query and its options.
+func GetIter(container ListParamsContainer, query Query) *Iter {
+	var listParams *ListParams
+	formValues := &form.Values{}
+
+	if container != nil {
+		reflectValue := reflect.ValueOf(container)
+
+		// See the comment on Call in stripe.go.
+		if reflectValue.Kind() == reflect.Ptr && !reflectValue.IsNil() {
+			listParams = container.GetListParams()
+			form.AppendTo(formValues, container)
+		}
+	}
+
+	if listParams == nil {
+		listParams = &ListParams{}
+	}
+	iter := &Iter{
+		formValues: formValues,
+		listParams: *listParams,
+		query:      query,
+	}
+
+	iter.getPage()
+
+	return iter
+}
+
+//
+// Private functions
+//
 
 func listItemID(x interface{}) string {
 	return reflect.ValueOf(x).Elem().FieldByName("ID").String()

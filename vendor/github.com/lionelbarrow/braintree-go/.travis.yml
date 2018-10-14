@@ -7,29 +7,29 @@ install:
 jobs:
   include:
     - stage: analysis
-      go: 1.9
+      go: "1.10"
       script: make analysis
 
     - stage: test
-      go: 1.9
+      go: "tip"
       script: make test
 
     - stage: test
-      go: 1.8
+      go: "1.11beta2"
       script: make test
 
     - stage: test
-      go: 1.7
+      go: "1.10"
       script: make test
 
     - stage: test
-      go: 1.6
+      go: "1.9"
       script: make test
 
-    - stage: analysis-is-backward-compatible-with-master
-      go: 1.9
-      script: make analysis-is-backward-compatible-with-master
+    - stage: test
+      go: "1.8"
+      script: make test
 
-  allow_failures:
-    - stage: analysis-is-backward-compatible-with-master
-
+    - stage: test
+      go: "1.7"
+      script: make test

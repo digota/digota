@@ -49,27 +49,10 @@ type field struct {
 }
 
 type formOptions struct {
-	// IndexedArray indicates that contrary to standard "Rack-style" form
-	// encoding, array items should be index like `arr[0]=...&arr[1]=...`
-	// (normally it'd be `arr[]=...`).
-	IndexedArray bool
-
 	// Empty indicates that a field's value should be emptied in that its value
 	// should be an empty string. It's used to workaround the fact that an
 	// empty string is a string's zero value and wouldn't normally be encoded.
 	Empty bool
-
-	// Invert indicates that a boolean field's value should be inverted. False
-	// is the zero value for a boolean so it's convention in the library to
-	// specify a `No*` field to allow a false to be passed to the API. These
-	// fields should be annotated with `invert`.
-	Invert bool
-
-	// Zero indicates a field that's specifically defined to workaround the
-	// fact because 0 is the "zero value" of all int/float types, we can't
-	// properly encode an explicit 0. It indicates that an explicit zero should
-	// be sent.
-	Zero bool
 }
 
 type structEncoder struct {
@@ -159,10 +142,6 @@ func boolEncoder(values *Values, v reflect.Value, keyParts []string, encodeZero 
 		switch {
 		case options.Empty:
 			values.Add(FormatKey(keyParts), "")
-		case options.Invert:
-			values.Add(FormatKey(keyParts), strconv.FormatBool(false))
-		case options.Zero:
-			values.Add(FormatKey(keyParts), "0")
 		}
 	} else {
 		values.Add(FormatKey(keyParts), strconv.FormatBool(val))
@@ -174,23 +153,16 @@ func buildArrayOrSliceEncoder(t reflect.Type) encoderFunc {
 	elemF := getCachedOrBuildTypeEncoder(t.Elem())
 
 	return func(values *Values, v reflect.Value, keyParts []string, _ bool, options *formOptions) {
-		// FormatKey automatically adds square brackets, so just pass an empty
-		// string into the breadcrumb trail
-		arrNames := append(keyParts, "")
+		var arrNames []string
 
 		for i := 0; i < v.Len(); i++ {
-			// The one exception to the above is when options have requested
-			// that this array/slice be indexed. In that case we produce a hash
-			// keyed with integers which the Stripe API knows how to interpret.
-			if options != nil && options.IndexedArray {
-				arrNames = append(keyParts, strconv.Itoa(i))
-			}
+			arrNames = append(keyParts, strconv.Itoa(i))
 
 			indexV := v.Index(i)
 			elemF(values, indexV, arrNames, indexV.Kind() == reflect.Ptr, nil)
 
 			if isAppender(indexV.Type()) && !indexV.IsNil() {
-				v.Interface().(Appender).AppendTo(values, arrNames)
+				indexV.Interface().(Appender).AppendTo(values, arrNames)
 			}
 		}
 	}
@@ -298,11 +270,13 @@ func intEncoder(values *Values, v reflect.Value, keyParts []string, encodeZero b
 	values.Add(FormatKey(keyParts), strconv.FormatInt(val, 10))
 }
 
-func interfaceEncoder(values *Values, v reflect.Value, keyParts []string, _ bool, _ *formOptions) {
+func interfaceEncoder(values *Values, v reflect.Value, keyParts []string, encodeZero bool, _ *formOptions) {
+	// interfaceEncoder never encodes a `nil`, but it will pass through an
+	// `encodeZero` value into its chained encoder
 	if v.IsNil() {
 		return
 	}
-	reflectValue(values, v.Elem(), false, keyParts)
+	reflectValue(values, v.Elem(), encodeZero, keyParts)
 }
 
 func isAppender(t reflect.Type) bool {
@@ -315,7 +289,11 @@ func mapEncoder(values *Values, v reflect.Value, keyParts []string, _ bool, _ *f
 			panic("Don't support serializing maps with non-string keys")
 		}
 
-		reflectValue(values, v.MapIndex(keyVal), false, append(keyParts, keyVal.String()))
+		// Unlike a property on a struct which will contain a zero value even
+		// if never set, any value found in a map has been explicitly set, so
+		// we always make an effort to encode them, even if a zero value
+		// (that's why we pass through `true` here).
+		reflectValue(values, v.MapIndex(keyVal), true, append(keyParts, keyVal.String()))
 	}
 }
 
@@ -335,12 +313,17 @@ func uintEncoder(values *Values, v reflect.Value, keyParts []string, encodeZero 
 	values.Add(FormatKey(keyParts), strconv.FormatUint(val, 10))
 }
 
-func reflectValue(values *Values, v reflect.Value, _ bool, keyParts []string) {
+// reflectValue is roughly the shared entry point of any AppendTo functions.
+// It's also called recursively in cases where a precise type isn't yet known
+// and its encoding needs to be deferred down the chain; for example, when
+// encoding interface{} or the values in an array or map containing
+// interface{}.
+func reflectValue(values *Values, v reflect.Value, encodeZero bool, keyParts []string) {
 	t := v.Type()
 
 	f := getCachedOrBuildTypeEncoder(t)
 	if f != nil {
-		f(values, v, keyParts, v.Kind() == reflect.Ptr, nil)
+		f(values, v, keyParts, encodeZero || v.Kind() == reflect.Ptr, nil)
 	}
 
 	if isAppender(t) {
@@ -375,12 +358,9 @@ func makeStructEncoder(t reflect.Type) *structEncoder {
 		fldTyp := reflectField.Type
 		fldKind := fldTyp.Kind()
 
-		if Strict && options != nil &&
-			(options.Empty || options.Invert || options.Zero) &&
-			fldKind != reflect.Bool {
-
+		if Strict && options != nil && options.Empty && fldKind != reflect.Bool {
 			panic(fmt.Sprintf(
-				"Cannot specify `empty`, `invert`, or `zero` for non-boolean field; on: %s/%s",
+				"Cannot specify `empty` for non-boolean field; on: %s/%s",
 				t.Name(), reflectField.Name,
 			))
 		}
@@ -450,24 +430,6 @@ func parseTag(tag string) (string, *formOptions) {
 				options = &formOptions{}
 			}
 			options.Empty = true
-
-		case "indexed":
-			if options == nil {
-				options = &formOptions{}
-			}
-			options.IndexedArray = true
-
-		case "invert":
-			if options == nil {
-				options = &formOptions{}
-			}
-			options.Invert = true
-
-		case "zero":
-			if options == nil {
-				options = &formOptions{}
-			}
-			options.Zero = true
 
 		default:
 			if Strict {
