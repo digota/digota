@@ -37,6 +37,12 @@ import (
 import (
 	"crypto/tls"
 	"crypto/x509"
+	"io/ioutil"
+	"net"
+	"os"
+	"os/signal"
+	"syscall"
+
 	"github.com/digota/digota/acl"
 	"github.com/digota/digota/client"
 	"github.com/digota/digota/config"
@@ -60,11 +66,6 @@ import (
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/reflection"
 	"google.golang.org/grpc/status"
-	"io/ioutil"
-	"net"
-	"os"
-	"os/signal"
-	"syscall"
 )
 
 type server struct {
@@ -73,9 +74,9 @@ type server struct {
 }
 
 // New create new digota server
-func New(addr string, conf *config.AppConfig, insecure bool) *server {
+func New(conf *config.AppConfig) *server {
 
-	if insecure {
+	if conf.Insecure {
 		acl.SetSkipAuth()
 	}
 
@@ -93,11 +94,11 @@ func New(addr string, conf *config.AppConfig, insecure bool) *server {
 	client.New(conf.Clients)
 	providers.New(conf.Payment)
 
-	lis, err := net.Listen("tcp", addr)
+	lis, err := net.Listen("tcp", conf.Address)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
-	log.Infof("Listening on %s", addr)
+	log.Infof("Listening on %s", conf.Address)
 	return &server{
 		listener:   lis,
 		grpcServer: newGRPCServer(conf),

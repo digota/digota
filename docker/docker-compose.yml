@@ -1,0 +1,33 @@
+version: '3'
+services:
+  
+  digota:
+    image: digota/digota:0.1
+    ports:
+     - 80:80
+    environment:
+      DIGOTA_ADDRESS: 80
+      DIGOTA_INSECURE: true
+      DIGOTA_STORAGE_HANDLER: mongodb
+      DIGOTA_STORAGE_ADDRESS: mongodb:27017
+      DIGOTA_LOCKER_HANDLER: zookeeper
+      DIGOTA_LOCKER_ADDRESS: zookeeper:2181
+    depends_on: 
+      - zookeeper
+      - mongodb
+
+  zookeeper:
+    image: zookeeper
+    restart: unless-stopped
+    ports:
+      - 2181:2181
+    environment:
+      ZOO_MY_ID: 1
+      ZOO_SERVERS: server.1=0.0.0.0:2888:3888
+
+  mongodb:
+    image: mvertes/alpine-mongo:3.2.3
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+
