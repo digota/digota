@@ -50,10 +50,6 @@
   version = "1.3.0"
 
 [[constraint]]
-  name = "github.com/lionelbarrow/braintree-go"
-  version = "0.20.0"
-
-[[constraint]]
   name = "github.com/pkg/errors"
   version = "0.8.0"
 
