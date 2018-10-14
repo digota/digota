@@ -25,24 +25,35 @@ ___TLDR; scalable ecommerce microservice.___
 
 #### Installation
 
+From source  
+
 ```bash
 $ go get -u github.com/digota/digota
+```
+
+From docker hub
+
+```bash
+$ docker pull digota/digota:0.1
 ```
 
 #### Run
 
 ```bash
-$ digota --port=8080 --config=/etc/digota/digota.yml
+$ docker run digota/digota:0.1
 ```
-Check out this [example](https://github.com/digota/digota/blob/master/_example/config/digota.yaml) to understand how to set up your config.
+
+Or with flags
+
+```bash
+$ docker run digota/digota:0.1 bash -c "digota --version"
+```
+
+Check out this [docker-compose](https://github.com/digota/digota/blob/master/docker/docker-compose.yml) for more details.
 
 Flags:
-
        --info                  Set log level to info
        --debug                 Set log level to debug
-       --config FILE, -c FILE  Load configuration from FILE (default: "digota.yaml")
-       --addr value, -a value  Address to bind (default: ":3051")
-       --insecure              Skip auth and tls configurations
        --help, -h              show help
        --version, -v           print the version
 
@@ -64,14 +75,6 @@ Supported gateways for now:
 
 > Are you payment provider ? 
 > Just implement the following [interface](https://github.com/digota/digota/blob/master/payment/service/providers/providers.go#L32) and PR you changes.
-
-```yaml
-...
-payment:
-- provider: Stripe
-  secret: sk_test_00000000000000000
-```
-
 
 ## Auth & Security
 
@@ -107,15 +110,6 @@ Take the certificate serial and Append the serial and scopes(`WRITE`,`READ`,`WIL
 ```bash
 $ openssl x509 -in out/client.com.crt -serial | grep -Po '(?<=serial=)\w+'
 output: A2FF9503829A3A0DDE9CB87191A472D4
-```
-
-```yml
-...
-clients:
-- serial: "A2FF9503829A3A0DDE9CB87191A472D4"
-  scopes:
-  - READ
-  - WRITE
 ```
 
 Follow [these](https://github.com/digota/digota/tree/master/_example/auth) steps to create your CA and Certificates.
