@@ -2,12 +2,12 @@ version: '3'
 services:
   
   digota:
-    image: digota/digota:0.1
+    image: digota/digota:0.1.1
     ports:
      - 80:80
     environment:
-      DIGOTA_ADDRESS: 80
-      DIGOTA_INSECURE: true
+      DIGOTA_ADDRESS: "0.0.0.0:80"
+      DIGOTA_INSECURE: "TRUE"
       DIGOTA_STORAGE_HANDLER: mongodb
       DIGOTA_STORAGE_ADDRESS: mongodb:27017
       DIGOTA_LOCKER_HANDLER: zookeeper
