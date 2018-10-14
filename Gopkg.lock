@@ -118,19 +118,6 @@
   version = "v1.0.1"
 
 [[projects]]
-  digest = "1:fe6789a90268be152e8f91580d7e8a21dd5df7ddd2e3aad67ec4cad8b1fb3874"
-  name = "github.com/lionelbarrow/braintree-go"
-  packages = [
-    ".",
-    "customfields",
-    "date",
-    "xmlnil",
-  ]
-  pruneopts = "UT"
-  revision = "d30fd978bc4ba4910b438891b0a22b5ae496cdce"
-  version = "v0.20.0"
-
-[[projects]]
   digest = "1:40e195917a951a8bf867cd05de2a46aaf1806c50cf92eebf4c16f78cd196f747"
   name = "github.com/pkg/errors"
   packages = ["."]
@@ -351,7 +338,6 @@
     "github.com/grpc-ecosystem/go-grpc-middleware/testing/testproto",
     "github.com/icrowley/fake",
     "github.com/kelseyhightower/envconfig",
-    "github.com/lionelbarrow/braintree-go",
     "github.com/pkg/errors",
     "github.com/rhymond/go-money",
     "github.com/satori/go.uuid",
