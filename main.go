@@ -29,18 +29,18 @@ import _ "github.com/digota/digota/config"
 
 // standards imports
 import (
+	"log"
+	"os"
+
 	"github.com/digota/digota/config"
 	"github.com/digota/digota/server"
 	"github.com/sirupsen/logrus"
 	"gopkg.in/urfave/cli.v1"
-	"log"
-	"os"
 )
 
 const (
 	//defaultLevel = logrus.WarnLevel
 	defaultLevel = logrus.DebugLevel
-	configPath   = "digota.yaml"
 	version      = "0.1"
 	name         = "digota"
 	usage        = ""
@@ -69,7 +69,6 @@ const (
 var (
 	app      = cli.NewApp()
 	addr     = port
-	confPath = configPath
 	insecure = false
 )
 
@@ -96,12 +95,6 @@ func main() {
 			Usage: "Set log level to debug",
 		},
 		cli.StringFlag{
-			Name:        "config, c",
-			Usage:       "Load configuration from `FILE`",
-			Value:       configPath,
-			Destination: &confPath,
-		},
-		cli.StringFlag{
 			Name:        "addr, a",
 			Usage:       "Address to bind",
 			Value:       ":3051",
@@ -125,12 +118,12 @@ func main() {
 		}
 		logrus.Infof("Log Level: %s", logrus.GetLevel().String())
 		// load config
-		conf, err := config.LoadConfig(confPath)
+		conf, err := config.LoadConfig()
 		if err != nil {
 			log.Fatalf("Could not load config => %s", err.Error())
 		}
 		// create new server and run on port , Run() will block
-		server.New(addr, conf,insecure).Run()
+		server.New(addr, conf, insecure).Run()
 		return nil
 	}
 	// run with os.args

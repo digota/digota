@@ -80,10 +80,14 @@ type PaymentProvider struct {
 }
 
 // LoadConfig read env vars and *AppConfig or error
-func LoadConfig(configPath string) (conf *AppConfig, err error) {
+func LoadConfig() (*AppConfig, error) {
+	var (
+		conf AppConfig
+		err  error
+	)
 	err = envconfig.Process("digota", &conf)
 	if err != nil {
 		return nil, err
 	}
-	return
+	return &conf, nil
 }
