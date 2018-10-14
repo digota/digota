@@ -46,7 +46,6 @@ const (
 	usage        = ""
 	email        = "yaron@digota.com"
 	description  = "eCommerce microservice"
-	port         = ":3051"
 	copyright    = `
 		Digota <http://digota.com> - eCommerce microservice
 		Copyright (C) 2017  Yaron Sumel <yaron@digota.com>. All Rights Reserved.
@@ -67,8 +66,7 @@ const (
 )
 
 var (
-	app  = cli.NewApp()
-	addr = port
+	app = cli.NewApp()
 )
 
 func init() {
@@ -93,12 +91,6 @@ func main() {
 			Name:  "debug",
 			Usage: "Set log level to debug",
 		},
-		cli.StringFlag{
-			Name:        "addr, a",
-			Usage:       "Address to bind",
-			Value:       ":3051",
-			Destination: &addr,
-		},
 	}
 	// prepare things up
 	app.Action = func(c *cli.Context) error {
@@ -117,7 +109,7 @@ func main() {
 			log.Fatalf("Could not load config => %s", err.Error())
 		}
 		// create new server and run on port , Run() will block
-		server.New(addr, conf).Run()
+		server.New(conf).Run()
 		return nil
 	}
 	// run with os.args

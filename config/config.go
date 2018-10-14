@@ -35,6 +35,7 @@ type AppConfig struct {
 	Storage  Storage
 	Locker   Locker
 	Insecure bool
+	Address  string
 }
 
 // Client is the client config structure

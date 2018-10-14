@@ -74,7 +74,7 @@ type server struct {
 }
 
 // New create new digota server
-func New(addr string, conf *config.AppConfig) *server {
+func New(conf *config.AppConfig) *server {
 
 	if conf.Insecure {
 		acl.SetSkipAuth()
@@ -94,11 +94,11 @@ func New(addr string, conf *config.AppConfig) *server {
 	client.New(conf.Clients)
 	providers.New(conf.Payment)
 
-	lis, err := net.Listen("tcp", addr)
+	lis, err := net.Listen("tcp", conf.Address)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
-	log.Infof("Listening on %s", addr)
+	log.Infof("Listening on %s", conf.Address)
 	return &server{
 		listener:   lis,
 		grpcServer: newGRPCServer(conf),
