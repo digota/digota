@@ -23,84 +23,71 @@
 package config
 
 import (
-	"gopkg.in/yaml.v2"
-	"io/ioutil"
+	"github.com/kelseyhightower/envconfig"
 )
 
 // AppConfig is the main config structure
+// export DIGOTA_LOCKER...=val
 type AppConfig struct {
-	TLS     TLS               `yaml:"TLS"`
-	Clients []Client          `yaml:"clients"`
-	Payment []PaymentProvider `yaml:"payment"`
-	Storage Storage           `yaml:"storage"`
-	Locker  Locker            `yaml:"locker"`
+	TLS     TLS
+	Clients []Client
+	Payment []PaymentProvider
+	Storage Storage
+	Locker  Locker
 }
 
 // Client is the client config structure
-// accept serial and scopse
-//	clients:
-//	- serial: "A2FF9503829A3A0DDE9CB87191A472D4"
-//	scopes:
-//	- READ
-//	- WRITE
 type Client struct {
-	Serial string   `yaml:"serial"`
-	Scopes []string `yaml:"scopes"`
+	Serial string
+	Scopes []string
 }
 
 // TLS is the tls config for running the server
 //	TLS:
-//	crt: out/server.com.crt
-//	key: out/server.com.key
-//	ca: out/ca.crt
+// export DIGOTA_CLIENT_SERIAL=val
+// export DIGOTA_CLIENT_SCOPES=READ,WRITE
+// export DIGOTA_CLIENT_SCOPES=READ,WRITE
+
 type TLS struct {
-	Key   string `yaml:"key"`
-	Crt   string `yaml:"crt"`
-	CACrt string `yaml:"ca"`
+	Key   string
+	Crt   string
+	CACrt string
 }
 
 // Storage is the storage handler config
-//	storage:
-//	handler: mongodb
-//	address:
-//	- localhost
 type Storage struct {
-	Handler  string   `yaml:"handler"`
-	Address  []string `yaml:"address"`
-	Username string   `yaml:"username"`
-	Password string   `yaml:"password"`
-	Database string   `yaml:"database"`
+	Handler  string
+	Address  []string
+	Username string
+	Password string
+	Database string
 }
 
 // Locker is the lock server handler config
-//	locker:
-//	handler: zookeeper
-//	address:
-//	- localhost
 type Locker struct {
-	Handler string   ` yaml:"handler"`
-	Address []string ` yaml:"address"`
+	Handler string
+	Address []string
 }
 
 // PaymentProvider is the payment provider config
-//	payment:
-//	- provider: Stripe
-//	secret: sk_test_0000000000000000000
 type PaymentProvider struct {
-	Provider   string `yaml:"provider"`
-	Secret     string `yaml:"secret"`
-	Live       bool   `yaml:"live"`
-	MerchId    string `yaml:"merchId"`
-	PublicKey  string `yaml:"pubkey"`
-	PrivateKey string `yaml:"priKey"`
+	Provider   string
+	Secret     string
+	Live       bool
+	MerchId    string
+	PublicKey  string
+	PrivateKey string
 }
 
-// LoadConfig read file from provided path and returns *AppConfig or error
-func LoadConfig(configPath string) (conf *AppConfig, err error) {
-	b, err := ioutil.ReadFile(configPath)
+// LoadConfig read env vars and *AppConfig or error
+func LoadConfig() (*AppConfig, error) {
+	var (
+		conf AppConfig
+		err  error
+	)
+	err = envconfig.Process("digota", &conf)
 	if err != nil {
 		return nil, err
 	}
-	err = yaml.Unmarshal(b, &conf)
-	return
+	return &conf, nil
 }

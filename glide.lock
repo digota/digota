@@ -1,5 +1,5 @@
-hash: a799b1ef53f103a37c8146d80314a694398848425caa57c0be6b7fa859318483
-updated: 2018-10-14T16:15:01.810117482+02:00
+hash: 8eb4ef4d697694f6adc30feae028a64f4e002bf96f51be29dabe731b1358e782
+updated: 2018-10-14T17:16:12.118040035+02:00
 imports:
 - name: github.com/davecgh/go-spew
   version: d8f796af33cc11cb798c1aaeb27a4ebc5099927d
@@ -42,6 +42,8 @@ imports:
   - tags
   - testing
   - testing/testproto
+- name: github.com/kelseyhightower/envconfig
+  version: f611eb38b3875cc3bd991ca91c51d06446afa14c
 - name: github.com/lionelbarrow/braintree-go
   version: a840f2e081fd551c4db28b7c0ae72884ed331ea2
   subpackages:
@@ -135,8 +137,6 @@ imports:
   - internal/scram
 - name: gopkg.in/urfave/cli.v1
   version: cfb38830724cc34fedffe9a2a29fb54fa9169cd1
-- name: gopkg.in/yaml.v2
-  version: 5420a8b6744d3b0345ab293f6fcba19c978f1183
 testImports:
 - name: github.com/corpix/uarand
   version: 2b8494104d86337cdd41d0a49cbed8e4583c0ab4
