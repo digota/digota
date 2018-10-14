@@ -37,6 +37,12 @@ import (
 import (
 	"crypto/tls"
 	"crypto/x509"
+	"io/ioutil"
+	"net"
+	"os"
+	"os/signal"
+	"syscall"
+
 	"github.com/digota/digota/acl"
 	"github.com/digota/digota/client"
 	"github.com/digota/digota/config"
@@ -60,11 +66,6 @@ import (
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/reflection"
 	"google.golang.org/grpc/status"
-	"io/ioutil"
-	"net"
-	"os"
-	"os/signal"
-	"syscall"
 )
 
 type server struct {
@@ -73,9 +74,9 @@ type server struct {
 }
 
 // New create new digota server
-func New(addr string, conf *config.AppConfig, insecure bool) *server {
+func New(addr string, conf *config.AppConfig) *server {
 
-	if insecure {
+	if conf.Insecure {
 		acl.SetSkipAuth()
 	}
 

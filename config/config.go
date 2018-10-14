@@ -29,11 +29,12 @@ import (
 // AppConfig is the main config structure
 // export DIGOTA_LOCKER...=val
 type AppConfig struct {
-	TLS     TLS
-	Clients []Client
-	Payment []PaymentProvider
-	Storage Storage
-	Locker  Locker
+	TLS      TLS
+	Clients  []Client
+	Payment  []PaymentProvider
+	Storage  Storage
+	Locker   Locker
+	Insecure bool
 }
 
 // Client is the client config structure
