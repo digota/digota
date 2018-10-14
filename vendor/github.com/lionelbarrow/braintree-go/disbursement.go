@@ -1,7 +1,9 @@
 package braintree
 
 import (
+	"context"
 	"encoding/xml"
+
 	"github.com/lionelbarrow/braintree-go/date"
 )
 
@@ -33,12 +35,12 @@ const (
 	None                     = "none"
 )
 
-func (d *Disbursement) Transactions(g *TransactionGateway) (*TransactionSearchResult, error) {
+func (d *Disbursement) Transactions(ctx context.Context, g *TransactionGateway) (*TransactionSearchResult, error) {
 	query := new(SearchQuery)
 	f := query.AddMultiField("ids")
 	f.Items = d.TransactionIds
 
-	result, err := g.Search(query)
+	result, err := g.Search(ctx, query)
 	if err != nil {
 		return nil, err
 	}

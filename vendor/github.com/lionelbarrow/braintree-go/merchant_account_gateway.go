@@ -1,13 +1,15 @@
 package braintree
 
+import "context"
+
 type MerchantAccountGateway struct {
 	*Braintree
 }
 
 // Create a sub merchant account.
-func (g *MerchantAccountGateway) Create(ma *MerchantAccount) (*MerchantAccount, error) {
+func (g *MerchantAccountGateway) Create(ctx context.Context, ma *MerchantAccount) (*MerchantAccount, error) {
 	pruneAddress(ma)
-	resp, err := g.execute("POST", "merchant_accounts/create_via_api", ma)
+	resp, err := g.execute(ctx, "POST", "merchant_accounts/create_via_api", ma)
 	if err != nil {
 		return nil, err
 	}
@@ -19,8 +21,8 @@ func (g *MerchantAccountGateway) Create(ma *MerchantAccount) (*MerchantAccount, 
 }
 
 // Find finds the merchant account with the specified id.
-func (g *MerchantAccountGateway) Find(id string) (*MerchantAccount, error) {
-	resp, err := g.execute("GET", "merchant_accounts/"+id, nil)
+func (g *MerchantAccountGateway) Find(ctx context.Context, id string) (*MerchantAccount, error) {
+	resp, err := g.execute(ctx, "GET", "merchant_accounts/"+id, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -32,9 +34,9 @@ func (g *MerchantAccountGateway) Find(id string) (*MerchantAccount, error) {
 }
 
 // Update a sub merchant account.
-func (g *MerchantAccountGateway) Update(ma *MerchantAccount) (*MerchantAccount, error) {
+func (g *MerchantAccountGateway) Update(ctx context.Context, ma *MerchantAccount) (*MerchantAccount, error) {
 	pruneAddress(ma)
-	resp, err := g.execute("PUT", "merchant_accounts/"+ma.Id+"/update_via_api", ma)
+	resp, err := g.execute(ctx, "PUT", "merchant_accounts/"+ma.Id+"/update_via_api", ma)
 	if err != nil {
 		return nil, err
 	}

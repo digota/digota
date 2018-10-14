@@ -1,6 +1,6 @@
 # Braintree Go
 
-[![GoDoc](https://godoc.org/github.com/lionelbarrow/braintree-go?status.svg)](http://godoc.org/github.com/lionelbarrow/braintree-go) [![Build Status](https://travis-ci.org/lionelbarrow/braintree-go.png?branch=master)](https://travis-ci.org/lionelbarrow/braintree-go)
+[![GoDoc](https://godoc.org/github.com/lionelbarrow/braintree-go?status.svg)](http://godoc.org/github.com/lionelbarrow/braintree-go) [![Build Status](https://travis-ci.org/lionelbarrow/braintree-go.png?branch=master)](https://travis-ci.org/lionelbarrow/braintree-go) [![Go Report Card](https://goreportcard.com/badge/github.com/lionelbarrow/braintree-go)](https://goreportcard.com/report/github.com/lionelbarrow/braintree-go)
 
 A Go client library for [Braintree](https://www.braintreepayments.com), the payments company behind awesome companies like GitHub, Heroku, and 37signals.
 
@@ -26,7 +26,8 @@ bt := braintree.New(
 So is creating your first transaction.
 
 ```go
-tx, err := bt.Transaction().Create(&braintree.TransactionRequest{
+ctx := context.Background()
+tx, err := bt.Transaction().Create(ctx, &braintree.TransactionRequest{
   Type: "sale",
   Amount: braintree.NewDecimal(100, 2), // 100 cents
   CreditCard: &braintree.CreditCard{
@@ -46,9 +47,10 @@ The usual. `go get github.com/lionelbarrow/braintree-go`
 
 ### Supported Go Versions
 
-* 1.6
 * 1.7
 * 1.8
+* 1.9
+* 1.10
 
 ### Documentation
 
@@ -61,11 +63,11 @@ For details on this package, see [GoDoc](http://godoc.org/github.com/lionelbarro
 The integration tests run against a sandbox account created in the [Braintree Sandbox](https://sandbox.braintreegateway.com/).
 See [TESTING.md](TESTING.md) for further instructions on how to set up your sandbox for integration testing.
 
-You can run tests locally using the same credentials that Travis CI uses by using the credentials in `.default.env`. Simply `cp .default.env .env` if you use a tool that autoloads `.env` files, or `source .default.env` to load the credentials into your shell. Then run tests with `go test ./...`.
+You can run tests locally using the same credentials that Travis CI uses by using the credentials in `.default.env`. Simply `cp .default.env .env` if you use a tool that autoloads `.env` files, or `source .default.env` to load the credentials into your shell. Then run tests with `go test -tags='unit integration' ./...`.
 
 ```
 source .default.env
-go test ./...
+go test -tags='unit integration' ./...
 ```
 
 ### Webhook Integration Testing

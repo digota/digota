@@ -7,24 +7,24 @@ import (
 
 type AndroidPayCard struct {
 	XMLName             xml.Name       `xml:"android-pay-card"`
-	Token               string         `xml:"token,omitempty"`
+	Token               string         `xml:"token"`
 	CardType            string         `xml:"-"`
 	Last4               string         `xml:"-"`
-	SourceCardType      string         `xml:"source-card-type,omitempty"`
-	SourceCardLast4     string         `xml:"source-card-last-4,omitempty"`
-	SourceDescription   string         `xml:"source-description,omitempty"`
-	VirtualCardType     string         `xml:"virtual-card-type,omitempty"`
-	VirtualCardLast4    string         `xml:"virtual-card-last-4,omitempty"`
-	ExpirationMonth     string         `xml:"expiration-month,omitempty"`
-	ExpirationYear      string         `xml:"expiration-year,omitempty"`
-	BIN                 string         `xml:"bin,omitempty"`
-	GoogleTransactionID string         `xml:"google-transaction-id,omitempty"`
-	ImageURL            string         `xml:"image-url,omitempty"`
-	Default             bool           `xml:"default,omitempty"`
-	CustomerId          string         `xml:"customer-id,omitempty"`
-	CreatedAt           *time.Time     `xml:"created-at,omitempty"`
-	UpdatedAt           *time.Time     `xml:"updated-at,omitempty"`
-	Subscriptions       *Subscriptions `xml:"subscriptions,omitempty"`
+	SourceCardType      string         `xml:"source-card-type"`
+	SourceCardLast4     string         `xml:"source-card-last-4"`
+	SourceDescription   string         `xml:"source-description"`
+	VirtualCardType     string         `xml:"virtual-card-type"`
+	VirtualCardLast4    string         `xml:"virtual-card-last-4"`
+	ExpirationMonth     string         `xml:"expiration-month"`
+	ExpirationYear      string         `xml:"expiration-year"`
+	BIN                 string         `xml:"bin"`
+	GoogleTransactionID string         `xml:"google-transaction-id"`
+	ImageURL            string         `xml:"image-url"`
+	Default             bool           `xml:"default"`
+	CustomerId          string         `xml:"customer-id"`
+	CreatedAt           *time.Time     `xml:"created-at"`
+	UpdatedAt           *time.Time     `xml:"updated-at"`
+	Subscriptions       *Subscriptions `xml:"subscriptions"`
 }
 
 type AndroidPayCards struct {

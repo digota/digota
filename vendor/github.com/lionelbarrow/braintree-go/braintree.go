@@ -2,10 +2,13 @@ package braintree
 
 import (
 	"bytes"
+	"context"
+	"crypto/tls"
 	"encoding/xml"
 	"errors"
 	"fmt"
 	"log"
+	"net"
 	"net/http"
 	"time"
 )
@@ -19,20 +22,41 @@ const (
 
 const defaultTimeout = time.Second * 60
 
-var defaultClient = &http.Client{Timeout: defaultTimeout}
+var (
+	// defaultTransport uses the same configuration as http.DefaultTransport
+	// with the addition of the minimum requirement for TLS 1.2
+	defaultTransport = &http.Transport{
+		Proxy: http.ProxyFromEnvironment,
+		DialContext: (&net.Dialer{
+			Timeout:   30 * time.Second,
+			KeepAlive: 30 * time.Second,
+			DualStack: true,
+		}).DialContext,
+		MaxIdleConns:          100,
+		IdleConnTimeout:       90 * time.Second,
+		TLSHandshakeTimeout:   10 * time.Second,
+		ExpectContinueTimeout: 1 * time.Second,
+		TLSClientConfig: &tls.Config{
+			MinVersion: tls.VersionTLS12,
+		},
+	}
+	defaultClient = &http.Client{
+		Timeout:   defaultTimeout,
+		Transport: defaultTransport,
+	}
+)
 
-// New creates a Braintree with API Keys.
+// New creates a Braintree client with API Keys.
 func New(env Environment, merchId, pubKey, privKey string) *Braintree {
 	return NewWithHttpClient(env, merchId, pubKey, privKey, defaultClient)
 }
 
-// NewWithHttpClient creates a Braintree with API Keys and a HTTP Client.
+// NewWithHttpClient creates a Braintree client with API Keys and a HTTP Client.
 func NewWithHttpClient(env Environment, merchantId, publicKey, privateKey string, client *http.Client) *Braintree {
 	return &Braintree{credentials: newAPIKey(env, merchantId, publicKey, privateKey), HttpClient: client}
 }
 
-// New creates a Braintree with an Access Token.
-//
+// NewWithAccessToken creates a Braintree client with an Access Token.
 // Note: When using an access token, webhooks are unsupported and the
 // WebhookNotification() function will panic.
 func NewWithAccessToken(accessToken string) (*Braintree, error) {
@@ -50,23 +74,26 @@ type Braintree struct {
 	HttpClient  *http.Client
 }
 
+// Environment returns the current environment.
 func (g *Braintree) Environment() Environment {
 	return g.credentials.Environment()
 }
 
+// MerchantID returns the current merchant id.
 func (g *Braintree) MerchantID() string {
 	return g.credentials.MerchantID()
 }
 
+// MerchantURL returns the configured merchant's base URL for outgoing requests.
 func (g *Braintree) MerchantURL() string {
 	return g.Environment().BaseURL() + "/merchants/" + g.MerchantID()
 }
 
-func (g *Braintree) execute(method, path string, xmlObj interface{}) (*Response, error) {
-	return g.executeVersion(method, path, xmlObj, apiVersion3)
+func (g *Braintree) execute(ctx context.Context, method, path string, xmlObj interface{}) (*Response, error) {
+	return g.executeVersion(ctx, method, path, xmlObj, apiVersion3)
 }
 
-func (g *Braintree) executeVersion(method, path string, xmlObj interface{}, v apiVersion) (*Response, error) {
+func (g *Braintree) executeVersion(ctx context.Context, method, path string, xmlObj interface{}, v apiVersion) (*Response, error) {
 	var buf bytes.Buffer
 	if xmlObj != nil {
 		xmlBody, err := xml.Marshal(xmlObj)
@@ -89,6 +116,8 @@ func (g *Braintree) executeVersion(method, path string, xmlObj interface{}, v ap
 	if err != nil {
 		return nil, err
 	}
+
+	req = req.WithContext(ctx)
 
 	req.Header.Set("Content-Type", "application/xml")
 	req.Header.Set("Accept", "application/xml")
@@ -139,6 +168,10 @@ func (g *Braintree) Transaction() *TransactionGateway {
 	return &TransactionGateway{g}
 }
 
+func (g *Braintree) TransactionLineItem() *TransactionLineItemGateway {
+	return &TransactionLineItemGateway{g}
+}
+
 func (g *Braintree) Testing() *TestingGateway {
 	return &TestingGateway{g}
 }
@@ -153,6 +186,10 @@ func (g *Braintree) WebhookTesting() *WebhookTestingGateway {
 
 func (g *Braintree) PaymentMethod() *PaymentMethodGateway {
 	return &PaymentMethodGateway{g}
+}
+
+func (g *Braintree) PaymentMethodNonce() *PaymentMethodNonceGateway {
+	return &PaymentMethodNonceGateway{g}
 }
 
 func (g *Braintree) CreditCard() *CreditCardGateway {
@@ -185,6 +222,10 @@ func (g *Braintree) AddOn() *AddOnGateway {
 
 func (g *Braintree) Discount() *DiscountGateway {
 	return &DiscountGateway{g}
+}
+
+func (g *Braintree) Dispute() *DisputeGateway {
+	return &DisputeGateway{g}
 }
 
 func (g *Braintree) WebhookNotification() *WebhookNotificationGateway {

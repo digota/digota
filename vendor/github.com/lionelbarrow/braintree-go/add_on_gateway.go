@@ -1,11 +1,14 @@
 package braintree
 
+import "context"
+
 type AddOnGateway struct {
 	*Braintree
 }
 
-func (g *AddOnGateway) All() ([]AddOn, error) {
-	resp, err := g.execute("GET", "add_ons", nil)
+// All gets all addons.
+func (g *AddOnGateway) All(ctx context.Context) ([]AddOn, error) {
+	resp, err := g.execute(ctx, "GET", "add_ons", nil)
 	if err != nil {
 		return nil, err
 	}

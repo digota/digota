@@ -1,6 +1,9 @@
 package braintree
 
-import "encoding/xml"
+import (
+	"context"
+	"encoding/xml"
+)
 
 const clientTokenVersion = 2
 
@@ -8,21 +11,23 @@ type ClientTokenGateway struct {
 	*Braintree
 }
 
-func (g *ClientTokenGateway) Generate() (string, error) {
-	return g.generate(&ClientTokenRequest{
+// Generate generates a new client token.
+func (g *ClientTokenGateway) Generate(ctx context.Context) (string, error) {
+	return g.generate(ctx, &ClientTokenRequest{
 		Version: clientTokenVersion,
 	})
 }
 
-func (g *ClientTokenGateway) GenerateWithCustomer(customerId string) (string, error) {
-	return g.generate(&ClientTokenRequest{
+// GenerateWithCustomer generates a new client token for the customer id.
+func (g *ClientTokenGateway) GenerateWithCustomer(ctx context.Context, customerId string) (string, error) {
+	return g.generate(ctx, &ClientTokenRequest{
 		Version:    clientTokenVersion,
 		CustomerID: customerId,
 	})
 }
 
-func (g *ClientTokenGateway) generate(req *ClientTokenRequest) (string, error) {
-	resp, err := g.execute("POST", "client_token", req)
+func (g *ClientTokenGateway) generate(ctx context.Context, req *ClientTokenRequest) (string, error) {
+	resp, err := g.execute(ctx, "POST", "client_token", req)
 	if err != nil {
 		return "", err
 	}

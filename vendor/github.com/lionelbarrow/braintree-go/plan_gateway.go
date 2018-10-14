@@ -1,6 +1,7 @@
 package braintree
 
 import (
+	"context"
 	"encoding/xml"
 )
 
@@ -9,8 +10,8 @@ type PlanGateway struct {
 }
 
 // All returns all available plans
-func (g *PlanGateway) All() ([]*Plan, error) {
-	resp, err := g.execute("GET", "plans", nil)
+func (g *PlanGateway) All(ctx context.Context) ([]*Plan, error) {
+	resp, err := g.execute(ctx, "GET", "plans", nil)
 	if err != nil {
 		return nil, err
 	}
@@ -26,8 +27,8 @@ func (g *PlanGateway) All() ([]*Plan, error) {
 }
 
 // Find returns the plan with the specified id, or nil
-func (g *PlanGateway) Find(id string) (*Plan, error) {
-	plans, err := g.All()
+func (g *PlanGateway) Find(ctx context.Context, id string) (*Plan, error) {
+	plans, err := g.All(ctx)
 	if err != nil {
 		return nil, err
 	}

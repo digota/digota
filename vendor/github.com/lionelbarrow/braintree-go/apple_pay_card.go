@@ -7,20 +7,20 @@ import (
 
 type ApplePayCard struct {
 	XMLName               xml.Name       `xml:"apple-pay-card"`
-	Token                 string         `xml:"token,omitempty"`
-	ImageURL              string         `xml:"image-url,omitempty"`
-	CardType              string         `xml:"card-type,omitempty"`
-	PaymentInstrumentName string         `xml:"payment-instrument-name,omitempty"`
-	SourceDescription     string         `xml:"source-description,omitempty"`
-	Last4                 string         `xml:"last-4,omitempty"`
-	ExpirationMonth       string         `xml:"expiration-month,omitempty"`
-	ExpirationYear        string         `xml:"expiration-year,omitempty"`
-	Expired               bool           `xml:"expired,omitempty"`
-	Default               bool           `xml:"default,omitempty"`
-	CustomerId            string         `xml:"customer-id,omitempty"`
-	CreatedAt             *time.Time     `xml:"created-at,omitempty"`
-	UpdatedAt             *time.Time     `xml:"updated-at,omitempty"`
-	Subscriptions         *Subscriptions `xml:"subscriptions,omitempty"`
+	Token                 string         `xml:"token"`
+	ImageURL              string         `xml:"image-url"`
+	CardType              string         `xml:"card-type"`
+	PaymentInstrumentName string         `xml:"payment-instrument-name"`
+	SourceDescription     string         `xml:"source-description"`
+	Last4                 string         `xml:"last-4"`
+	ExpirationMonth       string         `xml:"expiration-month"`
+	ExpirationYear        string         `xml:"expiration-year"`
+	Expired               bool           `xml:"expired"`
+	Default               bool           `xml:"default"`
+	CustomerId            string         `xml:"customer-id"`
+	CreatedAt             *time.Time     `xml:"created-at"`
+	UpdatedAt             *time.Time     `xml:"updated-at"`
+	Subscriptions         *Subscriptions `xml:"subscriptions"`
 }
 
 type ApplePayCards struct {

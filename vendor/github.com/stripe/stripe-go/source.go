@@ -15,7 +15,7 @@ const (
 	SourceStatusCanceled SourceStatus = "canceled"
 
 	// SourceStatusChargeable the source is ready to be charged (once if usage
-	// is `single_use`, repeatidly otherwise).
+	// is `single_use`, repeatedly otherwise).
 	SourceStatusChargeable SourceStatus = "chargeable"
 
 	// SourceStatusConsumed the source is `single_use` usage and has been
@@ -81,6 +81,7 @@ type SourceObjectParams struct {
 	Currency            Currency           `form:"currency"`
 	Customer            string             `form:"customer"`
 	Flow                SourceFlow         `form:"flow"`
+	OriginalSource      string             `form:"original_source"`
 	Owner               *SourceOwnerParams `form:"owner"`
 	Redirect            *RedirectParams    `form:"redirect"`
 	StatementDescriptor string             `form:"statement_descriptor"`

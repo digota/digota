@@ -4,7 +4,7 @@ In order to run the integration tests, you have to configure your sandbox accoun
 
 #### Environment
 
-Before running the integration tests with `go test`, make sure the following environment variables are set
+Before running the integration tests with `go test -tags='unit integration' ./...`, make sure the following environment variables are set
 
 ```
 export BRAINTREE_MERCH_ID={your-merchant-id}

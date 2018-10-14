@@ -1,5 +1,4 @@
-// Copyright 2017 Michal Witkowski. All Rights Reserved.
-// See LICENSE for licensing terms.
+// Copyright (c) Improbable Worlds Ltd, All Rights Reserved
 
 package grpc_logrus
 
@@ -7,8 +6,10 @@ import (
 	"path"
 	"time"
 
-	"github.com/sirupsen/logrus"
 	"github.com/grpc-ecosystem/go-grpc-middleware"
+	"github.com/grpc-ecosystem/go-grpc-middleware/logging/logrus/ctxlogrus"
+	"github.com/grpc-ecosystem/go-grpc-middleware/tags/logrus"
+	"github.com/sirupsen/logrus"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 )
@@ -21,16 +22,21 @@ var (
 	KindField = "span.kind"
 )
 
-// PayloadUnaryServerInterceptor returns a new unary server interceptors that adds logrus.Entry to the context.
+// UnaryServerInterceptor returns a new unary server interceptors that adds logrus.Entry to the context.
 func UnaryServerInterceptor(entry *logrus.Entry, opts ...Option) grpc.UnaryServerInterceptor {
 	o := evaluateServerOpt(opts)
 	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
-		newCtx := newLoggerForCall(ctx, entry, info.FullMethod)
 		startTime := time.Now()
+		newCtx := newLoggerForCall(ctx, entry, info.FullMethod, startTime)
+
 		resp, err := handler(newCtx, req)
+
+		if !o.shouldLog(info.FullMethod, err) {
+			return resp, err
+		}
 		code := o.codeFunc(err)
 		level := o.levelFunc(code)
-		durField, durVal := o.durationFunc(time.Now().Sub(startTime))
+		durField, durVal := o.durationFunc(time.Since(startTime))
 		fields := logrus.Fields{
 			"grpc.code": code.String(),
 			durField:    durVal,
@@ -38,10 +44,12 @@ func UnaryServerInterceptor(entry *logrus.Entry, opts ...Option) grpc.UnaryServe
 		if err != nil {
 			fields[logrus.ErrorKey] = err
 		}
+
 		levelLogf(
-			Extract(newCtx).WithFields(fields), // re-extract logger from newCtx, as it may have extra fields that changed in the holder.
+			ctx_logrus.Extract(newCtx).WithFields(fields), // re-extract logger from newCtx, as it may have extra fields that changed in the holder.
 			level,
-			"finished unary call")
+			"finished unary call with code "+code.String())
+
 		return resp, err
 	}
 }
@@ -50,15 +58,19 @@ func UnaryServerInterceptor(entry *logrus.Entry, opts ...Option) grpc.UnaryServe
 func StreamServerInterceptor(entry *logrus.Entry, opts ...Option) grpc.StreamServerInterceptor {
 	o := evaluateServerOpt(opts)
 	return func(srv interface{}, stream grpc.ServerStream, info *grpc.StreamServerInfo, handler grpc.StreamHandler) error {
-		newCtx := newLoggerForCall(stream.Context(), entry, info.FullMethod)
+		startTime := time.Now()
+		newCtx := newLoggerForCall(stream.Context(), entry, info.FullMethod, startTime)
 		wrapped := grpc_middleware.WrapServerStream(stream)
 		wrapped.WrappedContext = newCtx
 
-		startTime := time.Now()
 		err := handler(srv, wrapped)
+
+		if !o.shouldLog(info.FullMethod, err) {
+			return err
+		}
 		code := o.codeFunc(err)
 		level := o.levelFunc(code)
-		durField, durVal := o.durationFunc(time.Now().Sub(startTime))
+		durField, durVal := o.durationFunc(time.Since(startTime))
 		fields := logrus.Fields{
 			"grpc.code": code.String(),
 			durField:    durVal,
@@ -66,10 +78,12 @@ func StreamServerInterceptor(entry *logrus.Entry, opts ...Option) grpc.StreamSer
 		if err != nil {
 			fields[logrus.ErrorKey] = err
 		}
+
 		levelLogf(
-			Extract(newCtx).WithFields(fields), // re-extract logger from newCtx, as it may have extra fields that changed in the holder.
+			ctx_logrus.Extract(newCtx).WithFields(fields), // re-extract logger from newCtx, as it may have extra fields that changed in the holder.
 			level,
-			"finished streaming call")
+			"finished streaming call with code "+code.String())
+
 		return err
 	}
 }
@@ -91,15 +105,25 @@ func levelLogf(entry *logrus.Entry, level logrus.Level, format string, args ...i
 	}
 }
 
-func newLoggerForCall(ctx context.Context, entry *logrus.Entry, fullMethodString string) context.Context {
+func newLoggerForCall(ctx context.Context, entry *logrus.Entry, fullMethodString string, start time.Time) context.Context {
 	service := path.Dir(fullMethodString)[1:]
 	method := path.Base(fullMethodString)
 	callLog := entry.WithFields(
 		logrus.Fields{
-			SystemField:    "grpc",
-			KindField:      "server",
-			"grpc.service": service,
-			"grpc.method":  method,
+			SystemField:       "grpc",
+			KindField:         "server",
+			"grpc.service":    service,
+			"grpc.method":     method,
+			"grpc.start_time": start.Format(time.RFC3339),
 		})
-	return toContext(ctx, callLog)
+
+	if d, ok := ctx.Deadline(); ok {
+		callLog = callLog.WithFields(
+			logrus.Fields{
+				"grpc.request.deadline": d.Format(time.RFC3339),
+			})
+	}
+
+	callLog = callLog.WithFields(ctx_logrus.Extract(ctx).Data)
+	return ctxlogrus.ToContext(ctx, callLog)
 }

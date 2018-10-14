@@ -29,7 +29,7 @@ const (
 const apiversion = "2017-05-25"
 
 // clientversion is the binding version
-const clientversion = "28.3.1"
+const clientversion = "28.12.0"
 
 // defaultHTTPTimeout is the default timeout on the http.Client used by the library.
 // This is chosen to be consistent with the other Stripe language libraries and
@@ -111,8 +111,8 @@ type Backends struct {
 type stripeClientUserAgent struct {
 	Application     *AppInfo `json:"application"`
 	BindingsVersion string   `json:"bindings_version"`
-	Language        string   `json:"language"`
-	LanguageVersion string   `json:"language_version"`
+	Language        string   `json:"lang"`
+	LanguageVersion string   `json:"lang_version"`
 	Publisher       string   `json:"publisher"`
 	Uname           string   `json:"uname"`
 }
@@ -180,6 +180,7 @@ func GetBackend(backend SupportedBackend) Backend {
 		defer backends.mu.Unlock()
 		backends.API = &BackendConfiguration{backend, apiURL, httpClient}
 		return backends.API
+
 	case UploadsBackend:
 		backends.mu.RLock()
 		ret := backends.Uploads
@@ -272,6 +273,10 @@ func (s *BackendConfiguration) NewRequest(method, path, key, contentType string,
 	req.Header.Add("X-Stripe-Client-User-Agent", encodedStripeUserAgent)
 
 	if params != nil {
+		if params.Context != nil {
+			req = req.WithContext(params.Context)
+		}
+
 		if idempotency := strings.TrimSpace(params.IdempotencyKey); idempotency != "" {
 			if len(idempotency) > 255 {
 				return nil, errors.New("Cannot use an IdempotencyKey longer than 255 characters long.")
@@ -354,7 +359,11 @@ func (s *BackendConfiguration) ResponseToError(res *http.Response, resBody []byt
 	// so unmarshalling to a map for now and parsing the results manually
 	// but should investigate later
 	var errMap map[string]interface{}
-	json.Unmarshal(resBody, &errMap)
+
+	err := json.Unmarshal(resBody, &errMap)
+	if err != nil {
+		return err
+	}
 
 	e, ok := errMap["error"]
 	if !ok {

@@ -1,6 +1,9 @@
 package braintree
 
-import "encoding/xml"
+import (
+	"context"
+	"encoding/xml"
+)
 
 type PaymentMethodGateway struct {
 	*Braintree
@@ -21,8 +24,8 @@ type PaymentMethodRequestOptions struct {
 	VerificationMerchantAccountId string `xml:"verification-merchant-account-id,omitempty"`
 }
 
-func (g *PaymentMethodGateway) Create(paymentMethodRequest *PaymentMethodRequest) (PaymentMethod, error) {
-	resp, err := g.executeVersion("POST", "payment_methods", paymentMethodRequest, apiVersion4)
+func (g *PaymentMethodGateway) Create(ctx context.Context, paymentMethodRequest *PaymentMethodRequest) (PaymentMethod, error) {
+	resp, err := g.executeVersion(ctx, "POST", "payment_methods", paymentMethodRequest, apiVersion4)
 	if err != nil {
 		return nil, err
 	}
@@ -33,8 +36,8 @@ func (g *PaymentMethodGateway) Create(paymentMethodRequest *PaymentMethodRequest
 	return nil, &invalidResponseError{resp}
 }
 
-func (g *PaymentMethodGateway) Update(token string, paymentMethod *PaymentMethodRequest) (PaymentMethod, error) {
-	resp, err := g.executeVersion("PUT", "payment_methods/any/"+token, paymentMethod, apiVersion4)
+func (g *PaymentMethodGateway) Update(ctx context.Context, token string, paymentMethod *PaymentMethodRequest) (PaymentMethod, error) {
+	resp, err := g.executeVersion(ctx, "PUT", "payment_methods/any/"+token, paymentMethod, apiVersion4)
 	if err != nil {
 		return nil, err
 	}
@@ -45,8 +48,8 @@ func (g *PaymentMethodGateway) Update(token string, paymentMethod *PaymentMethod
 	return nil, &invalidResponseError{resp}
 }
 
-func (g *PaymentMethodGateway) Find(token string) (PaymentMethod, error) {
-	resp, err := g.executeVersion("GET", "payment_methods/any/"+token, nil, apiVersion4)
+func (g *PaymentMethodGateway) Find(ctx context.Context, token string) (PaymentMethod, error) {
+	resp, err := g.executeVersion(ctx, "GET", "payment_methods/any/"+token, nil, apiVersion4)
 	if err != nil {
 		return nil, err
 	}
@@ -57,8 +60,8 @@ func (g *PaymentMethodGateway) Find(token string) (PaymentMethod, error) {
 	return nil, &invalidResponseError{resp}
 }
 
-func (g *PaymentMethodGateway) Delete(token string) error {
-	resp, err := g.executeVersion("DELETE", "payment_methods/any/"+token, nil, apiVersion4)
+func (g *PaymentMethodGateway) Delete(ctx context.Context, token string) error {
+	resp, err := g.executeVersion(ctx, "DELETE", "payment_methods/any/"+token, nil, apiVersion4)
 	if err != nil {
 		return err
 	}

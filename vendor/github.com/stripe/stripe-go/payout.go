@@ -83,6 +83,7 @@ type PayoutListParams struct {
 type Payout struct {
 	Amount                    int64             `json:"amount"`
 	ArrivalDate               int64             `json:"arrival_date"`
+	Automatic                 bool              `json:"automatic"`
 	BalanceTransaction        *Transaction      `json:"balance_transaction"`
 	Bank                      *BankAccount      `json:"bank_account"`
 	Card                      *Card             `json:"card"`
@@ -137,9 +138,13 @@ func (d *PayoutDestination) UnmarshalJSON(data []byte) error {
 
 		switch d.Type {
 		case PayoutDestinationBankAccount:
-			json.Unmarshal(data, &d.BankAccount)
+			err = json.Unmarshal(data, &d.BankAccount)
 		case PayoutDestinationCard:
-			json.Unmarshal(data, &d.Card)
+			err = json.Unmarshal(data, &d.Card)
+		}
+
+		if err != nil {
+			return err
 		}
 	} else {
 		// the id is surrounded by "\" characters, so strip them

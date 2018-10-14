@@ -23,12 +23,13 @@
 package providers
 
 import (
+	"sync"
+
 	"github.com/digota/digota/config"
 	"github.com/digota/digota/payment/paymentpb"
 	"github.com/digota/digota/payment/service/providers/internalTestOnly"
 	"github.com/digota/digota/payment/service/providers/stripe"
 	log "github.com/sirupsen/logrus"
-	"sync"
 )
 
 var mtx = sync.Mutex{}
@@ -58,12 +59,6 @@ func New(paymentConfig []config.PaymentProvider) {
 			if err != nil {
 				log.Panic(err)
 			}
-			//case paymentpb.PaymentProviderId_Braintree.String():
-			//	p, err = braintree.NewProvider(&v)
-			//	if err == nil {
-			//		break
-			//	}
-			//	fallthrough
 			// just for testing
 		case "DigotaInternalTestOnly":
 			p, err = internalTestOnly.NewProvider()

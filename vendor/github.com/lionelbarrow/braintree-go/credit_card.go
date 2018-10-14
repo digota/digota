@@ -65,18 +65,23 @@ type CreditCardOptions struct {
 	UpdateExistingToken           string `xml:"update-existing-token,omitempty"`
 }
 
+// GetCustomerId gets the customer id of the credit card.
 func (card *CreditCard) GetCustomerId() string {
 	return card.CustomerId
 }
 
+// GetToken gets the payment method token of the credit card.
 func (card *CreditCard) GetToken() string {
 	return card.Token
 }
 
+// IsDefault returns whether the credit card is the default for the customer.
 func (card *CreditCard) IsDefault() bool {
 	return card.Default
 }
 
+// GetImageURL gets a URL that points to a payment method
+// image file hosted by Braintree.
 func (card *CreditCard) GetImageURL() string {
 	return card.ImageURL
 }
@@ -94,4 +99,13 @@ func (card *CreditCard) AllSubscriptions() []*Subscription {
 		}
 	}
 	return nil
+}
+
+type CreditCardSearchResult struct {
+	TotalItems int
+	TotalIDs   []string
+
+	CurrentPageNumber int
+	PageSize          int
+	CreditCards       []*CreditCard
 }

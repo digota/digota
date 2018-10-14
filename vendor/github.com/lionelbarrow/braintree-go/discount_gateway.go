@@ -1,11 +1,13 @@
 package braintree
 
+import "context"
+
 type DiscountGateway struct {
 	*Braintree
 }
 
-func (g *DiscountGateway) All() ([]Discount, error) {
-	resp, err := g.execute("GET", "discounts", nil)
+func (g *DiscountGateway) All(ctx context.Context) ([]Discount, error) {
+	resp, err := g.execute(ctx, "GET", "discounts", nil)
 	if err != nil {
 		return nil, err
 	}
