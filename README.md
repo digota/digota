@@ -74,7 +74,7 @@ Supported gateways for now:
 2. Braintree
 
 > Are you payment provider ? 
-> Just implement the following [interface](https://github.com/digota/digota/blob/master/payment/service/providers/providers.go#L32) and PR you changes.
+> Just implement the following [interface](https://github.com/digota/digota/blob/master/payment/service/providers/providers.go#L32) and PR your changes.
 
 ## Auth & Security
 
